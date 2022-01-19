@@ -1,0 +1,5 @@
+﻿  main.cpp
+LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/LTCG”规范)
+  LINK : 已指定 /LTCG，但不需要生成代码；从链接命令行中移除 /LTCG 以提高链接器性能
+  PEShell.vcxproj -> D:\vsproject\PEShell\Debug\PEShell.exe
+  PEShell.vcxproj -> D:\vsproject\PEShell\Debug\PEShell.pdb (Full PDB)

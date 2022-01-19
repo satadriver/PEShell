@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Compress.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Section.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Public.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPE.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportFunTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportFunTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PEParser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Reloc.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="escape.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DllExport.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Compress.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Section.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Public.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPE.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportFunTable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportFunTable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PEParser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Reloc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="escape.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DllExport.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="peunshell.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
