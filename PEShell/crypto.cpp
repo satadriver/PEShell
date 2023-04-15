@@ -3,14 +3,14 @@
 #include "FileHelper.h"
 #include "compress.h"
 
-
+#include "Section.h"
 
 #include <Shlwapi.h>
 #pragma comment( lib, "Shlwapi.lib")
 
-#pragma comment(lib,"./lib\\libcrypto.lib")
-#pragma comment(lib,"./lib\\libssl.lib")
-#pragma comment(lib,"./lib\\openssl.lib")
+#pragma comment(lib,"../lib\\libcrypto.lib")
+#pragma comment(lib,"../lib\\libssl.lib")
+#pragma comment(lib,"../lib\\openssl.lib")
 
 //#define MAX_BUF_SIZE 0x200000
 
@@ -21,21 +21,21 @@
 
 
 #pragma pack(1)
-typedef struct  
+typedef struct
 {
 	int type;
 	unsigned char key;
 	int cnt;
-}BLOCK_FILE_HEADER,*LPBLOCK_FILE_HEADER;
+}BLOCK_FILE_HEADER, * LPBLOCK_FILE_HEADER;
 #pragma pack()
 
 
-unsigned char * Crypto::makeDataBlock(int flag,const char filename[16][256],int cnt,int & dstdatasize) {
+unsigned char* Crypto::makeDataBlock(int flag, const char filename[MAX_FILE_COUNT][256], int cnt, int& dstdatasize) {
 
 	int ret = 0;
 
 	int filesize = 0;
-	for (int i = 0;i < cnt; i ++)
+	for (int i = 0; i < cnt; i++)
 	{
 		int fz = FileHelper::getfilesize(filename[i]);
 		filesize += fz;
@@ -44,63 +44,63 @@ unsigned char * Crypto::makeDataBlock(int flag,const char filename[16][256],int 
 
 	int dstbufsize = filesize + 0x1000;
 
-	unsigned char *dstblock = new unsigned char[dstbufsize];
+	unsigned char* dstblock = new unsigned char[dstbufsize];
 
 	*(int*)dstblock = flag;
 
-// 	if (cnt == 1 && strstr((char*)filename[0],".exe") )
-// 	{
-// 		*(int*)dstblock = ONLY_ONE_EXE;
-// 	}
-// 	else if (cnt == 1 && strstr((char*)filename[0], ".dll"))
-// 	{
-// 		*(int*)dstblock = ONLY_ONE_DLL;
-// 	}
-// 	else if (cnt > 1 )
-// 	{
-// 		int flagexe = 0;
-// 		int flagdll = 0;
-// 		for (int i = 0;i < cnt; i ++)
-// 		{
-// 			if (strstr((char*)filename[i], ".dll")) {
-// 				flagdll = 1;
-// 			}else if (strstr(filename[i],".exe"))
-// 			{
-// 				flagexe = 1;
-// 			}
-// 		}
-// 
-// 		if (flagexe && flagdll)
-// 		{
-// 			*(int*)dstblock = ONE_EXE_AND_ONE_DLL;
-// 		}
-// 		else {
-// 			*(int*)dstblock = SOME_OTHER_FILES;
-// 		}
-// 	}
-// 	else {
-// 		return 0;
-// 	}
+	// 	if (cnt == 1 && strstr((char*)filename[0],".exe") )
+	// 	{
+	// 		*(int*)dstblock = ONLY_ONE_EXE;
+	// 	}
+	// 	else if (cnt == 1 && strstr((char*)filename[0], ".dll"))
+	// 	{
+	// 		*(int*)dstblock = ONLY_ONE_DLL;
+	// 	}
+	// 	else if (cnt > 1 )
+	// 	{
+	// 		int flagexe = 0;
+	// 		int flagdll = 0;
+	// 		for (int i = 0;i < cnt; i ++)
+	// 		{
+	// 			if (strstr((char*)filename[i], ".dll")) {
+	// 				flagdll = 1;
+	// 			}else if (strstr(filename[i],".exe"))
+	// 			{
+	// 				flagexe = 1;
+	// 			}
+	// 		}
+	// 
+	// 		if (flagexe && flagdll)
+	// 		{
+	// 			*(int*)dstblock = ONE_EXE_AND_ONE_DLL;
+	// 		}
+	// 		else {
+	// 			*(int*)dstblock = SOME_OTHER_FILES;
+	// 		}
+	// 	}
+	// 	else {
+	// 		return 0;
+	// 	}
 
-	unsigned char * key = dstblock + 4;
+	unsigned char* key = dstblock + 4;
 
 	getkey(key);
 
 	*(int*)(dstblock + 4 + CRYPT_KEY_SIZE) = cnt;
 
-	unsigned char * dstbuf = dstblock + 4 + CRYPT_KEY_SIZE + 4;
+	unsigned char* dstbuf = dstblock + 4 + CRYPT_KEY_SIZE + 4;
 
 	int dstbuflimit = dstbufsize - 4 - CRYPT_KEY_SIZE - 4;
 
-	for (int i = 0; i < cnt; i ++)
+	for (int i = 0; i < cnt; i++)
 	{
 		lstrcpyA((char*)dstbuf, filename[i]);
 		PathStripPathA((char*)dstbuf);
 		dstbuf += FILENAME_LEN;
 		dstbuflimit -= FILENAME_LEN;
 
-		char * lpdata = 0;
-		
+		char* lpdata = 0;
+
 		ret = FileHelper::fileReader(filename[i], &lpdata, &filesize);
 		if (ret > 0)
 		{
@@ -110,7 +110,7 @@ unsigned char * Crypto::makeDataBlock(int flag,const char filename[16][256],int 
 			if (ret != 0)
 			{
 				delete dstblock;
-				printf("compress file:%s error:%u\r\n", filename[i],GetLastError());
+				printf("compress file:%s error:%u\r\n", filename[i], GetLastError());
 				return 0;
 			}
 
@@ -136,7 +136,7 @@ unsigned char * Crypto::makeDataBlock(int flag,const char filename[16][256],int 
 	return dstblock;
 }
 
-void Crypto::getkey(unsigned char * key) {
+void Crypto::getkey(unsigned char* key) {
 	SYSTEMTIME sttime = { 0 };
 	GetLocalTime(&sttime);
 
@@ -145,18 +145,18 @@ void Crypto::getkey(unsigned char * key) {
 	return;
 }
 
-void Crypto::revertkey(unsigned char * key) {
-	for (int i = 0;i < CRYPT_KEY_SIZE;i ++)
+void Crypto::revertkey(unsigned char* key) {
+	for (int i = 0; i < CRYPT_KEY_SIZE; i++)
 	{
 		key[i] = ~key[i];
 	}
 }
 
 
-void Crypto::CryptData(unsigned char * pdata, int size, unsigned char * psrckey, int keylen) {
+void Crypto::CryptData(unsigned char* pdata, int size, unsigned char* psrckey, int keylen) {
 
-	unsigned char * pkey = new unsigned char [keylen];
-	for (int i = 0; i < keylen; i ++)
+	unsigned char* pkey = new unsigned char[keylen];
+	for (int i = 0; i < keylen; i++)
 	{
 		pkey[i] = (~psrckey[i]) ^ 0x2b;
 	}
@@ -176,7 +176,7 @@ void Crypto::CryptData(unsigned char * pdata, int size, unsigned char * psrckey,
 }
 
 
-int Crypto::getDataMd5(char * lpdata, int size, char * szmd5, int lowercase) {
+int Crypto::getDataMd5(char* lpdata, int size, char* szmd5, int lowercase) {
 
 	int casevalue = 55;
 	if (lowercase)
@@ -223,11 +223,11 @@ int Crypto::getDataMd5(char * lpdata, int size, char * szmd5, int lowercase) {
 
 
 
-void Crypto::cryptPayloadFile(string srcfn,string dstfn) {
+void Crypto::cryptPayloadFile(string srcfn, string dstfn) {
 	unsigned char key[CRYPT_KEY_SIZE] = { 0 };
 	Crypto::getkey(key);
 
-	char * lpdata = 0;
+	char* lpdata = 0;
 	int fs = 0;
 	int ret = 0;
 
@@ -237,5 +237,9 @@ void Crypto::cryptPayloadFile(string srcfn,string dstfn) {
 
 	Crypto::CryptData((unsigned char*)lpdata, fs, key, CRYPT_KEY_SIZE);
 
-	FileHelper::fileWriter(dstfn, lpdata, fs + CRYPT_KEY_SIZE,TRUE);
+	FileHelper::fileWriter(dstfn, lpdata, fs + CRYPT_KEY_SIZE, TRUE);
 }
+
+
+
+

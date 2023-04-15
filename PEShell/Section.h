@@ -5,7 +5,9 @@
 
 using namespace std;
 
+#define MAX_FILE_COUNT		16
+
 class Section {
 public:
-	static string insertSection(int flag,const char *secname,const char srcfiles[16][256], int srcfilescnt,char * outname);
+	static string insertSection(int flag, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname);
 };

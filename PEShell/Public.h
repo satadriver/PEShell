@@ -4,10 +4,12 @@
 
 using namespace std;
 
-#define ONLY_ONE_EXE 1
-#define ONLY_ONE_DLL 2
+
+
+#define ONLY_ONE_EXE		1
+#define ONLY_ONE_DLL		2
 #define ONE_EXE_AND_ONE_DLL 3
-#define SOME_OTHER_FILES 4
+#define SOME_OTHER_FILES	4
 
 #define SYSTEM_VERSION_WIN9X	1
 #define SYSTEM_VERSION_WIN2000	2
@@ -25,7 +27,7 @@ typedef struct
 	char username[16];
 	char ip[16];
 	char unused[32];
-}ATTACK_RUN_PARAM, *LPATTACK_RUN_PARAM;
+}ATTACK_RUN_PARAM, * LPATTACK_RUN_PARAM;
 
 
 #pragma pack()
@@ -38,11 +40,11 @@ public:
 
 	static int writelog(string log);
 
-	static int prepareCfg(char* cfgfn,string dstfn);
+	static int prepareCfg(char* cfgfn, string dstfn);
 
-	static int Public::prepareParams(string ip, string username,string dstfn);
+	static int Public::prepareParams(string ip, string username, string dstfn);
 
 	static string Public::getCurPath();
 
-	static int Public::writelog(char * fmt, ...);
+	static int Public::writelog(char* fmt, ...);
 };
