@@ -22,7 +22,7 @@ using namespace std;
 //1 linker->cmdline /DYNAMICBASE /FIXED
 //2  #pragma comment(linker,"/BASE:0X400000")
 
-DWORD gRegEax=0;
+DWORD gRegEax = 0;
 DWORD gRegEcx = 0;
 DWORD gRegEdx = 0;
 DWORD gRegEbx = 0;
@@ -35,7 +35,7 @@ int gType = 0;
 HMODULE ghPEModule = 0;
 int gPEImageSize = 0;
 
-char * ghThisHandle = 0;
+char* ghThisHandle = 0;
 HINSTANCE ghprevInstance = 0;
 LPSTR glpCmdLine = 0;
 int gnShowCmd = 0;
@@ -49,14 +49,14 @@ ptrWinMain glpWinMain = 0;
 #ifdef _WINDLL
 int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOID lpvReserved) {
 	__asm {
-		mov gRegEax,eax
-		mov gRegEcx,ecx
-		mov gRegEdx,edx
-		mov gRegEbx,ebx
-		mov gRegEbp,ebp
-		mov gRegEsp,esp
-		mov gRegEsi,esi
-		mov gRegEdi,edi
+		mov gRegEax, eax
+		mov gRegEcx, ecx
+		mov gRegEdx, edx
+		mov gRegEbx, ebx
+		mov gRegEbp, ebp
+		mov gRegEsp, esp
+		mov gRegEsi, esi
+		mov gRegEdi, edi
 	}
 
 	if (fdwReason == DLL_PROCESS_ATTACH)
@@ -65,7 +65,7 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 		//ret = Escape::escape();
 
 		ret = getapi();
-		
+
 #ifndef _DEBUG
 		if (Debug::PEB_BegingDebugged())
 		{
@@ -74,15 +74,16 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 #endif
 
 		char secname[] = { '.','l','d','a','t','a',0 };
-		
+
 		ghThisHandle = (char*)hInstance;
 		ret = Section::unshellSection((DWORD)hInstance, secname);
 
-	}else if (fdwReason == DLL_PROCESS_DETACH)
+	}
+	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
-		if (glpDllMainEntry != 0  && ghPEModule != 0)
+		if (glpDllMainEntry != 0 && ghPEModule != 0)
 		{
-			int ret = glpDllMainEntry((DWORD)ghPEModule,DLL_PROCESS_DETACH, 0);
+			int ret = glpDllMainEntry((DWORD)ghPEModule, DLL_PROCESS_DETACH, 0);
 
 			lpVirtualFree(ghPEModule, gPEImageSize, MEM_DECOMMIT);
 			lpVirtualFree(ghPEModule, 0, MEM_RELEASE);
@@ -105,8 +106,8 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 
 	int ret = 0;
-	
-	ret = Escape::escape();
+
+	//ret = Escape::escape();
 
 	ret = getapi();
 
@@ -133,7 +134,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 #endif
 
 #ifdef _MYCONSOLE
-int main(int argc, char ** argv) {
+int main(int argc, char** argv) {
 	int ret = 0;
 	ret = Escape::escape();
 

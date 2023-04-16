@@ -200,7 +200,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		FakeFilename::fakefn(resultfn, "jpeg", "Ïã¸ÛÖ®Â·");
 	}
 
-	printf("work completed\r\n");
+	printf("pe bind type:%d cpu arch:%x work completed\r\n", type, cpu_arch);
 	ExitProcess(0);
 	return 0;
 }
