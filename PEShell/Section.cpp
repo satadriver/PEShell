@@ -10,11 +10,11 @@
 using namespace std;
 
 
-string Section::insertSection(int flag, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname) {
+string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname) {
 	int ret = 0;
 
 	int blocksize = 0;
-	unsigned char* block = Crypto::makeDataBlock(flag, srcfiles, srcfilescnt, blocksize);
+	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt, blocksize);
 	if (block <= 0)
 	{
 		printf("makeDataBlock error\r\n");
@@ -33,25 +33,48 @@ string Section::insertSection(int flag, const char* secname, const char srcfiles
 	}
 
 	string srcfilename = szcurdir;
-	if (flag == 1)
+	if (type == 1)
 	{
-		srcfilename += "PeUnshell.exe";
-
+		if (cpu_arch == 0x014c)
+		{
+			srcfilename += "PeUnshell.exe";
+		}
+		else {
+			srcfilename += "PeUnshell64.exe";
+		}
 	}
-	else if (flag == 2)
+	else if (type == 2)
 	{
-		srcfilename += "PeUnshell.dll";
-
+		//srcfilename += "PeUnshell.dll";
+		if (cpu_arch == 0x014c)
+		{
+			srcfilename += "PeUnshell.dll";
+		}
+		else {
+			srcfilename += "PeUnshell64.dll";
+		}
 	}
-	else if (flag == 3)
+	else if (type == 3)
 	{
-		srcfilename += "PeUnshell.exe";
-
+		//srcfilename += "PeUnshell.exe";
+		if (cpu_arch == 0x014c)
+		{
+			srcfilename += "PeUnshell.exe";
+		}
+		else {
+			srcfilename += "PeUnshell64.exe";
+		}
 	}
-	else if (flag == 4)
+	else if (type == 4)
 	{
-		srcfilename += "PeUnshell.dll";
-
+		//srcfilename += "PeUnshell.dll";
+		if (cpu_arch == 0x014c)
+		{
+			srcfilename += "PeUnshell.dll";
+		}
+		else {
+			srcfilename += "PeUnshell64.dll";
+		}
 	}
 	else {
 		return "";

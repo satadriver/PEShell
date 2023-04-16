@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-
+#include "Section.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ public:
 
 	static void Crypto::revertkey(unsigned char* key);
 
-	static unsigned char* Crypto::makeDataBlock(int flag, const char filename[16][256], int cnt, int& dstdatasize);
+	static unsigned char* Crypto::makeDataBlock(int flag, const char filename[MAX_FILE_COUNT][256], int cnt, int& dstdatasize);
 
 	static void Crypto::cryptPayloadFile(string srcfn, string dstfn);
 

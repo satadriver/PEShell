@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 
-
+#pragma comment(lib,"../lib/zlib.lib")
 
 typedef DWORD(__stdcall* RtlCompressBuffer_Fn)(
 	IN ULONG   CompressionFormat,
@@ -33,7 +33,7 @@ typedef DWORD(__stdcall* RtlGetCompressionWorkSpaceSize_Fn)(
 	OUT PULONG   pNeededBufferSize,
 	OUT PULONG   pUnknown);
 
-#pragma comment(lib,"../lib/zlib.lib")
+
 
 int Compress::compressdata(unsigned char* src, unsigned long srcsize, unsigned char* dstbuf, unsigned long* dstsize) {
 	int ret = 0;

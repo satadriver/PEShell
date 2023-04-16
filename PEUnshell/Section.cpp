@@ -14,7 +14,7 @@ using namespace std;
 #define BIND_MODE_DLL		4
 
 
-int Section::unshellSection(DWORD module, const char * secname) {
+int Section::unshellSection(DWORD module, const char* secname) {
 	int ret = 0;
 
 	char szinfo[1024];
@@ -25,30 +25,33 @@ int Section::unshellSection(DWORD module, const char * secname) {
 	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((DWORD)dos + dos->e_lfanew + segoffset);
 	int secscnt = nt->FileHeader.NumberOfSections;
 
-	for (int i = 0;i < secscnt; i ++)
+	for (int i = 0; i < secscnt; i++)
 	{
-		if (lstrcmpiA((char*)sections[i].Name,secname) == 0)
+		if (lstrcmpiA((char*)sections[i].Name, secname) == 0)
 		{
 
 			DWORD data = sections[i].VirtualAddress + module;
 			DWORD size = sections[i].Misc.VirtualSize;
 
-			DWORD flag = *(DWORD*)data;
+			DWORD type = *(DWORD*)data;
 
-			if (flag == ONLY_ONE_EXE)
+			if (type == ONLY_ONE_EXE)
 			{
 				ret = Crypto::reloadPE((char*)data, size);
-			}else if (flag == ONLY_ONE_DLL)
+			}
+			else if (type == ONLY_ONE_DLL)
 			{
 				ret = Crypto::reloadPE((char*)data, size);
-			}else if (flag == BIND_MODE_EXE)
-			{
-				ret = Crypto::getoutFiles((char*)data, size);
-			}else if (flag == BIND_MODE_DLL)
+			}
+			else if (type == BIND_MODE_EXE)
 			{
 				ret = Crypto::getoutFiles((char*)data, size);
 			}
-			
+			else if (type == BIND_MODE_DLL)
+			{
+				ret = Crypto::getoutFiles((char*)data, size);
+			}
+
 			return TRUE;
 		}
 	}

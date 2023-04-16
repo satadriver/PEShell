@@ -8,6 +8,8 @@ C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\DbgHelp.h(3056): war
 D:\project\PEShell-main\PEUnshell\Crypto.cpp(31): warning C4101: “szinfo”: 未引用的局部变量
   Debug.cpp
   DllExport.cpp
+C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\dbghelp.h(1540): warning C4091: “typedef ”: 没有声明变量时忽略“<unnamed-enum-hdBase>”的左侧
+C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\dbghelp.h(3056): warning C4091: “typedef ”: 没有声明变量时忽略“<unnamed-enum-sfImage>”的左侧
   escape.cpp
 D:\project\PEShell-main\PEUnshell\escape.cpp(25): warning C4244: “初始化”: 从“unsigned __int64”转换到“DWORD”，可能丢失数据
   ExportFunTable.cpp
@@ -25,4 +27,5 @@ D:\project\PEShell-main\PEUnshell\LoadPE.cpp(359): warning C4101: “szout”: �
 D:\project\PEShell-main\PEUnshell\Section.cpp(20): warning C4101: “szinfo”: 未引用的局部变量
   正在生成代码...
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
-  PEUnshell.vcxproj -> D:\project\PEShell-main\Release\PEUnshell.exe
+    正在创建库 D:\project\PEShell-main\Release\PEUnshell.lib 和对象 D:\project\PEShell-main\Release\PEUnshell.exp
+  PEUnshell.vcxproj -> D:\project\PEShell-main\Release\PEUnshell.dll

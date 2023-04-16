@@ -9,5 +9,5 @@ using namespace std;
 
 class Section {
 public:
-	static string insertSection(int flag, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname);
+	static string insertSection(int type, int cpuarch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname);
 };
