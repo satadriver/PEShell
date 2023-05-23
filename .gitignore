@@ -2,6 +2,9 @@
 *.d
 *.VC.db
 *.ipch
+*.opendb
+[Dd]ebug/
+[Rr]elease/
 
 # Object files
 *.o
