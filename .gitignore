@@ -5,6 +5,7 @@
 *.opendb
 [Dd]ebug/
 [Rr]elease/
+
 *.iobj
 *.pdb
 *.ipdb

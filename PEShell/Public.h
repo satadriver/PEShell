@@ -24,9 +24,9 @@ using namespace std;
 
 typedef struct
 {
-	char username[16];
-	char ip[16];
-	char unused[32];
+	char username[32];
+	char ip[32];
+	char unused[64];
 }ATTACK_RUN_PARAM, * LPATTACK_RUN_PARAM;
 
 

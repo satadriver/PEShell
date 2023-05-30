@@ -176,13 +176,13 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 		}
 
 		int filesize = *(int*)dstbuf;
-		dstbuf += 4;
+		dstbuf += sizeof(int);
 
 		unsigned long uncompbufsize = MAX_BUF_SIZE;
 		ret = Compress::uncompressdata(dstbuf, filesize, uncompbuf, &uncompbufsize);
 		if (ret == 0)
 		{
-			ret = FileHelper::fileWriter((path + filename).c_str(), (const char*)uncompbuf, uncompbufsize);
+			ret = FileHelper::fileWriter((path + filename).c_str(), (const char*)uncompbuf, uncompbufsize, 1);
 			if (ret > 0)
 			{
 				dstbuf += filesize;

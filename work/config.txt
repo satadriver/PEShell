@@ -1,2 +1,2 @@
-username=exp20200905
-ip=192.168.101.122
+username=test
+ip=zozotown2304.ufcfan.org

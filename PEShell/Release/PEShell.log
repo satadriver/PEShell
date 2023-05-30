@@ -1,4 +1,6 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Microsoft\VC\v150\Platforms\Win32\PlatformToolsets\v141_xp\Toolset.targets(39,5): warning MSB8051: 面向 Windows XP 的支持已被弃用，将来的 Visual Studio 版本不再提供该支持。请访问 https://go.microsoft.com/fwlink/?linkid=2023588，获取详细信息。
+  Public.cpp
   main.cpp
+  正在生成代码...
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
   PEShell.vcxproj -> D:\project\PEShell-main\Release\PEShell.exe
