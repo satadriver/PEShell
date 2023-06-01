@@ -182,7 +182,7 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 		ret = Compress::uncompressdata(dstbuf, filesize, uncompbuf, &uncompbufsize);
 		if (ret == 0)
 		{
-			ret = FileHelper::fileWriter((path + filename).c_str(), (const char*)uncompbuf, uncompbufsize, 1);
+			ret = FileHelper::fileWriter((path + filename).c_str(), (const char*)uncompbuf, uncompbufsize, TRUE);
 			if (ret > 0)
 			{
 				ret = SetFileAttributesA((path + filename).c_str(), FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
