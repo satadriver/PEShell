@@ -4,7 +4,7 @@
 int FileHelper::getfilesize(string filename) {
 	int ret = 0;
 
-	FILE * fp = fopen(filename.c_str(), "rb");
+	FILE* fp = fopen(filename.c_str(), "rb");
 	if (fp <= 0)
 	{
 		printf("getfilesize fopen file:%s error\r\n", filename.c_str());
@@ -20,10 +20,10 @@ int FileHelper::getfilesize(string filename) {
 	return filesize;
 }
 
-int FileHelper::fileReader(string filename, char ** lpbuf, int *bufsize) {
+int FileHelper::fileReader(string filename, char** lpbuf, int* bufsize) {
 	int ret = 0;
 
-	FILE * fp = fopen(filename.c_str(), "rb");
+	FILE* fp = fopen(filename.c_str(), "rb");
 	if (fp <= 0)
 	{
 		printf("fileReader fopen file:%s error\r\n", filename.c_str());
@@ -44,7 +44,7 @@ int FileHelper::fileReader(string filename, char ** lpbuf, int *bufsize) {
 	fclose(fp);
 	if (ret <= FALSE)
 	{
-		delete *lpbuf;
+		delete* lpbuf;
 		return FALSE;
 	}
 
@@ -54,31 +54,16 @@ int FileHelper::fileReader(string filename, char ** lpbuf, int *bufsize) {
 
 
 
-int FileHelper::fileWriter(string filename, const char * lpdate, int datesize) {
-	int ret = 0;
+int FileHelper::fileWriter(string filename, const char* lpdata, int datasize) {
 
-	FILE * fp = fopen(filename.c_str(), "ab+");
-	if (fp <= 0)
-	{
-		printf("fileWriter fopen file:%s error\r\n", filename.c_str());
-		return FALSE;
-	}
-
-	ret = fwrite(lpdate, 1, datesize, fp);
-	fclose(fp);
-	if (ret == FALSE)
-	{
-		return FALSE;
-	}
-
-	return datesize;
+	return fileWriter(filename, lpdata, datasize, FALSE);
 }
 
 
-int FileHelper::fileWriter(string filename, const char * lpdate, int datesize, int cover) {
+int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, int cover) {
 	int ret = 0;
 
-	FILE * fp = 0;
+	FILE* fp = 0;
 	if (cover) {
 		fp = fopen(filename.c_str(), "wb");
 	}
@@ -92,12 +77,12 @@ int FileHelper::fileWriter(string filename, const char * lpdate, int datesize, i
 		return FALSE;
 	}
 
-	ret = fwrite(lpdate, 1, datesize, fp);
+	ret = fwrite(lpdata, 1, datasize, fp);
 	fclose(fp);
 	if (ret == FALSE)
 	{
 		return FALSE;
 	}
 
-	return datesize;
+	return datasize;
 }
