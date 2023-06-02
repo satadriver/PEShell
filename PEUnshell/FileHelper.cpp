@@ -15,7 +15,6 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 	if (hf == INVALID_HANDLE_VALUE)
 	{
 		result = GetLastError();
-		delete* lpbuf;
 		return FALSE;
 	}
 
@@ -55,7 +54,8 @@ int FileHelper::fileWriter(string filename, const CHAR* lpbuf, int lpsize, int c
 	HANDLE h = INVALID_HANDLE_VALUE;
 	if (cover == 0)
 	{
-		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
+		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, OPEN_ALWAYS,
+			FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_NORMAL, 0);
 		if (h == INVALID_HANDLE_VALUE)
 		{
 			return FALSE;
@@ -66,7 +66,8 @@ int FileHelper::fileWriter(string filename, const CHAR* lpbuf, int lpsize, int c
 		result = SetFilePointer(h, filesize, (long*)&highsize, FILE_BEGIN);
 	}
 	else {
-		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
+		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS,
+			FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_NORMAL, 0);
 		if (h == INVALID_HANDLE_VALUE)
 		{
 			return FALSE;
