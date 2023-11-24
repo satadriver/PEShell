@@ -8,6 +8,7 @@
 #include "Public.h"
 
 #include "md5.h"
+#include "PeLoader.h"
 
 #include "../include/openssl/md5.h"
 #pragma comment(lib,"../lib\\libcrypto.lib")
@@ -81,7 +82,9 @@ int Crypto::reloadPE(const char* data, int datasize) {
 				//MessageBoxA(0, szinfo, szinfo, MB_OK);
 				//FileHelper::fileWriter("d:\\test.exe",(const char*) uncompbuf, uncompbufsize);
 #endif
-				ret = LoadPE::RunPE((char*)uncompbuf, uncompbufsize);
+				
+				//ret = LoadPE::RunPE((char*)uncompbuf, uncompbufsize);
+				ret = MemRunPE((char*)uncompbuf, uncompbufsize);
 
 				delete[] uncompbuf;
 				return ret;

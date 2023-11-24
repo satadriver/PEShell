@@ -180,6 +180,7 @@
     <ClCompile Include="LoadPE.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="md5.c" />
+    <ClCompile Include="PeLoader.cpp" />
     <ClCompile Include="PEParser.cpp" />
     <ClCompile Include="Public.cpp" />
     <ClCompile Include="Reloc.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="LoadPE.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="md5.h" />
+    <ClInclude Include="PeLoader.h" />
     <ClInclude Include="PEParser.h" />
     <ClInclude Include="Public.h" />
     <ClInclude Include="Reloc.h" />

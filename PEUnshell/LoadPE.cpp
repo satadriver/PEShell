@@ -206,7 +206,8 @@ bool LoadPE::RelocationTable(char* chBaseAddress)
 
 		for (int i = 0; i < nNumberOfReloc; i++)
 		{
-			if ((DWORD)(pLocData[i] & 0x0000F000) == 0x00003000)
+			if ((pLocData[i] & 0xF000) == 0x3000 || (pLocData[i] & 0xF000) == 0xA000)
+			//if ((DWORD)(pLocData[i] & 0x0000F000) == 0x00003000)
 			{
 				DWORD* pAddress = (DWORD *)((PBYTE)pDos + pLoc->VirtualAddress + (pLocData[i] & 0x0FFF));
 				

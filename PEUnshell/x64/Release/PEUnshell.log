@@ -1,20 +1,10 @@
-﻿  api.cpp
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(173,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetUserNameA”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(175,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetComputerNameA”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(176,68): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrWinExec”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(177,104): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetSystemDirectoryA”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(178,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetModuleHandleA”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(179,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualAlloc”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(180,80): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualFree”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(181,89): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualProtect”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(182,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetCommandLineW”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(185,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetWkstaGetInfo”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(186,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetApiBufferFree”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(189,85): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrShellExecuteA”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(190,100): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrCommandLineToArgvW”
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(194,127): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrMakeSureDirectoryPathExists”
+﻿  Crypto.cpp
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(34,7): warning C4101: “szinfo”: 未引用的局部变量
+C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(169,39): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   正在生成代码
-  1 of 142 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+  7 of 147 functions ( 4.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成

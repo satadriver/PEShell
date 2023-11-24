@@ -1,1 +1,15 @@
-﻿  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\Release\PEUnshell.exe
+﻿cl : 命令行 warning D9025: 正在重写“/sdl”(用“/GS-”)
+  api.cpp
+  Crypto.cpp
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(34,7): warning C4101: “szinfo”: 未引用的局部变量
+  LoadPE.cpp
+C:\Users\ljg\PEShell\PEUnshell\LoadPE.cpp(214,25): warning C4244: “+=”: 从“ULONGLONG”转换到“DWORD”，可能丢失数据
+C:\Users\ljg\PEShell\PEUnshell\LoadPE.cpp(364,7): warning C4101: “szout”: 未引用的局部变量
+  PeLoader.cpp
+C:\Users\ljg\PEShell\PEUnshell\PEloader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+  正在生成代码...
+LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
+  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\Release\PEUnshell.exe

@@ -165,7 +165,7 @@ int getapi() {
 	PEParser::getBaseApi(&lpDllKernel32,(char**)&lpGetProcAddress, (char**)&lpLoadLibraryA);
 	if (lpGetProcAddress == 0 || lpLoadLibraryA == 0 || lpDllKernel32 == 0)
 	{
-		Public::writelog("lpDllKernel32 or lpLoadLibraryA or lpGetProcAddress null\r\n");
+
 		return FALSE;
 	}
 

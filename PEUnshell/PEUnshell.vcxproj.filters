@@ -63,6 +63,9 @@
     <ClCompile Include="md5.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PeLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compress.h">
@@ -111,6 +114,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PeLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
