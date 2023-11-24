@@ -1,9 +1,11 @@
 
 #include "Debug.h"
+#include <windows.h>
 
 
 bool Debug::PEB_BegingDebugged()
 {
+#ifndef _WIN64
 	bool BegingDebugged = false;
 	__asm
 	{
@@ -12,4 +14,7 @@ bool Debug::PEB_BegingDebugged()
 		mov BegingDebugged, al
 	}
 	return BegingDebugged;					//如果为1则说明正在被调试
+#else
+	return IsDebuggerPresent();
+#endif
 }

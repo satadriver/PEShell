@@ -8,7 +8,11 @@
 #include <stdio.h>
 
 
+#ifdef _WIN64
+#pragma comment(lib,"../lib/zlibstat.lib")
+#else
 #pragma comment(lib,"../lib/zlib.lib")
+#endif
 
 typedef DWORD(__stdcall* RtlCompressBuffer_Fn)(
 	IN ULONG   CompressionFormat,

@@ -8,6 +8,8 @@
 #include <Shlwapi.h>
 #pragma comment( lib, "Shlwapi.lib")
 
+#include "md5.h"
+
 #pragma comment(lib,"../lib\\libcrypto.lib")
 #pragma comment(lib,"../lib\\libssl.lib")
 #pragma comment(lib,"../lib\\openssl.lib")
@@ -186,10 +188,16 @@ int Crypto::getDataMd5(char* lpdata, int size, char* szmd5, int lowercase) {
 
 	int ret = 0;
 	unsigned char hexmd5[256] = { 0 };
+
+
+#if 0
 	MD5_CTX ctx = { 0 };
 	ret = MD5_Init(&ctx);
 	ret = MD5_Update(&ctx, lpdata, size);
 	ret = MD5_Final(hexmd5, &ctx);
+#else
+	md5((unsigned char*)lpdata, size, hexmd5);
+#endif
 
 	memcpy(szmd5, hexmd5, 16);
 	return TRUE;

@@ -35,3 +35,12 @@ int __stdcall DllMain( _In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVO
 
 	return TRUE;
 }
+
+int main() {
+	return 0;
+}
+
+
+int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd){
+	return 0;
+}

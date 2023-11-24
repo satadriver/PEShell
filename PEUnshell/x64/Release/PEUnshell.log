@@ -1,1 +1,9 @@
-﻿
+﻿  main.cpp
+C:\Users\ljg\PEShell\PEUnshell\main.cpp(132,48): warning C4311: “类型强制转换”: 从“HINSTANCE”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEUnshell\main.cpp(132,48): warning C4302: “类型强制转换”: 从“HINSTANCE”到“DWORD”截断
+  md5.c
+  正在生成代码
+  Compiler switch has changed, fall back to full compilation.
+  All 142 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEUnshell.exe

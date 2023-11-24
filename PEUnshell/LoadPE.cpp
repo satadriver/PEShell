@@ -268,7 +268,7 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 			lstrcpyA(szparams[i], szparam);
 		}
 	}
-
+#ifndef _WIN64
 	__asm {
 		mov eax, gRegEax
 		mov ecx, gRegEcx
@@ -279,7 +279,7 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 		mov esi, gRegEsi
 		mov edi, gRegEdi
 	}
-	
+#endif
 	ret = glpmain(iArgc, (char**)szparams);
 
 	return ret;
@@ -291,7 +291,7 @@ int LoadPE::CallDllEntry(char* chBaseAddress)
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
 	glpDllMainEntry = (ptrDllMainEntry)(chBaseAddress + pNt->OptionalHeader.AddressOfEntryPoint);
-
+#ifndef _WIN64
 	__asm {
 		mov eax, gRegEax
 		mov ecx, gRegEcx
@@ -302,7 +302,7 @@ int LoadPE::CallDllEntry(char* chBaseAddress)
 		mov esi, gRegEsi
 		mov edi, gRegEdi
 	}
-
+#endif
 	int ret = glpDllMainEntry((DWORD)chBaseAddress, DLL_PROCESS_ATTACH, 0);
 
 	return ret;
@@ -332,6 +332,7 @@ int LoadPE::CallExeEntry(char* chBaseAddress)
 #endif
 
 	__try {
+#ifndef _WIN64
 		__asm {
 			mov eax,gRegEax
 			mov ecx,gRegEcx
@@ -342,6 +343,7 @@ int LoadPE::CallExeEntry(char* chBaseAddress)
 			mov esi,gRegEsi
 			mov edi,gRegEdi
 		}
+#endif
 		callret = glpWinMain((HINSTANCE)chBaseAddress, ghprevInstance, glpCmdLine, gnShowCmd);
 	}
 	__except (1) {

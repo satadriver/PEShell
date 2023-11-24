@@ -213,6 +213,7 @@ int PEParser::getBaseApi(HMODULE & kernel32,DWORD & getprocaddr,DWORD & loadlib)
 
 DWORD PEParser::checksumPE(unsigned char * data, int datasize) {
 	DWORD checksum = 0;
+#ifndef _WIN64
 	__asm {
 		pushad
 		xor eax, eax
@@ -241,5 +242,6 @@ DWORD PEParser::checksumPE(unsigned char * data, int datasize) {
 		mov checksum, eax
 			popad
 	}
+#endif
 	return checksum;
 }

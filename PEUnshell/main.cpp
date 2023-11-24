@@ -48,6 +48,8 @@ ptrWinMain glpWinMain = 0;
 
 #ifdef _WINDLL
 int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOID lpvReserved) {
+
+#ifndef _WIN64
 	__asm {
 		mov gRegEax, eax
 		mov gRegEcx, ecx
@@ -58,7 +60,7 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 		mov gRegEsi, esi
 		mov gRegEdi, edi
 	}
-
+#endif
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
 		int ret = 0;
@@ -94,6 +96,7 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 }
 #else
 int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+#ifndef _WIN64
 	__asm {
 		mov gRegEax, eax
 		mov gRegEcx, ecx
@@ -104,7 +107,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		mov gRegEsi, esi
 		mov gRegEdi, edi
 	}
-
+#endif
 	int ret = 0;
 
 	//ret = Escape::escape();
