@@ -11,7 +11,8 @@ int Reloc::recovery(DWORD module) {
 
 	int cnt = 0;
 
-	PIMAGE_BASE_RELOCATION reloc = (PIMAGE_BASE_RELOCATION)(module + nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+	PIMAGE_BASE_RELOCATION reloc = (PIMAGE_BASE_RELOCATION)(module +
+		nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
 
 	while (reloc->VirtualAddress && reloc->SizeOfBlock ) 
 	{

@@ -4,6 +4,6 @@
 
 class Section {
 public:
-	static int unshellSection(DWORD module,const char * secname);
+	static int unshellSection(char* module,const char * secname);
 
 };

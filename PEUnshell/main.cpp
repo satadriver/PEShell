@@ -78,14 +78,14 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 		char secname[] = { '.','l','d','a','t','a',0 };
 
 		ghThisHandle = (char*)hInstance;
-		ret = Section::unshellSection((DWORD)hInstance, secname);
+		ret = Section::unshellSection((char*)hInstance, secname);
 
 	}
 	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
 		if (glpDllMainEntry != 0 && ghPEModule != 0)
 		{
-			int ret = glpDllMainEntry((DWORD)ghPEModule, DLL_PROCESS_DETACH, 0);
+			int ret = glpDllMainEntry((char*)ghPEModule, DLL_PROCESS_DETACH, 0);
 
 			lpVirtualFree(ghPEModule, gPEImageSize, MEM_DECOMMIT);
 			lpVirtualFree(ghPEModule, 0, MEM_RELEASE);
@@ -105,7 +105,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		mov gRegEbp, ebp
 		mov gRegEsp, esp
 		mov gRegEsi, esi
-		mov gRegEdi, edi
+		mov gRegEdi, edi 
 	}
 #endif
 	int ret = 0;
@@ -129,7 +129,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	char secname[] = { '.','l','d','a','t','a',0 };
 
-	ret = Section::unshellSection((DWORD)hInstance, secname);
+	ret = Section::unshellSection((char*)hInstance, secname);
 
 	ExitProcess(0);
 	return 0;
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
 	char secname[] = { '.','l','d','a','t','a',0 };
 
 	HANDLE addr = lpGetModuleHandleA(0);
-	ret = Section::unshellSection((DWORD)addr, secname);
+	ret = Section::unshellSection((char*)addr, secname);
 
 	ExitProcess(0);
 	return 0;

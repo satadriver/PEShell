@@ -15,7 +15,7 @@ DWORD ImportFunTable::recover(DWORD module) {
 	char szGetModuleHandleW[] = { 'G','e','t','M','o','d','u','l','e','H','a','n','d','l','e','W',0 };
 	char szInitializeSListHead[] = { 'I','n','i','t','i','a','l','i','z','e','S','L','i','s','t','H','e','a','d',0 };
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((DWORD)dos + dos->e_lfanew);
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
 	DWORD rva = nt->OptionalHeader.DataDirectory[1].VirtualAddress;
 	DWORD size = nt->OptionalHeader.DataDirectory[1].Size;
 
@@ -50,25 +50,25 @@ DWORD ImportFunTable::recover(DWORD module) {
 				break;
 			}
 
-			DWORD addr = 0;
+			char* addr = 0;
 			if (org->u1.Ordinal & 0x80000000)
 			{
 				int ord = org->u1.Ordinal & 0xffff;
-				addr = ExportFunTable::getAddrFromOrd((DWORD)dll, ord);
+				addr = ExportFunTable::getAddrFromOrd((char*)dll, ord);
 			}
 			else {
 
 				PIMAGE_IMPORT_BY_NAME impname = (PIMAGE_IMPORT_BY_NAME)(module + org->u1.AddressOfData);
 				if (lstrcmpiA((char*)impname->Name, szGetModuleHandleA) == 0 || lstrcmpiA((char*)impname->Name, szGetModuleHandleW) == 0)
 				{
-					addr = ExportFunTable::getAddrFromName((DWORD)dll, (char*)impname->Name);
+					addr = ExportFunTable::getAddrFromName((char*)dll, (char*)impname->Name);
 				}
 				else if (lstrcmpiA((char*)impname->Name, szInitializeSListHead) == 0)
 				{
-					addr = (DWORD)lpGetProcAddress(dll, (LPSTR)impname->Name);
+					addr = (char*)lpGetProcAddress(dll, (LPSTR)impname->Name);
 				}
 				else {
-					addr = ExportFunTable::getAddrFromName((DWORD)dll, (char*)impname->Name);
+					addr = ExportFunTable::getAddrFromName((char*)dll, (char*)impname->Name);
 				}
 			}
 
@@ -76,7 +76,7 @@ DWORD ImportFunTable::recover(DWORD module) {
 			{
 				break;
 			}
-			first->u1.Function = addr;
+			first->u1.Function =(ULONGLONG) addr;
 
 			org++;
 			first++;

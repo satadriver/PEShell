@@ -17,7 +17,7 @@ typedef DWORD(__stdcall *ptrSetCurrentDirectoryA)(_In_ LPCSTR lpPathName);
 typedef DWORD(__stdcall *ptrGetUserNameA)(LPSTR lpBuffer, _Inout_ LPDWORD pcbBuffer);
 typedef DWORD(__stdcall *ptrGetComputerNameA)(LPSTR lpBuffer, _Inout_ LPDWORD nSize);
 
-typedef LPSTR(__stdcall *ptrVirtualAlloc)(DWORD, DWORD, DWORD, DWORD);
+typedef LPSTR(__stdcall *ptrVirtualAlloc)(char*, DWORD, DWORD, DWORD);
 typedef UINT(__stdcall *ptrVirtualFree)(LPVOID, DWORD, DWORD);
 typedef DWORD(WINAPI * ptrNetWkstaGetInfo)(__in_opt IN LMSTR servername OPTIONAL, IN DWORD level, LPBYTE*);
 typedef DWORD(WINAPI * ptrNetApiBufferFree)(IN LPVOID Buffer);

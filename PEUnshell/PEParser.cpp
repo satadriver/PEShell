@@ -199,7 +199,7 @@ HMODULE PEParser::GetDllKernel32Base()
 #endif
 }
 
-int PEParser::getBaseApi(HMODULE * kernel32,DWORD * getprocaddr,DWORD * loadlib) {
+int PEParser::getBaseApi(HMODULE * kernel32,char * * getprocaddr,char* * loadlib) {
 	char szLoadLibraryA[] = { 'L','o','a','d','L','i','b','r','a','r','y','A',0 };
 	char szGetProcAddress[] = { 'G','e','t','P','r','o','c','A','d','d','r','e','s','s',0 };
 
@@ -210,8 +210,8 @@ int PEParser::getBaseApi(HMODULE * kernel32,DWORD * getprocaddr,DWORD * loadlib)
 		return FALSE;
 	}
 
-	*getprocaddr = (DWORD)getProcAddr(*kernel32, szGetProcAddress, lstrlenA(szGetProcAddress));
-	*loadlib = (DWORD)getProcAddr(*kernel32, szLoadLibraryA, lstrlenA(szLoadLibraryA));
+	*getprocaddr = (char*)getProcAddr(*kernel32, szGetProcAddress, lstrlenA(szGetProcAddress));
+	*loadlib = (char*)getProcAddr(*kernel32, szLoadLibraryA, lstrlenA(szLoadLibraryA));
 
 	return TRUE;
 }

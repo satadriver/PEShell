@@ -25,11 +25,11 @@ DWORD LoadPE::GetSizeOfImage(char* pFileBuff)
 }
 
 
-DWORD LoadPE::GetImageBase(char* pFileBuff)
+ULONGLONG LoadPE::GetImageBase(char* pFileBuff)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
-	DWORD imagebase = pNt->OptionalHeader.ImageBase;
+	ULONGLONG imagebase = pNt->OptionalHeader.ImageBase;
 
 	return imagebase;
 }
@@ -39,7 +39,7 @@ bool LoadPE::SetImageBase(char* chBaseAddress)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	pNt->OptionalHeader.ImageBase = (ULONG32)chBaseAddress;
+	pNt->OptionalHeader.ImageBase = (ULONGLONG)chBaseAddress;
 
 	return TRUE;
 }
@@ -51,7 +51,7 @@ int recoverEAT(char * dllbase) {
 	int ret = 0;
 	PIMAGE_DOS_HEADER thisdos = (PIMAGE_DOS_HEADER)ghThisHandle;
 	PIMAGE_NT_HEADERS thisnt = (PIMAGE_NT_HEADERS)(ghThisHandle + thisdos->e_lfanew);
-	PIMAGE_EXPORT_DIRECTORY thiseat = (PIMAGE_EXPORT_DIRECTORY)((DWORD)ghThisHandle +
+	PIMAGE_EXPORT_DIRECTORY thiseat = (PIMAGE_EXPORT_DIRECTORY)((char*)ghThisHandle +
 		thisnt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 	pThisEAT = thiseat;
 
@@ -60,7 +60,7 @@ int recoverEAT(char * dllbase) {
 
 	int dlleatsize = dllnt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
 
-	PIMAGE_EXPORT_DIRECTORY dlleat = (PIMAGE_EXPORT_DIRECTORY)((DWORD)dllbase +
+	PIMAGE_EXPORT_DIRECTORY dlleat = (PIMAGE_EXPORT_DIRECTORY)((char*)dllbase +
 		dllnt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
 	DWORD dwOldProtect = 0;
@@ -123,7 +123,8 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
 
-	PIMAGE_IMPORT_DESCRIPTOR pImportTable = (PIMAGE_IMPORT_DESCRIPTOR)((DWORD)pDos +pNt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+	PIMAGE_IMPORT_DESCRIPTOR pImportTable = (PIMAGE_IMPORT_DESCRIPTOR)((char*)pDos +
+		pNt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
 
 	while (TRUE)
 	{
@@ -132,7 +133,7 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 			break;
 		}
 
-		char *lpDllName = (char *)((DWORD)pDos + pImportTable->Name);
+		char *lpDllName = (char *)((char*)pDos + pImportTable->Name);
 		HMODULE hDll = (HMODULE)lpGetModuleHandleA((LPSTR)lpDllName);
 		if (NULL == hDll)
 		{
@@ -146,9 +147,9 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 		
 		DWORD i = 0;
 
-		PIMAGE_THUNK_DATA lpImportNameArray = (PIMAGE_THUNK_DATA)((DWORD)pDos + pImportTable->OriginalFirstThunk);
+		PIMAGE_THUNK_DATA lpImportNameArray = (PIMAGE_THUNK_DATA)((char*)pDos + pImportTable->OriginalFirstThunk);
 
-		PIMAGE_THUNK_DATA lpImportFuncAddrArray = (PIMAGE_THUNK_DATA)((DWORD)pDos + pImportTable->FirstThunk);
+		PIMAGE_THUNK_DATA lpImportFuncAddrArray = (PIMAGE_THUNK_DATA)((char*)pDos + pImportTable->FirstThunk);
 		while (TRUE)
 		{
 			if (0 == lpImportNameArray[i].u1.AddressOfData)
@@ -164,14 +165,14 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 			}
 			else
 			{
-				PIMAGE_IMPORT_BY_NAME lpImportByName = (PIMAGE_IMPORT_BY_NAME)((DWORD)pDos + lpImportNameArray[i].u1.AddressOfData);
+				PIMAGE_IMPORT_BY_NAME lpImportByName = (PIMAGE_IMPORT_BY_NAME)((char*)pDos + lpImportNameArray[i].u1.AddressOfData);
 
 				lpFuncAddress = (FARPROC)lpGetProcAddress(hDll, (LPSTR)lpImportByName->Name);
 			}
 
 			if (lpFuncAddress > 0)
 			{
-				lpImportFuncAddrArray[i].u1.Function = (DWORD)lpFuncAddress;
+				lpImportFuncAddrArray[i].u1.Function = (ULONGLONG)lpFuncAddress;
 			}
 			
 			i++;
@@ -187,7 +188,8 @@ bool LoadPE::RelocationTable(char* chBaseAddress)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)(chBaseAddress +pNt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)(chBaseAddress +
+		pNt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
 
 	if ((char*)pLoc == (char*)pDos)
 	{
@@ -200,7 +202,7 @@ bool LoadPE::RelocationTable(char* chBaseAddress)
 
 		int nNumberOfReloc = (pLoc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
 
-		DWORD dwDelta = (DWORD)pDos - pNt->OptionalHeader.ImageBase;
+		ULONGLONG dwDelta = (ULONGLONG)pDos - pNt->OptionalHeader.ImageBase;
 
 		for (int i = 0; i < nNumberOfReloc; i++)
 		{
@@ -234,8 +236,8 @@ bool LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
 			continue;
 		}
 
-		char* chDestMem = (char*)((DWORD)chBaseAddress + pSection->VirtualAddress);
-		char* chSrcMem = (char*)((DWORD)pFileBuff + pSection->PointerToRawData);
+		char* chDestMem = (char*)(chBaseAddress + pSection->VirtualAddress);
+		char* chSrcMem = (char*)(pFileBuff + pSection->PointerToRawData);
 
 		memcpy(chDestMem, chSrcMem, pSection->SizeOfRawData);
 	}
@@ -303,7 +305,7 @@ int LoadPE::CallDllEntry(char* chBaseAddress)
 		mov edi, gRegEdi
 	}
 #endif
-	int ret = glpDllMainEntry((DWORD)chBaseAddress, DLL_PROCESS_ATTACH, 0);
+	int ret = glpDllMainEntry((char*)chBaseAddress, DLL_PROCESS_ATTACH, 0);
 
 	return ret;
 }
@@ -362,7 +364,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 
 	DWORD dwSizeOfImage = GetSizeOfImage(pFileBuff);
 
-	DWORD imagebase = GetImageBase(pFileBuff);
+	ULONGLONG imagebase = GetImageBase(pFileBuff);
 	if (imagebase <= 0)
 	{
 		imagebase = DEFAULT_PE_BASE_ADDRESS;
@@ -376,7 +378,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	//使用MEM_RESERVE分配类型参数 Windows会以64 KB为边界计算该区域的起始地址 跟PE文件加载边界一致
 	//使用MEM_COMMIT分配类型参数 区域的起始和结束地址都被计算到4KB边界
 	//VirtualAlloc 当程序访问这部分内存时RAM内存才会被真正分配
-	char* chBaseAddress = (char*)lpVirtualAlloc(imagebase, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	char* chBaseAddress = (char*)lpVirtualAlloc((char*)imagebase, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	if (NULL == chBaseAddress)
 	{
 #ifdef _MYDEBUG

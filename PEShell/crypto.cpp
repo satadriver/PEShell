@@ -123,7 +123,7 @@ unsigned char* Crypto::makeDataBlock(int flag, const char filename[MAX_FILE_COUN
 			dstbuflimit -= cmpresssize;
 		}
 		else {
-			delete dstblock;
+			delete[] dstblock;
 			printf("read file:%s error\r\n", filename[i]);
 			return 0;
 		}

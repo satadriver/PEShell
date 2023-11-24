@@ -1,9 +1,21 @@
-﻿  main.cpp
-C:\Users\ljg\PEShell\PEUnshell\main.cpp(132,48): warning C4311: “类型强制转换”: 从“HINSTANCE”到“DWORD”的指针截断
-C:\Users\ljg\PEShell\PEUnshell\main.cpp(132,48): warning C4302: “类型强制转换”: 从“HINSTANCE”到“DWORD”截断
-  md5.c
+﻿  api.cpp
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(173,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetUserNameA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(175,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetComputerNameA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(176,68): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrWinExec”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(177,104): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetSystemDirectoryA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(178,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetModuleHandleA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(179,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualAlloc”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(180,80): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualFree”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(181,89): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualProtect”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(182,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetCommandLineW”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(185,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetWkstaGetInfo”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(186,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetApiBufferFree”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(189,85): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrShellExecuteA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(190,100): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrCommandLineToArgvW”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(194,127): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrMakeSureDirectoryPathExists”
   正在生成代码
-  Compiler switch has changed, fall back to full compilation.
-  All 142 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  1 of 142 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEUnshell.exe

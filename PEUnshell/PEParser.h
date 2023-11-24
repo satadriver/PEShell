@@ -17,7 +17,7 @@ public:
 	static PIMAGE_OPTIONAL_HEADER getOptionalHeader(const char * pedata);
 	static PIMAGE_FILE_HEADER getNtHeader(const char * pedata);
 
-	static int PEParser::getBaseApi(HMODULE * kernel32, DWORD * getprocaddr, DWORD * loadlib);
+	static int PEParser::getBaseApi(HMODULE * kernel32, char* * getprocaddr, char* * loadlib);
 	static HMODULE PEParser::GetDllKernel32Base();
 
 	static DWORD PEParser::checksumPE(unsigned char * data, int datasize);

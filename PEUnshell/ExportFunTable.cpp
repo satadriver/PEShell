@@ -1,9 +1,9 @@
 #include "ExportFunTable.h"
 
 
-DWORD ExportFunTable::getAddrFromName(DWORD module, const char * funname) {
+char* ExportFunTable::getAddrFromName(char* module, const char * funname) {
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((DWORD)dos + dos->e_lfanew);
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
 	DWORD rva = nt->OptionalHeader.DataDirectory[0].VirtualAddress;
 	//DWORD size = nt->OptionalHeader.DataDirectory[0].Size;
 
@@ -16,22 +16,22 @@ DWORD ExportFunTable::getAddrFromName(DWORD module, const char * funname) {
 	const char ** funs = (const char **)(exp->AddressOfNames + module);
 	for (int i = 0 ; i < exp->NumberOfNames; i ++)
 	{
-		const char * functionname = (funs[i] + module);
+		const char * functionname = (funs[i] + (ULONGLONG)module);
 		if (lstrcmpiA(funname, functionname)== 0)
 		{
 			int idx = ords[i];
 			DWORD * addrs = (DWORD *)(exp->AddressOfFunctions + module);
-			int addr = addrs[idx] + module;
+			char* addr = addrs[idx] + module;
 			return addr;
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
-DWORD ExportFunTable::getAddrFromOrd(DWORD module, DWORD ord) {
+char* ExportFunTable::getAddrFromOrd(char* module, DWORD ord) {
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((DWORD)dos + dos->e_lfanew);
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
 	DWORD rva = nt->OptionalHeader.DataDirectory[0].VirtualAddress;
 	DWORD size = nt->OptionalHeader.DataDirectory[0].Size;
 
@@ -40,10 +40,10 @@ DWORD ExportFunTable::getAddrFromOrd(DWORD module, DWORD ord) {
 	int funidx = ord - exp->Base;
 	if (funidx < 0 || funidx >= exp->NumberOfFunctions)
 	{
-		return -1;
+		return 0;
 	}
 
 	DWORD * addrs = (DWORD *)(exp->AddressOfFunctions + module);
-	int addr = addrs[funidx] + module;
+	char* addr = addrs[funidx] + module;
 	return addr;
 }

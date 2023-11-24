@@ -1,20 +1,2 @@
-﻿  compress.cpp
-  crypto.cpp
-  ExportFunTable.cpp
-C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(17,21): warning C4018: “<”: 有符号/无符号不匹配
-C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(41,27): warning C4018: “>=”: 有符号/无符号不匹配
-  FakeFilename.cpp
-  FileHelper.cpp
-  ImportFunTable.cpp
-  main.cpp
-  PEParser.cpp
-  Public.cpp
-  Reloc.cpp
-  Resource.cpp
-  RVA.cpp
-  Section.cpp
-  SetIcon.cpp
-  正在生成代码...
-  md5.c
-LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
+﻿LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
   PEShell.vcxproj -> C:\Users\ljg\PEShell\Release\PEShell.exe

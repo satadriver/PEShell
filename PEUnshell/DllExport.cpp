@@ -33,7 +33,7 @@ int LittleBear() {
 
 	char secname[] = { '.','l','d','a','t','a',0 };
 
-	ret = Section::unshellSection((DWORD)ghThisHandle, secname);
+	ret = Section::unshellSection((char*)ghThisHandle, secname);
 	return 0;
 }
 

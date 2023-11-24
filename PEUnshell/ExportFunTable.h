@@ -4,6 +4,6 @@
 
 class ExportFunTable {
 public:
-	static DWORD getAddrFromName(DWORD module,const char * funname);
-	static DWORD getAddrFromOrd(DWORD module,DWORD ord);
+	static char* getAddrFromName(char* module,const char * funname);
+	static char* getAddrFromOrd(char* module,DWORD ord);
 };

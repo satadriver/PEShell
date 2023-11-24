@@ -25,7 +25,7 @@ public:
 
 	static DWORD LoadPE::GetSizeOfImage(char* pFileBuff);
 
-	static DWORD LoadPE::GetImageBase(char* pFileBuff);
+	static ULONGLONG LoadPE::GetImageBase(char* pFileBuff);
 
 	static bool LoadPE::MapFile(char* pFileBuff, char* chBaseAddress);
 

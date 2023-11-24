@@ -40,7 +40,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 			srcfilename += "PeUnshell.exe";
 		}
 		else {
-			srcfilename += "PeUnshell64.exe";
+			srcfilename += "PeUnshell.exe";
 		}
 	}
 	else if (type == 2)
@@ -105,9 +105,9 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	}
 
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)lpdata;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((DWORD)dos + dos->e_lfanew);
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
 	int segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
-	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((DWORD)dos + dos->e_lfanew + segoffset);
+	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
 	PIMAGE_SECTION_HEADER sechdr = sections;
 	int secscnt = nt->FileHeader.NumberOfSections;
 
