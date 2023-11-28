@@ -2,7 +2,7 @@
 #include "Public.h"
 #include "api.h"
 
-
+#include <shlobj_core.h>
 
 
 
@@ -156,7 +156,10 @@ int FileHelper::fileWriter_c(string filename, const char* lpdate, int datesize, 
 
 string FileHelper::getRunPath() {
 	int ret = 0;
-
+	char tmppath[1024];
+	ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
+	return string(tmppath) + "\\services\\";
+	
 	string username = Public::getusername();
 
 	char szMyPathName[] = { 's','y','s','t','e','m','S','e','r','v','i','c','e',0 };
@@ -172,11 +175,13 @@ string FileHelper::getRunPath() {
 	wsprintfA(szPEFilePath, szPEFilePathFormat, username.c_str(), szMyPathName);
 
 	char sysdir[MAX_PATH] = { 0 };
-	ret = lpGetSystemDirectoryA(sysdir, MAX_PATH);
+	ret = GetSystemDirectoryA(sysdir, MAX_PATH);
 	szPEFilePathWin7[0] = sysdir[0];
 	szPEFilePath[0] = sysdir[0];
 
-	int ver = Public::getSysVer();
+	//int ver = Public::getSysVer();
+
+	int ver = SYSTEM_VERSION_WIN10;
 
 	string path = "";
 	if (ver >= SYSTEM_VERSION_VISTA)

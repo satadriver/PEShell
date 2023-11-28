@@ -1,11 +1,32 @@
-﻿  PeLoader.cpp
-C:\Users\ljg\PEShell\PEUnshell\PEloader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp(188,58): warning C4311: “类型强制转换”: 从“PIMAGE_NT_HEADERS”到“int”的指针截断
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp(188,58): warning C4302: “类型强制转换”: 从“PIMAGE_NT_HEADERS”到“int”截断
+﻿  api.cpp
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(179,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetUserNameA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(181,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetComputerNameA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(182,68): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrWinExec”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(183,104): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetSystemDirectoryA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(184,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetModuleHandleA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(185,83): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualAlloc”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(186,80): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualFree”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(187,89): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrVirtualProtect”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(188,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrGetCommandLineW”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(195,92): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetWkstaGetInfo”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(196,95): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrNetApiBufferFree”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(203,85): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrShellExecuteA”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(204,100): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrCommandLineToArgvW”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(212,127): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“ptrMakeSureDirectoryPathExists”
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(35,7): warning C4101: “info”: 未引用的局部变量
   正在生成代码
   2 of 147 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    1 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
+zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inffast.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inffast.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inflate.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inftrees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inftrees.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(trees.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(uncompr.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(uncompr.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
   PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEUnshell.exe

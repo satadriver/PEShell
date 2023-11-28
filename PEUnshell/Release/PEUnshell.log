@@ -1,2 +1,5 @@
-﻿LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
+﻿cl : 命令行 warning D9025: 正在重写“/sdl”(用“/GS-”)
+  Section.cpp
+C:\Users\ljg\PEShell\PEUnshell\Section.cpp(20,7): warning C4101: “szinfo”: 未引用的局部变量
+LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
   PEUnshell.vcxproj -> C:\Users\ljg\PEShell\Release\PEUnshell.exe

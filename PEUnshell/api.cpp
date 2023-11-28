@@ -32,6 +32,7 @@ HMODULE					lpDllDbghelp;
 
 
 int getapi() {
+	char info[1024];
 
 	char szwsprintfA[] = { 'w','s','p','r','i','n','t','f','A',0 };
 	char szwsprintfW[] = { 'w','s','p','r','i','n','t','f','W',0 };
@@ -162,14 +163,19 @@ int getapi() {
 
 	char szMakeSureDirectoryPathExists[] = { 'M','a','k','e','S','u','r','e','D','i','r','e','c','t','o','r','y','P','a','t','h','E','x','i','s','t','s',0 };
 
-	PEParser::getBaseApi(&lpDllKernel32,(char**)&lpGetProcAddress, (char**)&lpLoadLibraryA);
+	PEParser::getBaseApi(&lpDllKernel32,(FARPROC*)&lpGetProcAddress, (FARPROC*)&lpLoadLibraryA);
 	if (lpGetProcAddress == 0 || lpLoadLibraryA == 0 || lpDllKernel32 == 0)
 	{
-
+		MessageBoxA(0, "getBaseApi error", "getBaseApi error", MB_OK);
 		return FALSE;
 	}
 
 	lpDlladvapi32 = lpLoadLibraryA(szDlladvapi32);
+	if (lpDlladvapi32 == 0) {
+		MessageBoxA(0, "lpDlladvapi32 error", "lpDlladvapi32 error", MB_OK);
+		return FALSE;
+	}
+		
 	lpGetUserNameA = (ptrGetUserNameA)lpGetProcAddress(lpDlladvapi32, szGetUserNameA);
 
 	lpGetComputerNameA = (ptrGetComputerNameA)lpGetProcAddress(lpDllKernel32, szGetComputerNameA);
@@ -182,15 +188,27 @@ int getapi() {
 	lpGetCommandLineW = (ptrGetCommandLineW)lpGetProcAddress(lpDllKernel32, szGetCommandLineW);
 
 	lpDllNetApi32 = lpLoadLibraryA(szDllNetApi32);
+	if (lpDllNetApi32 == 0) {
+		MessageBoxA(0, "lpDllNetApi32 error", "lpDllNetApi32 error", MB_OK);
+		return FALSE;
+	}
 	lpNetWkstaGetInfo = (ptrNetWkstaGetInfo)lpGetProcAddress(lpDllNetApi32, szNetWkstaGetInfo);
 	lpNetApiBufferFree = (ptrNetApiBufferFree)lpGetProcAddress(lpDllNetApi32, szNetApiBufferFree);
 
 	lpDllShell32 = lpLoadLibraryA(szDllShell32);
+	if (lpDllShell32 == 0) {
+		MessageBoxA(0, "lpDllShell32 error", "lpDllShell32 error", MB_OK);
+		return FALSE;
+	}
 	lpShellExecuteA = (ptrShellExecuteA)lpGetProcAddress(lpDllShell32, szShellExecuteA);
 	lpCommandLineToArgvW = (ptrCommandLineToArgvW)lpGetProcAddress(lpDllShell32, szCommandLineToArgvW);
 
 	char szDbghelpDll[] = { 'D','b','g','h','e','l','p','.','d','l','l',0 };
 	lpDllDbghelp = lpLoadLibraryA(szDbghelpDll);
+	if (lpDllDbghelp == 0) {
+		MessageBoxA(0, "lpDllDbghelp error", "lpDllDbghelp error", MB_OK);
+		return FALSE;
+	}
 	lpMakeSureDirectoryPathExists = (ptrMakeSureDirectoryPathExists)lpGetProcAddress(lpDllDbghelp, szMakeSureDirectoryPathExists);
 	
 	return TRUE;

@@ -8,10 +8,10 @@
 
 using namespace std;
 
-#define ONLY_ONE_EXE		1
-#define ONLY_ONE_DLL		2
-#define BIND_MODE_EXE		3
-#define BIND_MODE_DLL		4
+#define MEM_RUN_EXE				1
+#define MEM_RUN_DLL				2
+#define BIND_RELEASE_EXE		3
+#define BIND_RELEASE_DLL		4
 
 
 int Section::unshellSection(char* module, const char* secname) {
@@ -29,25 +29,24 @@ int Section::unshellSection(char* module, const char* secname) {
 	{
 		if (lstrcmpiA((char*)sections[i].Name, secname) == 0)
 		{
-
 			char* data = sections[i].VirtualAddress + module;
 			DWORD size = sections[i].Misc.VirtualSize;
 
 			DWORD type = *(DWORD*)data;
 
-			if (type == ONLY_ONE_EXE)
+			if (type == MEM_RUN_EXE)
 			{
 				ret = Crypto::reloadPE((char*)data, size);
 			}
-			else if (type == ONLY_ONE_DLL)
+			else if (type == MEM_RUN_DLL)
 			{
 				ret = Crypto::reloadPE((char*)data, size);
 			}
-			else if (type == BIND_MODE_EXE)
+			else if (type == BIND_RELEASE_EXE)
 			{
 				ret = Crypto::getoutFiles((char*)data, size);
 			}
-			else if (type == BIND_MODE_DLL)
+			else if (type == BIND_RELEASE_DLL)
 			{
 				ret = Crypto::getoutFiles((char*)data, size);
 			}

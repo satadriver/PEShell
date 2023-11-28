@@ -51,7 +51,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 			srcfilename += "PeUnshell.dll";
 		}
 		else {
-			srcfilename += "PeUnshell64.dll";
+			srcfilename += "PeUnshell.dll";
 		}
 	}
 	else if (type == 3)
@@ -62,7 +62,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 			srcfilename += "PeUnshell.exe";
 		}
 		else {
-			srcfilename += "PeUnshell64.exe";
+			srcfilename += "PeUnshell.exe";
 		}
 	}
 	else if (type == 4)
@@ -73,7 +73,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 			srcfilename += "PeUnshell.dll";
 		}
 		else {
-			srcfilename += "PeUnshell64.dll";
+			srcfilename += "PeUnshell.dll";
 		}
 	}
 	else {
@@ -161,7 +161,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	nt->OptionalHeader.SizeOfImage = nt->OptionalHeader.SizeOfImage + memalignsize;
 
 	DWORD olddatasize = nt->OptionalHeader.SizeOfInitializedData;
-	nt->OptionalHeader.SizeOfInitializedData = nt->OptionalHeader.SizeOfInitializedData + memalignsize;	//memalignsize?
+	nt->OptionalHeader.SizeOfInitializedData = nt->OptionalHeader.SizeOfInitializedData + memalignsize;		//memalignsize?
 
 	ret = FileHelper::fileWriter(newfilename.c_str(), lpdata, filesize, TRUE);
 	ret = FileHelper::fileWriter(newfilename.c_str(), (char*)block, blocksize);

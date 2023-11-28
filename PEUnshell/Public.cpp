@@ -11,11 +11,13 @@
 #define LOG_FILE_NAME "log.log"
 
 string Public::getusername() {
-	char usernmae[MAX_PATH] = { 0 };
+
+	char username[MAX_PATH] = { 0 };
 	int ret = 0;
 	DWORD len = MAX_PATH;
-	ret = lpGetUserNameA(usernmae, &len);
-	return string(usernmae);
+	ret = GetUserNameA(username, &len);
+
+	return string(username);
 }
 
 
