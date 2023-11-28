@@ -1,11 +1,11 @@
-﻿  Crypto.cpp
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
-C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
-C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(34,7): warning C4101: “szinfo”: 未引用的局部变量
-C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(169,39): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+﻿  PeLoader.cpp
+C:\Users\ljg\PEShell\PEUnshell\PEloader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp(188,58): warning C4311: “类型强制转换”: 从“PIMAGE_NT_HEADERS”到“int”的指针截断
+C:\Users\ljg\PEShell\PEUnshell\PeLoader.cpp(188,58): warning C4302: “类型强制转换”: 从“PIMAGE_NT_HEADERS”到“int”截断
   正在生成代码
-  7 of 147 functions ( 4.8%) were compiled, the rest were copied from previous compilation.
+  2 of 147 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEUnshell.exe

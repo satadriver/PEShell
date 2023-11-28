@@ -186,8 +186,9 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	{
 
 	}
-	char szSegName[] = { '.','l','d','a','t','a',0 };
-	string resultfn = Section::insertSection(type, cpu_arch, szSegName, filelist, paramscnt, szoutFn);
+	char secname[] = { '.','r','c','d','a','t','a',0 };
+
+	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt, szoutFn);
 	if (resultfn == "")
 	{
 		printf("something error happened\r\n");

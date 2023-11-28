@@ -23,115 +23,89 @@
 
 
 #pragma pack(1)
+
+typedef struct {
+	char filename[FILENAME_LEN];
+	int fsize;
+	int compSize;
+	unsigned char filedata[0];
+}FILE_DATA;
+
+
+typedef struct {
+	int cnt;
+	FILE_DATA fd;
+}CRYPT_FILE_DATA;
+
 typedef struct
 {
 	int type;
-	unsigned char key;
-	int cnt;
-}BLOCK_FILE_HEADER, * LPBLOCK_FILE_HEADER;
+	unsigned char key[CRYPT_KEY_SIZE];
+	CRYPT_FILE_DATA cfd;
+}FILE_DATA_BLOCK;
 #pragma pack()
 
 
-unsigned char* Crypto::makeDataBlock(int flag, const char filename[MAX_FILE_COUNT][256], int cnt, int& dstdatasize) {
+unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][256], int cnt, int& dstdatasize) {
 
 	int ret = 0;
 
-	int filesize = 0;
+	int dstbufsize = 0;
+	int allfSize[MAX_FILE_COUNT];
 	for (int i = 0; i < cnt; i++)
 	{
 		int fz = FileHelper::getfilesize(filename[i]);
-		filesize += fz;
+		dstbufsize += fz;
+		allfSize[i] = fz;
 		printf("file name:%s size:%d\r\n", filename[i], fz);
 	}
-
-	int dstbufsize = filesize + 0x1000;
+	dstbufsize += 0x1000;
 
 	unsigned char* dstblock = new unsigned char[dstbufsize];
+	FILE_DATA_BLOCK* blk = (FILE_DATA_BLOCK*)dstblock;
+	blk->type = type;
+	getkey(blk->key);
+	blk->cfd.cnt = cnt;
+	FILE_DATA* fd = (FILE_DATA*)& (blk->cfd.fd);
 
-	*(int*)dstblock = flag;
-
-	// 	if (cnt == 1 && strstr((char*)filename[0],".exe") )
-	// 	{
-	// 		*(int*)dstblock = ONLY_ONE_EXE;
-	// 	}
-	// 	else if (cnt == 1 && strstr((char*)filename[0], ".dll"))
-	// 	{
-	// 		*(int*)dstblock = ONLY_ONE_DLL;
-	// 	}
-	// 	else if (cnt > 1 )
-	// 	{
-	// 		int flagexe = 0;
-	// 		int flagdll = 0;
-	// 		for (int i = 0;i < cnt; i ++)
-	// 		{
-	// 			if (strstr((char*)filename[i], ".dll")) {
-	// 				flagdll = 1;
-	// 			}else if (strstr(filename[i],".exe"))
-	// 			{
-	// 				flagexe = 1;
-	// 			}
-	// 		}
-	// 
-	// 		if (flagexe && flagdll)
-	// 		{
-	// 			*(int*)dstblock = ONE_EXE_AND_ONE_DLL;
-	// 		}
-	// 		else {
-	// 			*(int*)dstblock = SOME_OTHER_FILES;
-	// 		}
-	// 	}
-	// 	else {
-	// 		return 0;
-	// 	}
-
-	unsigned char* key = dstblock + 4;
-
-	getkey(key);
-
-	*(int*)(dstblock + 4 + CRYPT_KEY_SIZE) = cnt;
-
-	unsigned char* dstbuf = dstblock + 4 + CRYPT_KEY_SIZE + 4;
-
-	int dstbuflimit = dstbufsize - 4 - CRYPT_KEY_SIZE - 4;
+	int dstbuflimit = dstbufsize - sizeof(FILE_DATA_BLOCK) + sizeof(FILE_DATA);
 
 	for (int i = 0; i < cnt; i++)
 	{
-		lstrcpyA((char*)dstbuf, filename[i]);
-		PathStripPathA((char*)dstbuf);
-		dstbuf += FILENAME_LEN;
-		dstbuflimit -= FILENAME_LEN;
+		lstrcpyA((char*)fd->filename, filename[i]);
+		PathStripPathA((char*)fd->filename);
+
+		dstbuflimit -=  sizeof(FILE_DATA);
 
 		char* lpdata = 0;
-
+		int filesize = 0;
 		ret = FileHelper::fileReader(filename[i], &lpdata, &filesize);
 		if (ret > 0)
 		{
-			unsigned long cmpresssize = dstbuflimit - 4;
-			ret = Compress::compressdata((unsigned char*)lpdata, filesize, dstbuf + 4, &cmpresssize);
+			unsigned long compsize = dstbuflimit ;
+			ret = Compress::compressdata((unsigned char*)lpdata, filesize, (unsigned char*)fd + sizeof(FILE_DATA), &compsize);
 			delete[] lpdata;
 			if (ret != 0)
 			{
-				delete dstblock;
+				delete []dstblock;
 				printf("compress file:%s error:%u\r\n", filename[i], GetLastError());
 				return 0;
 			}
-
-			*(int*)(dstbuf) = cmpresssize;
-			dstbuf += 4;
-			dstbuf += cmpresssize;
-			dstbuflimit -= 4;
-			dstbuflimit -= cmpresssize;
+			fd->compSize = compsize;
+			fd->fsize = allfSize[i];
+			dstbuflimit -= compsize;
+			fd = (FILE_DATA*)((unsigned char*)fd + sizeof(FILE_DATA) + compsize);
 		}
 		else {
 			delete[] dstblock;
-			printf("read file:%s error\r\n", filename[i]);
+			printf("%s read file:%s error\r\n",__FUNCTION__, filename[i]);
 			return 0;
 		}
 	}
 
-	dstdatasize = dstbuf - dstblock;
+	dstdatasize = (unsigned char*)fd - dstblock;
 
-	CryptData(dstblock + 4 + CRYPT_KEY_SIZE, dstdatasize - 4 - CRYPT_KEY_SIZE, key, CRYPT_KEY_SIZE);
+	CryptData(dstblock + 4 + CRYPT_KEY_SIZE, dstdatasize - 4 - CRYPT_KEY_SIZE, blk->key, CRYPT_KEY_SIZE);
 
 	//revertkey(key);
 

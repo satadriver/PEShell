@@ -25,7 +25,7 @@ int Section::unshellSection(char* module, const char* secname) {
 	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
 	int secscnt = nt->FileHeader.NumberOfSections;
 
-	for (int i = 0; i < secscnt; i++)
+	for (int i = secscnt; i >= 0; i--)
 	{
 		if (lstrcmpiA((char*)sections[i].Name, secname) == 0)
 		{

@@ -168,7 +168,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	char* zerobuf = new char[pefalignsize];
 	memset(zerobuf, 0, pefalignsize);
 	ret = FileHelper::fileWriter(newfilename.c_str(), (char*)zerobuf, filemodadd);
-	delete zerobuf;
+	delete []zerobuf;
 
 	delete[]lpdata;
 	delete[] block;

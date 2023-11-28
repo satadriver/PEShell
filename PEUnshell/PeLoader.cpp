@@ -97,18 +97,23 @@ BOOL FillRavAddress(void* pImageBase)
 	POINTER_TYPE Offset = pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
 
 	if (Offset == 0)
+	{
 		return TRUE;
+	}
 
 	PIMAGE_IMPORT_DESCRIPTOR pID = (PIMAGE_IMPORT_DESCRIPTOR)((POINTER_TYPE)pImageBase + Offset);
 
 	char* sDllName = NULL;
 	HINSTANCE hDll = NULL;
+	char info[1024];
 
 	while (1)
 	{
 
 		if ((pID->TimeDateStamp == 0) && (pID->Name == 0))
+		{
 			break;
+		}
 		sDllName = (char*)(pID->Name + (POINTER_TYPE)pImageBase);
 
 		HMODULE hDll = GetModuleHandleA(sDllName);
@@ -116,8 +121,11 @@ BOOL FillRavAddress(void* pImageBase)
 		if (hDll == NULL)
 		{
 			hDll = LoadLibraryA(sDllName);
-			if (hDll == NULL)
+			if (hDll == NULL) {
+				wsprintfA(info, "%s LoadLibraryA:%s error", __FUNCTION__, sDllName);
+				MessageBoxA(0, info, info, MB_OK);
 				return FALSE;
+			}
 		}
 
 		PIMAGE_THUNK_DATA pOriginalIAT = NULL;
@@ -130,8 +138,11 @@ BOOL FillRavAddress(void* pImageBase)
 
 		for (int i = 0;; i++)
 		{
-			if (pOriginalIAT[i].u1.Function == 0)
+			if (pOriginalIAT[i].u1.Function == 0) {
+// 				wsprintfA(info, "pOriginalIAT[i].u1.Function 0");
+// 				MessageBoxA(0, info, info, MB_OK);
 				break;
+			}
 
 			FARPROC lpFunction = NULL;
 			if (pOriginalIAT[i].u1.Ordinal & IMAGE_ORDINAL_FLAG)
@@ -148,8 +159,13 @@ BOOL FillRavAddress(void* pImageBase)
 			{
 				pRealIAT[i].u1.Function = (POINTER_TYPE)lpFunction;
 			}
-			else
+			else {
+				PIMAGE_IMPORT_BY_NAME pByName = (PIMAGE_IMPORT_BY_NAME)((POINTER_TYPE)pImageBase +
+					(POINTER_TYPE)(pOriginalIAT[i].u1.AddressOfData));
+				wsprintfA(info, "%s GetProcAddress:%s error", __FUNCTION__, (LPCSTR)pByName->Name);
+				MessageBoxA(0, info, info, MB_OK);
 				return FALSE;
+			}
 		}
 		pID++;
 	}
@@ -256,9 +272,9 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 	PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)((POINTER_TYPE)lpFileData + pDosHeader->e_lfanew);
 	PIMAGE_SECTION_HEADER pSectionHeader = NULL;
 
-	char  info[1024];
-	wsprintfA(info, "data:%x,size:%d", lpFileData, nDataLength);
-	MessageBoxA(0, info, info, MB_OK);
+// 	char  info[1024];
+// 	wsprintfA(info, "data:%x,size:%d", lpFileData, nDataLength);
+// 	MessageBoxA(0, info, info, MB_OK);
 
 	if (!CheckDataValide(lpFileData, nDataLength)) {
 		//return FALSE;
