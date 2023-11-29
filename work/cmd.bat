@@ -1,9 +1,10 @@
 rem peshell.exe -be sogou.exe sbiedll.dll -c config.txt -o test.exe
 rem peshell.exe -bd sogou.exe sbiedll.dll -c config.txt -o test.dll
 rem peshell.exe -e c:\windows\syswow64\calc.exe
-peshell.exe -e c:\windows\system32\cmd.exe
 
-rem peshell.exe -boe  client.exe
+rem peshell.exe -boe   c:\windows\system32\calc.exe
+
+peshell.exe -boe  client.exe appdata
 
 rem peshell.exe -e client.exe
 

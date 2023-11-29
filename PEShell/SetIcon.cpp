@@ -33,21 +33,22 @@ typedef struct TIconResDirGrp
 
 } *PIconResDirGrp;
 
-// =+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+
 
 WORD MakeLangID();
 
-// =+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+
 
 WORD MakeLangID()
 {
 	return  (SUBLANG_ENGLISH_US << 10) | LANG_ENGLISH;
 }
 
-// =+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+
 
 void ChangeIcon(const char* szFileName,const char* szIconFile)
 {
+	int ret = 0;
 	int i, FileGrpSize;
 	DWORD dwFileSize, dwBytesRead;
 	void * filemem, *p;
@@ -58,16 +59,12 @@ void ChangeIcon(const char* szFileName,const char* szIconFile)
 	WCHAR   szIconFileWCHAR[MAX_PATH] = { 0 };
 	WCHAR   szResNameWCHAR[MAX_PATH] = { 0 };
 
-	MultiByteToWideChar(CP_ACP, 0, szFileName, -1,
-		szFileNameWCHAR, sizeof(szFileNameWCHAR));
+	MultiByteToWideChar(CP_ACP, 0, szFileName, -1,szFileNameWCHAR, sizeof(szFileNameWCHAR)/sizeof(WCHAR));
 
-	MultiByteToWideChar(CP_ACP, 0, szIconFile, -1,
-		szIconFileWCHAR, sizeof(szIconFileWCHAR));
+	MultiByteToWideChar(CP_ACP, 0, szIconFile, -1,szIconFileWCHAR, sizeof(szIconFileWCHAR) / sizeof(WCHAR));
 
-	MultiByteToWideChar(CP_ACP, 0, szResName, -1,
-		szResNameWCHAR, sizeof(szResNameWCHAR));
+	MultiByteToWideChar(CP_ACP, 0, szResName, -1,szResNameWCHAR, sizeof(szResNameWCHAR) / sizeof(WCHAR));
 
-	// open the icon file    
 	hFile = CreateFile(szIconFileWCHAR, GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL, 
 		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, 0);
 
@@ -77,13 +74,12 @@ void ChangeIcon(const char* szFileName,const char* szIconFile)
 		return;
 	}
 
-	// get the file size     
+ 
 	dwFileSize = GetFileSize(hFile, NULL);
 
 	filemem = malloc(dwFileSize);
-
-	// read file to memory       
-	ReadFile(hFile, filemem, dwFileSize, &dwBytesRead, NULL);
+    
+	ret = ReadFile(hFile, filemem, dwFileSize, &dwBytesRead, NULL);
 
 	CloseHandle(hFile);
 
@@ -104,7 +100,8 @@ void ChangeIcon(const char* szFileName,const char* szIconFile)
 		p = (void *)((DWORD)filemem + FileGrp->idEntries[i].lImageOffset);
 
 		// change every frame         
-		UpdateResource(hUpdateRes, RT_ICON,MAKEINTRESOURCE(FileGrp->idEntries[i].lImageOffset),MakeLangID(), p, FileGrp->idEntries[i].lBYTEsInRes);
+		UpdateResource(hUpdateRes, RT_ICON,MAKEINTRESOURCE(FileGrp->idEntries[i].lImageOffset),MakeLangID(), p,
+			FileGrp->idEntries[i].lBYTEsInRes);
 	}
 
 	// update header information  

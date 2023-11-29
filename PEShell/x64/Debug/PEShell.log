@@ -1,1 +1,112 @@
-﻿
+﻿  compress.cpp
+  crypto.cpp
+C:\Users\ljg\PEShell\PEShell\crypto.cpp(32,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+C:\Users\ljg\PEShell\PEShell\crypto.cpp(32,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+C:\Users\ljg\PEShell\PEShell\crypto.cpp(110,35): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  ExportFunTable.cpp
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(5,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(6,56): warning C4311: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(6,56): warning C4302: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(6,72): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(10,71): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_EXPORT_DIRECTORY”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(12,55): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“const char *”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(14,60): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“WORD *”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(16,68): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“const char **”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(17,21): warning C4018: “<”: 有符号/无符号不匹配
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(23,63): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“DWORD *”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(33,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(34,56): warning C4311: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(34,56): warning C4302: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(34,72): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(38,71): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_EXPORT_DIRECTORY”
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(41,27): warning C4018: “>=”: 有符号/无符号不匹配
+C:\Users\ljg\PEShell\PEShell\ExportFunTable.cpp(46,61): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“DWORD *”
+  FakeFilename.cpp
+C:\Users\ljg\PEShell\PEShell\FakeFilename.cpp(29,79): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\ljg\PEShell\PEShell\FakeFilename.cpp(40,2): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\ljg\PEShell\PEShell\FakeFilename.cpp(48,91): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  FileHelper.cpp
+C:\Users\ljg\PEShell\PEShell\FileHelper.cpp(86,38): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\ljg\PEShell\PEShell\FileHelper.cpp(123,39): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  ImportFunTable.cpp
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(26,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(27,56): warning C4311: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(27,56): warning C4302: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(27,72): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(31,74): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_IMPORT_DESCRIPTOR”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(41,61): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“const char *”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(53,81): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_THUNK_DATA”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(54,75): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_THUNK_DATA”
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(66,53): warning C4311: “类型强制转换”: 从“HMODULE”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(66,53): warning C4302: “类型强制转换”: 从“HMODULE”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(75,62): warning C4311: “类型强制转换”: 从“FARPROC”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(75,62): warning C4302: “类型强制转换”: 从“FARPROC”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(79,62): warning C4311: “类型强制转换”: 从“FARPROC”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(79,62): warning C4302: “类型强制转换”: 从“FARPROC”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(82,55): warning C4311: “类型强制转换”: 从“HMODULE”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\ImportFunTable.cpp(82,55): warning C4302: “类型强制转换”: 从“HMODULE”到“DWORD”截断
+  main.cpp
+C:\Users\ljg\PEShell\PEShell\main.cpp(25,1): warning C4005: “_CONSOLE”: 宏重定义
+C:\Users\ljg\PEShell\PEShell\main.cpp : message : 参见“_CONSOLE”的前一个定义
+C:\Users\ljg\PEShell\PEShell\main.cpp(223,49): warning C4311: “类型强制转换”: 从“HMODULE”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\main.cpp(223,49): warning C4302: “类型强制转换”: 从“HMODULE”到“DWORD”截断
+  PEParser.cpp
+C:\Users\ljg\PEShell\PEShell\PEParser.cpp(208,90): warning C4311: “类型强制转换”: 从“FARPROC”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\PEParser.cpp(208,90): warning C4302: “类型强制转换”: 从“FARPROC”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\PEParser.cpp(209,82): warning C4311: “类型强制转换”: 从“FARPROC”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\PEParser.cpp(209,82): warning C4302: “类型强制转换”: 从“FARPROC”到“DWORD”截断
+  Public.cpp
+C:\Users\ljg\PEShell\PEShell\Public.cpp(90,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\ljg\PEShell\PEShell\Public.cpp(106,27): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\ljg\PEShell\PEShell\Public.cpp(107,46): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  Reloc.cpp
+C:\Users\ljg\PEShell\PEShell\Reloc.cpp(4,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\Reloc.cpp(5,68): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\Reloc.cpp(13,84): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_BASE_RELOCATION”
+C:\Users\ljg\PEShell\PEShell\Reloc.cpp(24,90): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“DWORD *”
+C:\Users\ljg\PEShell\PEShell\Reloc.cpp(25,18): warning C4244: “初始化”: 从“ULONGLONG”转换到“DWORD”，可能丢失数据
+  Resource.cpp
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(17,88): warning C4311: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(17,88): warning C4302: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(28,85): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DIR_STRING_U”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(37,81): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DIRECTORY”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(42,83): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DATA_ENTRY”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(51,87): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DIR_STRING_U”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(69,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(70,68): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(73,122): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DIRECTORY”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(77,32): warning C4311: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(77,32): warning C4302: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(84,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(85,68): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(90,93): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_RESOURCE_DIRECTORY”
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(94,33): warning C4311: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(94,33): warning C4302: “类型强制转换”: 从“PIMAGE_RESOURCE_DIRECTORY”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(94,53): warning C4311: “类型强制转换”: 从“const char *”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\Resource.cpp(94,53): warning C4302: “类型强制转换”: 从“const char *”到“DWORD”截断
+  RVA.cpp
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(6,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(7,56): warning C4311: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(7,56): warning C4302: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(7,72): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(30,51): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“PIMAGE_DOS_HEADER”
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(31,56): warning C4311: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(31,56): warning C4302: “类型强制转换”: 从“PIMAGE_DOS_HEADER”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\RVA.cpp(31,72): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“PIMAGE_NT_HEADERS”
+  Section.cpp
+  SetIcon.cpp
+C:\Users\ljg\PEShell\PEShell\SetIcon.cpp(100,31): warning C4311: “类型强制转换”: 从“void *”到“DWORD”的指针截断
+C:\Users\ljg\PEShell\PEShell\SetIcon.cpp(100,31): warning C4302: “类型强制转换”: 从“void *”到“DWORD”截断
+C:\Users\ljg\PEShell\PEShell\SetIcon.cpp(100,68): warning C4312: “类型强制转换”: 从“unsigned long”转换到更大的“void *”
+  正在生成代码...
+  md5.c
+LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+LINK : warning LNK4217: 符号“free”(在“ libucrtd.lib(free.obj)”中定义)已由“zlibstat.lib(zutil.obj)”(函数“zcfree”中)导入
+LINK : warning LNK4217: 符号“malloc”(在“ libucrtd.lib(malloc.obj)”中定义)已由“zlibstat.lib(zutil.obj)”(函数“zcalloc”中)导入
+zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(trees.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“C:\Users\ljg\PEShell\x64\Debug\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  PEShell.vcxproj -> C:\Users\ljg\PEShell\x64\Debug\PEShell.exe

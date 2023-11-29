@@ -1,11 +1,52 @@
 #include "FileHelper.h"
 #include "Public.h"
 #include "api.h"
-
+#include <DbgHelp.h>
 #include <shlobj_core.h>
 
 
+int FileHelper::CheckFileExist(string filename) {
+	HANDLE hFile = CreateFileA((char*)filename.c_str(), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		int err = GetLastError();
+		if (err == 32 || err == 183)
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
+	else {
+		CloseHandle(hFile);
+		return TRUE;
+	}
+}
 
+
+int FileHelper::CheckPathExist(string path) {
+	if (path.back() != '\\')
+	{
+		path.append("\\");
+	}
+	path.append("*.*");
+
+	WIN32_FIND_DATAA stfd;
+	HANDLE hFind = FindFirstFileA((char*)path.c_str(), &stfd);
+	if (hFind == INVALID_HANDLE_VALUE)
+	{
+		int err = GetLastError();
+		if (err == 32 || err == 183)
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
+	else {
+		FindClose(hFind);
+		return TRUE;
+	}
+}
 
 
 int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
@@ -151,6 +192,43 @@ int FileHelper::fileWriter_c(string filename, const char* lpdate, int datesize, 
 	}
 
 	return datesize;
+}
+
+
+
+string FileHelper::getReleasePath(const char * path) {
+	int ret = 0;
+
+	string folder = "";
+	if (isalpha(path[0]) && path[1] == ':' && path[2] == '\\')
+	{
+		folder = path;
+		if (folder.back() != '\\')
+		{
+			folder.append("\\");
+		}
+	}
+	else {
+		char tmppath[MAX_PATH];
+		char* mypath = getenv(path);
+		if (mypath == 0)
+		{
+			ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
+			if (ret)
+			{
+				mypath = tmppath;
+			}
+			else {
+				ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_MYDOCUMENTS, false);
+				mypath = tmppath;
+			}
+		}
+		char service_path[] = { 's','e','r','v','i','c','e','s',0 };
+		folder = string(mypath) + "\\" + service_path + "\\";
+	}
+
+	ret = MakeSureDirectoryPathExists((char*)folder.c_str());
+	return folder;
 }
 
 

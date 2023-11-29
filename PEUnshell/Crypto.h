@@ -18,7 +18,7 @@ public:
 	static void Crypto::revertkey(unsigned char * key);
 	static void Crypto::getkey(unsigned char * key);
 
-	static int Crypto::getoutFiles(const char * data, int size);
+	static int Crypto::releaseFiles(const char * data, int size);
 
 	static int Crypto::reloadPE(const char * data, int datasize);
 

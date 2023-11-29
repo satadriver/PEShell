@@ -40,9 +40,9 @@ typedef HINSTANCE(__stdcall *ptrShellExecuteA)(
 typedef wchar_t ** (__stdcall *ptrCommandLineToArgvW)(__in LPCWSTR lpCmdLine, __out int* pNumArgs);
 typedef LPCWSTR(__stdcall *ptrGetCommandLineW)();
 
-typedef int (__stdcall *ptrMakeSureDirectoryPathExists)(LPSTR);
+typedef int (__fastcall *ptrMakeSureDirectoryPathExists)(LPSTR);
 
-extern ptrGetProcAddress		lpGetProcAddress ;
+extern ptrGetProcAddress		lpGetProcAddress;
 extern ptrLoadLibraryA			lpLoadLibraryA;
 extern ptrFreeLibrary			lpFreeLibrary;
 

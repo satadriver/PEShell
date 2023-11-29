@@ -265,7 +265,7 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 	for (int i = 0; i < iArgc; i ++)
 	{
 		char szparam[256] = { 0 };
-		ret = WideCharToMultiByte(CP_ACP, 0, wszparams[i], -1, szparam, 256, 0, 0);
+		ret = WideCharToMultiByte(CP_ACP, 0, wszparams[i], -1, szparam, sizeof(szparam), 0, 0);
 		if (ret > 0)
 		{
 			lstrcpyA(szparams[i], szparam);

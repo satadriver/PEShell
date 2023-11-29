@@ -66,6 +66,18 @@
     <ClCompile Include="PeLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="antiDetect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RegHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compress.h">
@@ -119,10 +131,27 @@
     <ClInclude Include="PeLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="antiDetect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="peunshell.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="asm.asm">
+      <Filter>源文件</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

@@ -200,6 +200,7 @@ HMODULE PEParser::GetDllKernel32Base()
 }
 
 int PEParser::getBaseApi(HMODULE * kernel32,FARPROC * getprocaddr, FARPROC* loadlib) {
+#ifndef _WIN32
 	char szLoadLibraryA[] = { 'L','o','a','d','L','i','b','r','a','r','y','A',0 };
 	char szGetProcAddress[] = { 'G','e','t','P','r','o','c','A','d','d','r','e','s','s',0 };
 
@@ -212,6 +213,12 @@ int PEParser::getBaseApi(HMODULE * kernel32,FARPROC * getprocaddr, FARPROC* load
 
 	*getprocaddr = (FARPROC)getProcAddr(*kernel32, szGetProcAddress, lstrlenA(szGetProcAddress));
 	*loadlib = (FARPROC)getProcAddr(*kernel32, szLoadLibraryA, lstrlenA(szLoadLibraryA));
+#else
+	char szKernel32[] = { 'k','e','r','n','e','l','3','2','.','d','l','l',0 };
+	*kernel32=GetModuleHandleA(szKernel32);
+	* getprocaddr = (FARPROC) GetProcAddress;
+	*loadlib = (FARPROC)LoadLibraryA;
+#endif
 
 	return TRUE;
 }

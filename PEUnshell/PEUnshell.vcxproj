@@ -159,6 +159,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,6 +169,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="antiDetect.cpp" />
     <ClCompile Include="api.cpp" />
     <ClCompile Include="Compress.cpp" />
     <ClCompile Include="Crypto.cpp" />
@@ -183,10 +185,14 @@
     <ClCompile Include="PeLoader.cpp" />
     <ClCompile Include="PEParser.cpp" />
     <ClCompile Include="Public.cpp" />
+    <ClCompile Include="RegHelper.cpp" />
     <ClCompile Include="Reloc.cpp" />
     <ClCompile Include="Section.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="vm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="antiDetect.h" />
     <ClInclude Include="api.h" />
     <ClInclude Include="Compress.h" />
     <ClInclude Include="Crypto.h" />
@@ -202,11 +208,31 @@
     <ClInclude Include="PeLoader.h" />
     <ClInclude Include="PEParser.h" />
     <ClInclude Include="Public.h" />
+    <ClInclude Include="RegHelper.h" />
     <ClInclude Include="Reloc.h" />
     <ClInclude Include="Section.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="vm.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="peunshell.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="asm.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ml64 /Fo $(IntDir)%(fileName).obj /c %(fileName).asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ml64 /Fo $(IntDir)%(fileName).obj /c %(fileName).asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ml64 /Fo $(IntDir)%(fileName).obj /c %(fileName).asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64 /Fo $(IntDir)%(fileName).obj /c %(fileName).asm</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(fileName).obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(fileName).obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(fileName).obj</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(fileName).obj</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

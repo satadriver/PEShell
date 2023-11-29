@@ -4,17 +4,18 @@
 #include "compress.h"
 #include "crypto.h"
 #include "PEParser.h"
-
 #include <iostream>
+
 
 using namespace std;
 
 
-string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], int srcfilescnt, char* outname) {
+string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], 
+	int srcfilescnt,string path, char* outname) {
 	int ret = 0;
 
 	int blocksize = 0;
-	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt, blocksize);
+	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt,path.c_str(), blocksize);
 	if (block <= 0)
 	{
 		printf("makeDataBlock error\r\n");

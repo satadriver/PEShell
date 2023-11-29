@@ -44,11 +44,11 @@ int Section::unshellSection(char* module, const char* secname) {
 			}
 			else if (type == BIND_RELEASE_EXE)
 			{
-				ret = Crypto::getoutFiles((char*)data, size);
+				ret = Crypto::releaseFiles((char*)data, size);
 			}
 			else if (type == BIND_RELEASE_DLL)
 			{
-				ret = Crypto::getoutFiles((char*)data, size);
+				ret = Crypto::releaseFiles((char*)data, size);
 			}
 
 			return TRUE;

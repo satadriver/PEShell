@@ -26,6 +26,7 @@
 
 typedef struct {
 	char filename[FILENAME_LEN];
+	char outpath[FILENAME_LEN];
 	int fsize;
 	int compSize;
 	unsigned char filedata[0];
@@ -46,7 +47,8 @@ typedef struct
 #pragma pack()
 
 
-unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][256], int cnt, int& dstdatasize) {
+unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][256], int cnt, const char * outpath,int& dstdatasize) 
+{
 
 	int ret = 0;
 
@@ -74,6 +76,8 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 	{
 		lstrcpyA((char*)fd->filename, filename[i]);
 		PathStripPathA((char*)fd->filename);
+
+		lstrcpyA(fd->outpath, outpath);
 
 		dstbuflimit -=  sizeof(FILE_DATA);
 
@@ -148,7 +152,7 @@ void Crypto::CryptData(unsigned char* pdata, int size, unsigned char* psrckey, i
 		i++;
 	}
 
-	delete pkey;
+	delete []pkey;
 }
 
 
