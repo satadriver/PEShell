@@ -15,7 +15,7 @@ string Public::getusername() {
 	char username[MAX_PATH] = { 0 };
 	int ret = 0;
 	DWORD len = MAX_PATH;
-	ret = GetUserNameA(username, &len);
+	ret = lpGetUserNameA(username, &len);
 
 	return string(username);
 }

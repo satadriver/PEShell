@@ -1,14 +1,15 @@
 ﻿LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
   正在生成代码
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 145 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  0 of 145 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
 LINK : warning LNK4286: 符号“free”(在“libucrt.lib(free.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
 LINK : warning LNK4286: 符号“malloc”(在“libucrt.lib(malloc.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
 zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
 zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
 zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(deflate.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
 zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(trees.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
 zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
   PEShell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEShell.exe

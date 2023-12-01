@@ -21,9 +21,8 @@ int commandline(WCHAR* szparam, int wait, int show, DWORD* ret);
 
 int __cdecl runLog(const WCHAR* format, ...);
 
-int __cdecl opLog(const CHAR* format, ...);
-
 int __cdecl runLog(const CHAR* format, ...);
+
 
 
 unsigned short crc16(unsigned char* data, int size);

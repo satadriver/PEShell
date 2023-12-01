@@ -12,6 +12,7 @@
 #include <Psapi.h>
 #include <DbgHelp.h>
 #include "utils.h"
+#include "api.h"
 
 #pragma comment(lib,"userenv.lib")
 
@@ -20,43 +21,29 @@ int __cdecl runLog(const WCHAR* format, ...)
 {
 	int result = 0;
 
-	WCHAR showout[2048];
+	WCHAR info[2048];
 
 	va_list   arglist;
 
 	va_start(arglist, format);
 
-	int len = vswprintf_s(showout, sizeof(showout) / sizeof(WCHAR), format, arglist);
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	int offset = wsprintfW(info, L"[ljg]%2u:%2u:%2u %2u/%2u/%4u ", st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
+
+	offset += vswprintf_s(info+offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
 
 	va_end(arglist);
 
-	OutputDebugStringW(showout);
+	lpOutputDebugStringW(info);
 
-	return len;
+	return offset;
 }
+
+
 
 
 int __cdecl runLog(const CHAR* format, ...)
-{
-	int result = 0;
-
-	CHAR showout[2048];
-
-	va_list   arglist;
-
-	va_start(arglist, format);
-
-	int len = vsprintf_s(showout, sizeof(showout), format, arglist);
-
-	va_end(arglist);
-
-	OutputDebugStringA(showout);
-
-
-	return len;
-}
-
-int __cdecl opLog(const CHAR* format, ...)
 {
 	int result = 0;
 
@@ -74,8 +61,7 @@ int __cdecl opLog(const CHAR* format, ...)
 
 	va_end(arglist);
 
-	OutputDebugStringA(info);
-
+	lpOutputDebugStringA(info);
 
 	return offset;
 }
@@ -94,20 +80,20 @@ int commandline(WCHAR* szparam, int wait, int show, DWORD* ret) {
 	si.wShowWindow = show;
 	DWORD dwCreationFlags = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT;
 
-	result = CreateProcessW(0, szparam, 0, 0, 0, 0, 0, 0, &si, &pi);
+	result = lpCreateProcessW(0, szparam, 0, 0, 0, 0, 0, 0, &si, &pi);
 	int errorcode = GetLastError();
 	if (result) {
 		if (wait)
 		{
-			WaitForSingleObject(pi.hProcess, INFINITE);
+			lpWaitForSingleObject(pi.hProcess, INFINITE);
 			GetExitCodeThread(pi.hProcess, &threadcode);
 			GetExitCodeProcess(pi.hProcess, &processcode);
 		}
 
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+		lpCloseHandle(pi.hProcess);
+		lpCloseHandle(pi.hThread);
 	}
-	runLog(L"[mytestlog]command:%ws result:%d process excode:%d thread excode:%d errorcode:%d\r\n",
+	runLog(L"command:%ws result:%d, process excode:%d, thread excode:%d ,errorcode:%d\r\n",
 		szparam, result, processcode, threadcode, errorcode);
 	return result;
 }
@@ -152,7 +138,7 @@ int binarySearch(const char* data, int size, const char* tag, int tagsize) {
 
 HANDLE  bRunning(BOOL* exist)
 {
-	HANDLE h = CreateMutexA(NULL, TRUE, MY_MUTEX_NAME);
+	HANDLE h = lpCreateMutexA(NULL, TRUE, MY_MUTEX_NAME);
 	DWORD dwRet = GetLastError();
 	if (h)
 	{
@@ -180,9 +166,9 @@ HANDLE  bRunning(BOOL* exist)
 
 
 int suicide() {
-	ExitProcess(0);
-	HANDLE hp = (HANDLE)GetCurrentProcessId();
-	TerminateProcess(hp, 0);
+	lpExitProcess(0);
+	DWORD hp = lpGetCurrentProcessId();
+	lpTerminateProcess((HANDLE)hp, 0);
 	exit(0);
 	abort();
 	atexit(0);
@@ -202,7 +188,8 @@ int wow64()
 
 	char szIsWow64Process[] = { 'I','s','W','o','w','6','4','P','r','o','c','e','s','s',0 };
 
-	HMODULE hker = (HMODULE)LoadLibraryA("kernel32.dll");
+	char szkernel32[] = { 'k','e','r','n','e','l','3','2','.','d','l','l',0 };
+	HMODULE hker = (HMODULE)LoadLibraryA(szkernel32);
 	if (hker == 0)
 	{
 		return FALSE;
@@ -212,7 +199,7 @@ int wow64()
 	LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(hker, szIsWow64Process);
 	if (NULL != fnIsWow64Process)
 	{
-		int iRet = fnIsWow64Process(GetCurrentProcess(), &bIsWow64);
+		int iRet = fnIsWow64Process(lpGetCurrentProcess(), &bIsWow64);
 		if (iRet)
 		{
 			return bIsWow64;
@@ -224,7 +211,7 @@ int wow64()
 
 int cpuBits() {
 	SYSTEM_INFO si;
-	GetNativeSystemInfo(&si);
+	lpGetNativeSystemInfo(&si);
 	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
 		return 64;
 	else
@@ -253,30 +240,6 @@ int getOsBits() {
 
 
 
-int isDebugged()
-{
-#ifdef _DEBUG
-	return FALSE;
-#endif
-
-#ifndef _WIN64
-	int result = 0;
-	__asm
-	{
-		mov eax, fs: [30h]
-		// 控制堆操作函数的工作方式的标志位
-		mov eax, [eax + 68h]
-		// 操作系统会加上这些标志位:FLG_HEAP_ENABLE_TAIL_CHECK, FLG_HEAP_ENABLE_FREE_CHECK and FLG_HEAP_VALIDATE_PARAMETERS
-		// 并集是x70
-		and eax, 0x70
-		mov result, eax
-	}
-
-	return result != 0;
-#else
-	return IsDebuggerPresent();
-#endif
-}
 
 
 
@@ -287,18 +250,18 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 
 	PROCESSENTRY32 pe32 = { 0 };
 	pe32.dwSize = sizeof(PROCESSENTRY32);
-	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	HANDLE hProcessSnap = lpCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-	for (Process32First(hProcessSnap, &pe32); Process32Next(hProcessSnap, &pe32);)
+	for (lpProcess32FirstW(hProcessSnap, &pe32); lpProcess32NextW(hProcessSnap, &pe32);)
 	{
 		char szParam[MAX_PATH] = { 0 };
 		int iRet = WideCharToMultiByte(CP_ACP, 0, pe32.szExeFile, -1, szParam, sizeof(szParam) - 1, NULL, NULL);
 		if (lstrcmpiA(_strupr(szParam), _strupr(lpTokenProcessName)) == 0) {
-			HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pe32.th32ProcessID);
+			HANDLE hProcess = lpOpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pe32.th32ProcessID);
 			if (hProcess)
 			{
-				ret = OpenProcessToken(hProcess, TOKEN_ALL_ACCESS, &hToken);
-				CloseHandle(hProcess);
+				ret = lpOpenProcessToken(hProcess, TOKEN_ALL_ACCESS, &hToken);
+				lpCloseHandle(hProcess);
 			}
 			else {
 
@@ -307,7 +270,7 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 		}
 	}
 
-	CloseHandle(hProcessSnap);
+	lpCloseHandle(hProcessSnap);
 
 	if (hToken == 0) {
 		return 0;
@@ -321,7 +284,7 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 	si.wShowWindow = SW_HIDE;
 
 	LPVOID lpEnvBlock = NULL;
-	BOOL bEnv = CreateEnvironmentBlock(&lpEnvBlock, hToken, FALSE);
+	BOOL bEnv = lpCreateEnvironmentBlock(&lpEnvBlock, hToken, FALSE);
 	DWORD dwFlags = CREATE_NEW_CONSOLE;
 	if (bEnv)
 	{
@@ -330,7 +293,7 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 
 	//si.dwFlags |= dwFlags;
 	// 环境变量创建失败仍然可以创建进程，但会影响到后面的进程获取环境变量内容
-	ret = CreateProcessAsUserA(
+	ret = lpCreateProcessAsUserA(
 		hToken,
 		szProcessName,
 		szparam,
@@ -345,7 +308,7 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 
 	if (bEnv)
 	{
-		ret = DestroyEnvironmentBlock(lpEnvBlock);
+		ret = lpDestroyEnvironmentBlock(lpEnvBlock);
 	}
 
 	return ret;
@@ -364,14 +327,14 @@ DWORD getPidByName(const char* szProcessName)
 
 	PROCESSENTRY32 pe32 = { 0 };
 	pe32.dwSize = sizeof(pe32);
-	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	HANDLE hProcessSnap = lpCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hProcessSnap == INVALID_HANDLE_VALUE)
 	{
 		return FALSE;
 	}
 
 	int iRet = 0;
-	BOOL bNext = Process32First(hProcessSnap, &pe32);
+	BOOL bNext = lpProcess32FirstW(hProcessSnap, &pe32);
 	while (bNext)
 	{
 		char szexefn[MAX_PATH] = { 0 };
@@ -380,12 +343,12 @@ DWORD getPidByName(const char* szProcessName)
 
 		if (lstrcmpA(szProcName, szexefn) == 0)
 		{
-			CloseHandle(hProcessSnap);
+			lpCloseHandle(hProcessSnap);
 			return pe32.th32ProcessID;
 		}
-		bNext = Process32Next(hProcessSnap, &pe32);
+		bNext = lpProcess32NextW(hProcessSnap, &pe32);
 	}
-	CloseHandle(hProcessSnap);
+	lpCloseHandle(hProcessSnap);
 	return FALSE;
 }
 
@@ -396,8 +359,8 @@ DWORD getProcNameByPID(DWORD pid, char* procname, int buflen)
 	PROCESSENTRY32 pe = { 0 };
 	DWORD ppid = 0;
 	pe.dwSize = sizeof(PROCESSENTRY32);
-	h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (Process32First(h, &pe))
+	h = lpCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (lpProcess32FirstW(h, &pe))
 	{
 		do
 		{
@@ -412,9 +375,9 @@ DWORD getProcNameByPID(DWORD pid, char* procname, int buflen)
 				}
 				break;
 			}
-		} while (Process32Next(h, &pe));
+		} while (lpProcess32NextW(h, &pe));
 	}
-	CloseHandle(h);
+	lpCloseHandle(h);
 	return (ppid);
 }
 
@@ -426,7 +389,8 @@ int __stdcall shell(const char* cmd) {
 
 	char command[1024];
 
-	wsprintfA(command, "cmd /c %s > %s", cmd, CMD_RESULT_FILENAME);
+	char cmdfmt[] = { 'c','m','d',' ','/','c',' ','%','s',' ','>',' ','%','s',0 };
+	wsprintfA(command, cmdfmt, cmd, CMD_RESULT_FILENAME);
 
 	ret = mbstowcs(wstrcmd, command, sizeof(wstrcmd) / sizeof(wchar_t));
 
@@ -440,10 +404,10 @@ int __stdcall shell(const char* cmd) {
 
 
 int runShell(const char* cmd) {
-	HANDLE ht = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)shell, (LPVOID)cmd, 0, 0);
+	HANDLE ht = lpCreateThread(0, 0, (LPTHREAD_START_ROUTINE)shell, (LPVOID)cmd, 0, 0);
 	if (ht)
 	{
-		CloseHandle(ht);
+		lpCloseHandle(ht);
 	}
 	return 0;
 }

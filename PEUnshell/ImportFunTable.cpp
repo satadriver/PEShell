@@ -30,7 +30,7 @@ DWORD ImportFunTable::recover(DWORD module) {
 		}
 
 		const char * dllname = (const char *)(module + impd->Name);
-		HMODULE dll = (HMODULE)GetModuleHandleA((LPSTR)dllname);
+		HMODULE dll = (HMODULE)lpGetModuleHandleA((LPSTR)dllname);
 		if (NULL == dll)
 		{
 			dll = lpLoadLibraryA((LPSTR)dllname);

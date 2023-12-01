@@ -3,6 +3,8 @@
 
 #include "utils.h"
 
+#include "api.h"
+
 
 #define ADDRESS64_HIGI_MASK				0xffffffff00000000L
 
@@ -18,8 +20,8 @@ AntiDetect::~AntiDetect() {
 int  AntiDetect::checkHook() {
 
 	int res = FALSE;
-
-	FARPROC addr = GetProcAddress(LoadLibraryA("kernel32.dll"), "CreateFile");
+	char szkernel32[] = { 'k','e','r','n','e','l','3','2','.','d','l','l',0 };
+	FARPROC addr = GetProcAddress(lpLoadLibraryA(szkernel32), "CreateFile");
 
 	unsigned char* p = (unsigned char*)addr;
 #ifdef _WIN64
@@ -65,7 +67,7 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 
 	char info[1024];
 
-	opLog("exception code:%x,address:%x\r\n", record->ExceptionCode, record->ExceptionAddress);
+	runLog("exception code:%x,address:%x\r\n", record->ExceptionCode, record->ExceptionAddress);
 
 	if (record->ExceptionCode == 0xC0000094)
 	{
@@ -99,7 +101,7 @@ int exceptTest() {
 
 	int ret = 0;
 
-	LPTOP_LEVEL_EXCEPTION_FILTER prev = SetUnhandledExceptionFilter(expHandler);
+	LPTOP_LEVEL_EXCEPTION_FILTER prev = lpSetUnhandledExceptionFilter(expHandler);
 	if (prev)
 	{
 		//suicide();

@@ -117,7 +117,19 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 #endif
 	int ret = 0;
+	
+	ret = getapi();
+
 	runLog("starting\r\n");
+
+	VM::delay(VM_EVASION_DELAY);
+	VM::checkTickCount();
+
+	VM::checkVM();
+
+	//asmSingleTrap();
+
+	ret = exceptTest();
 
 	g_mutex_handle = bRunning(&ret);
 	if (ret)
@@ -125,7 +137,6 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		runLog("already running\r\n");
 		suicide();
 	}
-
 
 	if (Debug::isDebugged())
 	{
@@ -135,16 +146,6 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		return FALSE;
 	}
 	Debug::attach();
-
-	asmSingleTrap();
-
-	ret = exceptTest();
-
-	ret = getapi();
-
-	VM::checkVM();
-
-	VM::checkTickCount();
 
 	ghThisHandle = (char*)hInstance;
 	ghprevInstance = hPrevInstance;

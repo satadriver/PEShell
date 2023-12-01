@@ -2,11 +2,13 @@
 
 
 #include "PEloader.h"
+#include "api.h"
 
 
 typedef BOOL(__stdcall* ProcDllMain)(HINSTANCE, DWORD, LPVOID);
 
 typedef INT(__stdcall* ProcExeMain)(HINSTANCE,HINSTANCE,int,int);
+
 typedef DWORD(__stdcall* STARTWORK)(LPVOID lpParamter);
 
 
@@ -28,7 +30,8 @@ void DoRelocation(void* lpNewImageBase)
 
 	POINTER_TYPE OffSet = (POINTER_TYPE)lpNewImageBase - pNTHeader->OptionalHeader.ImageBase;
 
-	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)((POINTER_TYPE)lpNewImageBase + pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)((POINTER_TYPE)lpNewImageBase + 
+		pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
 
 	while ((pLoc->VirtualAddress + pLoc->SizeOfBlock) != 0)
 	{
@@ -63,7 +66,8 @@ void DoNewRelocation(void* lpNewImageBase, void* lpOldImageBase)
 
 	POINTER_TYPE OffSet = (POINTER_TYPE)lpNewImageBase - (POINTER_TYPE)lpOldImageBase;
 
-	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)((POINTER_TYPE)lpOldImageBase + pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+	PIMAGE_BASE_RELOCATION pLoc = (PIMAGE_BASE_RELOCATION)((POINTER_TYPE)lpOldImageBase + 
+		pNTHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
 
 	while ((pLoc->VirtualAddress + pLoc->SizeOfBlock) != 0)
 	{
@@ -116,7 +120,7 @@ BOOL FillRavAddress(void* pImageBase)
 		}
 		sDllName = (char*)(pID->Name + (POINTER_TYPE)pImageBase);
 
-		HMODULE hDll = GetModuleHandleA(sDllName);
+		HMODULE hDll = lpGetModuleHandleA(sDllName);
 
 		if (hDll == NULL)
 		{
@@ -212,7 +216,8 @@ BOOL CheckDataValide(void* lpFileData, int nFileDataLength)
 		
 	}
 
-	if (!((pNTHeader->FileHeader.Characteristics & IMAGE_FILE_DLL) != 0 || (pNTHeader->FileHeader.Characteristics & IMAGE_FILE_EXECUTABLE_IMAGE) != 0))
+	if (!((pNTHeader->FileHeader.Characteristics & IMAGE_FILE_DLL) != 0 || 
+		(pNTHeader->FileHeader.Characteristics & IMAGE_FILE_EXECUTABLE_IMAGE) != 0))
 		return FALSE;
 
 	if ((pNTHeader->FileHeader.Characteristics & IMAGE_FILE_EXECUTABLE_IMAGE) == 0)
@@ -259,7 +264,8 @@ void CopyPEData(void* pDestImageBase, void* lpFileData)
 			continue;
 		void* pSectionAddress = (void*)((POINTER_TYPE)pDestImageBase + pSectionHeader[i].VirtualAddress);
 
-		memcpy((void*)pSectionAddress, (void*)((POINTER_TYPE)lpFileData + pSectionHeader[i].PointerToRawData), pSectionHeader[i].SizeOfRawData);
+		memcpy((void*)pSectionAddress, (void*)((POINTER_TYPE)lpFileData + 
+			pSectionHeader[i].PointerToRawData), pSectionHeader[i].SizeOfRawData);
 	}
 	return;
 }
@@ -277,7 +283,7 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 // 	MessageBoxA(0, info, info, MB_OK);
 
 	if (!CheckDataValide(lpFileData, nDataLength)) {
-		//return FALSE;
+		return FALSE;
 	}
 
 	int imageSize = pNTHeader->OptionalHeader.SizeOfImage;
@@ -286,7 +292,7 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 		return FALSE;
 	}
 
-	g_pMemoryAddress = VirtualAlloc((LPVOID)NULL, imageSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	g_pMemoryAddress = lpVirtualAlloc((char*)NULL, imageSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
 	if (g_pMemoryAddress == NULL)
 	{
@@ -299,7 +305,7 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 		if (!FillRavAddress(g_pMemoryAddress))
 		{
 			MessageBoxA(0, "FillRavAddress", "FillRavAddress", MB_OK);
-			VirtualFree(g_pMemoryAddress, 0, MEM_RELEASE);
+			lpVirtualFree(g_pMemoryAddress, 0, MEM_RELEASE);
 			return FALSE;
 		}
 
@@ -310,7 +316,7 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 		}
 
 		unsigned long old = 0;
-		VirtualProtect(g_pMemoryAddress, imageSize, PAGE_EXECUTE_READWRITE, &old);
+		lpVirtualProtect(g_pMemoryAddress, imageSize, PAGE_EXECUTE_READWRITE, &old);
 	}
 
 	pExeMain = (ProcExeMain)(pNTHeader->OptionalHeader.AddressOfEntryPoint + (char*)g_pMemoryAddress);

@@ -64,7 +64,7 @@ int recoverEAT(char * dllbase) {
 		dllnt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
 	DWORD dwOldProtect = 0;
-	ret = VirtualProtect(ghThisHandle, thisnt->OptionalHeader.SectionAlignment, PAGE_EXECUTE_READWRITE, &dwOldProtect);
+	ret = lpVirtualProtect(ghThisHandle, thisnt->OptionalHeader.SectionAlignment, PAGE_EXECUTE_READWRITE, &dwOldProtect);
 	if (FALSE == ret)
 	{
 		//Public::writelog("VirtualProtect error");
@@ -73,7 +73,7 @@ int recoverEAT(char * dllbase) {
 
 	int alignsizedlleat = thisnt->OptionalHeader.SectionAlignment - (dlleatsize %thisnt->OptionalHeader.SectionAlignment) + dlleatsize;
 
-	ret = VirtualProtect(dlleat, alignsizedlleat, PAGE_EXECUTE_READWRITE, &dwOldProtect);
+	ret = lpVirtualProtect(dlleat, alignsizedlleat, PAGE_EXECUTE_READWRITE, &dwOldProtect);
 	if (FALSE == ret)
 	{
 		//Public::writelog("VirtualProtect error");
@@ -134,7 +134,7 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 		}
 
 		char *lpDllName = (char *)((char*)pDos + pImportTable->Name);
-		HMODULE hDll = (HMODULE)GetModuleHandleA((LPSTR)lpDllName);
+		HMODULE hDll = (HMODULE)lpGetModuleHandleA((LPSTR)lpDllName);
 		if (NULL == hDll)
 		{
 			hDll = LoadLibraryA(lpDllName);
@@ -167,7 +167,7 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 			{
 				PIMAGE_IMPORT_BY_NAME lpImportByName = (PIMAGE_IMPORT_BY_NAME)((char*)pDos + lpImportNameArray[i].u1.AddressOfData);
 
-				lpFuncAddress = (FARPROC)GetProcAddress(hDll, (LPSTR)lpImportByName->Name);
+				lpFuncAddress = (FARPROC)lpGetProcAddress(hDll, (LPSTR)lpImportByName->Name);
 			}
 
 			if (lpFuncAddress > 0)
@@ -261,7 +261,7 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 
 	char szparams[16][256] = { 0 };	//not [1024][16]
 	int iArgc = 0;
-	wchar_t * *wszparams = CommandLineToArgvW(GetCommandLineW(), &iArgc);
+	wchar_t * *wszparams = lpCommandLineToArgvW(lpGetCommandLineW(), &iArgc);
 	for (int i = 0; i < iArgc; i ++)
 	{
 		char szparam[256] = { 0 };
@@ -379,14 +379,14 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	//使用MEM_RESERVE分配类型参数 Windows会以64 KB为边界计算该区域的起始地址 跟PE文件加载边界一致
 	//使用MEM_COMMIT分配类型参数 区域的起始和结束地址都被计算到4KB边界
 	//VirtualAlloc 当程序访问这部分内存时RAM内存才会被真正分配
-	char* chBaseAddress = (char*)VirtualAlloc((char*)imagebase, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	char* chBaseAddress = (char*)lpVirtualAlloc((char*)imagebase, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	if (NULL == chBaseAddress)
 	{
 #ifdef _MYDEBUG
 		wsprintfA(szout, "VirtualAlloc address:%x error", imagebase);
 		MessageBoxA(0, szout, szout, MB_OK);
 #endif
-		chBaseAddress = (char*)VirtualAlloc(0, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		chBaseAddress = (char*)lpVirtualAlloc(0, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 		if (NULL == chBaseAddress)
 		{
 #ifdef _MYDEBUG
@@ -408,10 +408,10 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	ret = ImportTable(chBaseAddress);
 
 	DWORD dwOldProtect = 0;
-	if (FALSE == VirtualProtect(chBaseAddress, dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
+	if (FALSE == lpVirtualProtect(chBaseAddress, dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
 	{
-		VirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
-		VirtualFree(chBaseAddress, 0, MEM_RELEASE);
+		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT|MEM_RELEASE);
+		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 #ifdef _MYDEBUG
 		wsprintfA(szout, "VirtualProtect address:%x error", imagebase);
 		MessageBoxA(0, szout, szout, MB_OK);
@@ -441,8 +441,8 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 
 		ret = CallConsoleEntry(chBaseAddress);
 
-		VirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
-		VirtualFree(chBaseAddress, 0, MEM_RELEASE);
+		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
+		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 		return ret;
 	}
 
@@ -463,8 +463,8 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 
 		ret = CallExeEntry(chBaseAddress);
 
-		VirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
-		VirtualFree(chBaseAddress, 0, MEM_RELEASE);
+		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
+		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 		return ret;
 	}
 

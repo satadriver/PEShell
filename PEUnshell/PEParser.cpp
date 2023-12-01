@@ -2,6 +2,7 @@
 #include "PEParser.h"
 #include <windows.h>
 #include "Public.h"
+#include "api.h"
 
 
 int PEParser::isPE(const char * data) {

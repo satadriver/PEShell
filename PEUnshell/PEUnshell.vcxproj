@@ -210,6 +210,7 @@
     <ClInclude Include="Public.h" />
     <ClInclude Include="RegHelper.h" />
     <ClInclude Include="Reloc.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vm.h" />
@@ -233,6 +234,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(fileName).obj</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(fileName).obj</Outputs>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="chrome64.ICO" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

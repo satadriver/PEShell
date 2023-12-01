@@ -1,4 +1,5 @@
-﻿  Debug.cpp
-  main.cpp
+﻿  api.cpp
+C:\Users\ljg\PEShell\PEUnshell\api.cpp(101,7): warning C4101: “info”: 未引用的局部变量
+  vm.cpp
   正在生成代码...
   PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Debug\PEUnshell.exe

@@ -6,7 +6,7 @@
 
 
 int FileHelper::CheckFileExist(string filename) {
-	HANDLE hFile = CreateFileA((char*)filename.c_str(), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING,
+	HANDLE hFile = lpCreateFileA((char*)filename.c_str(), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
@@ -18,7 +18,7 @@ int FileHelper::CheckFileExist(string filename) {
 		return FALSE;
 	}
 	else {
-		CloseHandle(hFile);
+		lpCloseHandle(hFile);
 		return TRUE;
 	}
 }
@@ -32,7 +32,7 @@ int FileHelper::CheckPathExist(string path) {
 	path.append("*.*");
 
 	WIN32_FIND_DATAA stfd;
-	HANDLE hFind = FindFirstFileA((char*)path.c_str(), &stfd);
+	HANDLE hFind = lpFindFirstFileA((char*)path.c_str(), &stfd);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
 		int err = GetLastError();
@@ -43,7 +43,7 @@ int FileHelper::CheckPathExist(string path) {
 		return FALSE;
 	}
 	else {
-		FindClose(hFind);
+		lpFindClose(hFind);
 		return TRUE;
 	}
 }
@@ -52,7 +52,8 @@ int FileHelper::CheckPathExist(string path) {
 int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 	int result = 0;
 
-	HANDLE hf = CreateFileA(filename.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
+	HANDLE hf = lpCreateFileA(filename.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, 
+		FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM, 0);
 	if (hf == INVALID_HANDLE_VALUE)
 	{
 		result = GetLastError();
@@ -60,7 +61,7 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 	}
 
 	DWORD highsize = 0;
-	*lpsize = GetFileSize(hf, &highsize);
+	*lpsize = lpGetFileSize(hf, &highsize);
 
 	if (lpbuf)
 	{
@@ -71,12 +72,12 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 		}
 	}
 	else {
-		CloseHandle(hf);
+		lpCloseHandle(hf);
 		return FALSE;
 	}
 
 	DWORD readsize = 0;
-	result = ReadFile(hf, *lpbuf, *lpsize, &readsize, 0);
+	result = lpReadFile(hf, *lpbuf, *lpsize, &readsize, 0);
 	if (result > 0)
 	{
 		*(CHAR*)((char*)*lpbuf + readsize) = 0;
@@ -84,7 +85,7 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 	else {
 		result = GetLastError();
 	}
-	CloseHandle(hf);
+	lpCloseHandle(hf);
 	return readsize;
 }
 
@@ -95,19 +96,19 @@ int FileHelper::fileWriter(string filename, const CHAR* lpbuf, int lpsize, int c
 	HANDLE h = INVALID_HANDLE_VALUE;
 	if (cover == 0)
 	{
-		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, OPEN_ALWAYS,
+		h = lpCreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, OPEN_ALWAYS,
 			FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_NORMAL, 0);
 		if (h == INVALID_HANDLE_VALUE)
 		{
 			return FALSE;
 		}
 		DWORD highsize = 0;
-		DWORD filesize = GetFileSize(h, &highsize);
+		DWORD filesize = lpGetFileSize(h, &highsize);
 
-		result = SetFilePointer(h, filesize, (long*)&highsize, FILE_BEGIN);
+		result = lpSetFilePointer(h, filesize, (long*)&highsize, FILE_BEGIN);
 	}
 	else {
-		h = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS,
+		h = lpCreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS,
 			FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_NORMAL, 0);
 		if (h == INVALID_HANDLE_VALUE)
 		{
@@ -116,9 +117,9 @@ int FileHelper::fileWriter(string filename, const CHAR* lpbuf, int lpsize, int c
 	}
 
 	DWORD writesize = 0;
-	result = WriteFile(h, lpbuf, lpsize * sizeof(CHAR), &writesize, 0);
-	FlushFileBuffers(h);
-	CloseHandle(h);
+	result = lpWriteFile(h, lpbuf, lpsize * sizeof(CHAR), &writesize, 0);
+	lpFlushFileBuffers(h);
+	lpCloseHandle(h);
 	return result;
 }
 
@@ -213,13 +214,13 @@ string FileHelper::getReleasePath(const char * path) {
 		char* mypath = getenv(path);
 		if (mypath == 0)
 		{
-			ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
+			ret = lpSHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
 			if (ret)
 			{
 				mypath = tmppath;
 			}
 			else {
-				ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_MYDOCUMENTS, false);
+				ret = lpSHGetSpecialFolderPathA(0, tmppath, CSIDL_MYDOCUMENTS, false);
 				mypath = tmppath;
 			}
 		}
@@ -227,7 +228,7 @@ string FileHelper::getReleasePath(const char * path) {
 		folder = string(mypath) + "\\" + service_path + "\\";
 	}
 
-	ret = MakeSureDirectoryPathExists((char*)folder.c_str());
+	ret = lpMakeSureDirectoryPathExists((char*)folder.c_str());
 	return folder;
 }
 
@@ -235,7 +236,7 @@ string FileHelper::getReleasePath(const char * path) {
 string FileHelper::getRunPath() {
 	int ret = 0;
 	char tmppath[1024];
-	ret = SHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
+	ret = lpSHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
 	return string(tmppath) + "\\services\\";
 	
 	string username = Public::getusername();
@@ -253,7 +254,7 @@ string FileHelper::getRunPath() {
 	wsprintfA(szPEFilePath, szPEFilePathFormat, username.c_str(), szMyPathName);
 
 	char sysdir[MAX_PATH] = { 0 };
-	ret = GetSystemDirectoryA(sysdir, MAX_PATH);
+	ret = lpGetSystemDirectoryA(sysdir, MAX_PATH);
 	szPEFilePathWin7[0] = sysdir[0];
 	szPEFilePath[0] = sysdir[0];
 
