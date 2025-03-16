@@ -1,4 +1,5 @@
 
+#include "Public.h"
 #include "crypto.h"
 #include "FileHelper.h"
 #include "compress.h"
@@ -14,40 +15,10 @@
 #pragma comment(lib,"../lib\\libssl.lib")
 #pragma comment(lib,"../lib\\openssl.lib")
 
-//#define MAX_BUF_SIZE 0x200000
-
-#define FILENAME_LEN	64
-
-#define CRYPT_KEY_SIZE	16
 
 
 
-#pragma pack(1)
-
-typedef struct {
-	char filename[FILENAME_LEN];
-	char outpath[FILENAME_LEN];
-	int fsize;
-	int compSize;
-	unsigned char filedata[0];
-}FILE_DATA;
-
-
-typedef struct {
-	int cnt;
-	FILE_DATA fd;
-}CRYPT_FILE_DATA;
-
-typedef struct
-{
-	int type;
-	unsigned char key[CRYPT_KEY_SIZE];
-	CRYPT_FILE_DATA cfd;
-}FILE_DATA_BLOCK;
-#pragma pack()
-
-
-unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][256], int cnt, const char * outpath,int& dstdatasize) 
+unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt, const char * outpath,int& dstdatasize)
 {
 
 	int ret = 0;

@@ -39,8 +39,12 @@ bool Debug::isDebugged()
 
 
 int __stdcall attachSelf(VOID *param) {
+	int ret = 0;
 	DWORD pid = lpGetCurrentProcessId();
-	lpDebugActiveProcess((DWORD)pid);
+	ret = lpDebugActiveProcess((DWORD)pid);
+	if (ret == 0) {
+		suicide();
+	}
 	int e = TRUE;
 	while (e)
 	{

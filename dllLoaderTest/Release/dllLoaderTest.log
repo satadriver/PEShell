@@ -1,10 +1,1 @@
-﻿  dllLoaderTest.cpp
-  ExportFunTable.cpp
-C:\Users\ljg\PEShell\dllLoaderTest\ExportFunTable.cpp(17,21): warning C4018: “<”: 有符号/无符号不匹配
-C:\Users\ljg\PEShell\dllLoaderTest\ExportFunTable.cpp(41,27): warning C4018: “>=”: 有符号/无符号不匹配
-  正在生成代码
-  0 of 7 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  已完成代码的生成
-  dllLoaderTest.vcxproj -> C:\Users\ljg\PEShell\Release\dllLoaderTest.exe
+﻿  dllLoaderTest.vcxproj -> D:\vsProject\PEShell\Release\dllLoaderTest.exe

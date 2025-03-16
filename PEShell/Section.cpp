@@ -10,7 +10,7 @@
 using namespace std;
 
 
-string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256], 
+string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][MAX_PATH], 
 	int srcfilescnt,string path, char* outname) {
 	int ret = 0;
 

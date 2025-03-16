@@ -29,7 +29,8 @@ int __cdecl runLog(const WCHAR* format, ...)
 
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	int offset = wsprintfW(info, L"[ljg]%2u:%2u:%2u %2u/%2u/%4u ", st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
+	int offset = wsprintfW(info, L"[ljg]%2u:%2u:%2u %2u/%2u/%4u ", 
+		st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
 
 	offset += vswprintf_s(info+offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
 
@@ -51,7 +52,8 @@ int __cdecl runLog(const CHAR* format, ...)
 
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	int offset = wsprintfA(info, "[ljg]%2u:%2u:%2u %2u/%2u/%4u ", st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
+	int offset = wsprintfA(info, "[ljg]%2u:%2u:%2u %2u/%2u/%4u ",
+		st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
 
 	va_list   arglist;
 

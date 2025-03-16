@@ -8,7 +8,7 @@
 
 #pragma comment( lib, "netapi32.lib" )
 
-#define LOG_FILE_NAME "log.log"
+
 
 string Public::getusername() {
 

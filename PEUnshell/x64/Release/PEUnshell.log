@@ -1,19 +1,58 @@
-﻿LIBCMT.lib(initializers.obj) : warning LNK4098: 默认库“msvcrt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+﻿  api.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\api.cpp(106,7): warning C4101: “info”: 未引用的局部变量
+  Crypto.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
+D:\vsProject\PEShell\PEUnshell\Crypto.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
+D:\vsProject\PEShell\PEUnshell\Crypto.cpp(32,7): warning C4101: “szinfo”: 未引用的局部变量
+D:\vsProject\PEShell\PEUnshell\Crypto.cpp(177,39): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  FileHelper.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\FileHelper.cpp(154,38): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+D:\vsProject\PEShell\PEUnshell\FileHelper.cpp(188,39): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  LoadPE.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(83,15): warning C4244: “初始化”: 从“__int64”转换到“int”，可能丢失数据
+D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(105,100): warning C4244: “=”: 从“__int64”转换到“DWORD”，可能丢失数据
+D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(214,25): warning C4244: “+=”: 从“ULONGLONG”转换到“DWORD”，可能丢失数据
+D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(364,7): warning C4101: “szout”: 未引用的局部变量
+  main.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+  PEParser.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+  Public.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\Public.cpp(93,27): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\vsProject\PEShell\PEUnshell\Public.cpp(94,46): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  RegHelper.cpp
+D:\vsProject\PEShell\PEUnshell\public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+D:\vsProject\PEShell\PEUnshell\RegHelper.cpp(19,7): warning C4101: “szout”: 未引用的局部变量
+D:\vsProject\PEShell\PEUnshell\RegHelper.cpp(63,7): warning C4101: “szout”: 未引用的局部变量
+  md5.c
+  Previous IPDB not found, fall back to full compilation.
+LIBCMT.lib(initializers.obj) : warning LNK4098: 默认库“msvcrt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
   正在生成代码
-  0 of 173 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  All 172 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   已完成代码的生成
 LINK : warning LNK4286: 符号“free”(在“libucrt.lib(free.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
 LINK : warning LNK4286: 符号“malloc”(在“libucrt.lib(malloc.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
-zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inffast.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inffast.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inflate.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inftrees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inftrees.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(trees.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(uncompr.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(uncompr.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“C:\Users\ljg\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Release\PEUnshell.exe
+zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inffast.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inffast.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inflate.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(inflate.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inftrees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inftrees.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(trees.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(uncompr.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(uncompr.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“D:\vsProject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  PEUnshell.vcxproj -> D:\vsProject\PEShell\x64\Release\PEUnshell.exe

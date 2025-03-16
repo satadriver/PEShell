@@ -23,7 +23,7 @@ public:
 
 	static void Crypto::revertkey(unsigned char* key);
 
-	static unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][256], int cnt,
+	static unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt,
 		const char * outpath, int& dstdatasize);
 
 	static void Crypto::cryptPayloadFile(string srcfn, string dstfn);

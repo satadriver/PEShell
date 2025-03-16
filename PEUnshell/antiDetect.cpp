@@ -69,7 +69,7 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 
 	runLog("exception code:%x,address:%x\r\n", record->ExceptionCode, record->ExceptionAddress);
 
-	if (record->ExceptionCode == 0xC0000094)
+	if (record->ExceptionCode == STATUS_INTEGER_DIVIDE_BY_ZERO)
 	{
 		//wsprintfA(info, "error code:%x", record->ExceptionCode);
 		//MessageBoxA(0, info, info, MB_OK);
