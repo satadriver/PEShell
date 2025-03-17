@@ -23,6 +23,7 @@ using namespace std;
 
 #define CRYPT_KEY_SIZE	16
 
+#define offsetof(s, m) ((size_t)&((*s)0)->m)
 
 #pragma pack(1)
 

@@ -23,7 +23,7 @@ int __cdecl runLog(const WCHAR* format, ...);
 
 int __cdecl runLog(const CHAR* format, ...);
 
-
+int GetPathFromFullName(char* strFullName, char* strDst);
 
 unsigned short crc16(unsigned char* data, int size);
 

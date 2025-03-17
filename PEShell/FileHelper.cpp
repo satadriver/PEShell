@@ -1,5 +1,8 @@
 #include "FileHelper.h"
+#include "public.h"
+#include <dbghelp.h>
 
+#pragma comment(lib,"Dbghelp.lib")
 
 int FileHelper::CheckFileExist(string filename) {
 	HANDLE hFile = CreateFileA((char*)filename.c_str(), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING,
@@ -103,7 +106,7 @@ int FileHelper::fileWriter(string filename, const char* lpdata, int datasize) {
 }
 
 
-int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, int cover) {
+int fileWriter_old(string filename, const char* lpdata, int datasize, int cover) {
 	int ret = 0;
 
 	FILE* fp = 0;
@@ -122,6 +125,45 @@ int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, in
 
 	ret = fwrite(lpdata, 1, datasize, fp);
 	fclose(fp);
+	if (ret == FALSE)
+	{
+		return FALSE;
+	}
+
+	return datasize;
+}
+
+
+int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, int cover) {
+	int ret = 0;
+
+	HANDLE fp = 0;
+	if (cover) {
+
+		char path[MAX_PATH];
+		int len = GetPathFromFullName((char*)filename.c_str(), path);
+		ret = MakeSureDirectoryPathExists(path);
+		fp = CreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0,
+			CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	}
+	else {
+		fp = CreateFileA(filename.c_str(), GENERIC_WRITE,  0, 0,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (fp != INVALID_HANDLE_VALUE) {
+			LONG high = 0;
+			ret = SetFilePointer(fp, 0, &high, FILE_END);
+		}
+	}
+
+	if (fp == INVALID_HANDLE_VALUE)
+	{
+		printf("fileWriter fopen file:%s error\r\n", filename.c_str());
+		return FALSE;
+	}
+
+	DWORD cnt = 0;
+	ret = WriteFile(fp,lpdata, datasize, &cnt,0);
+	CloseHandle(fp);
 	if (ret == FALSE)
 	{
 		return FALSE;

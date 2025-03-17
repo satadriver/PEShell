@@ -66,6 +66,11 @@ typedef struct
 
 #pragma pack()
 
+#define offsetof(s, m) ((size_t)&((*s)0)->m)
+
+int GetPathFromFullName(const char* strFullName, char* strDst);
+
+
 
 class Public {
 public:

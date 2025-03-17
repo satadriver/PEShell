@@ -3,6 +3,7 @@
 #include "api.h"
 #include <DbgHelp.h>
 #include <shlobj_core.h>
+#include "utils.h"
 
 
 int FileHelper::CheckFileExist(string filename) {
@@ -108,6 +109,10 @@ int FileHelper::fileWriter(string filename, const CHAR* lpbuf, int lpsize, int c
 		result = lpSetFilePointer(h, filesize, (long*)&highsize, FILE_BEGIN);
 	}
 	else {
+		char path[MAX_PATH];
+		int len = GetPathFromFullName((char*)filename.c_str(), path);
+		result = MakeSureDirectoryPathExists(path);
+
 		h = lpCreateFileA(filename.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS,
 			FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_NORMAL, 0);
 		if (h == INVALID_HANDLE_VALUE)

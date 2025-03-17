@@ -1,54 +1,17 @@
-﻿  antiDetect.cpp
-D:\vsProject\PEShell\PEUnshell\antiDetect.cpp(68,7): warning C4101: “info”: 未引用的局部变量
-  api.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-D:\vsProject\PEShell\PEUnshell\api.cpp(106,7): warning C4101: “info”: 未引用的局部变量
-  Compress.cpp
-  Crypto.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
+﻿  Crypto.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(26,1): warning C4005: “offsetof”: 宏重定义
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stddef.h(52): message : 参见“offsetof”的前一个定义
+D:\vsProject\PEShell\PEUnshell\Public.h(35,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(35,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
 D:\vsProject\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
 D:\vsProject\PEShell\PEUnshell\Crypto.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
-  Debug.cpp
-  DllExport.cpp
-  escape.cpp
-D:\vsProject\PEShell\PEUnshell\escape.cpp(25,18): warning C4244: “初始化”: 从“unsigned __int64”转换到“DWORD”，可能丢失数据
-  ExportFunTable.cpp
-D:\vsProject\PEShell\PEUnshell\ExportFunTable.cpp(17,21): warning C4018: “<”: 有符号/无符号不匹配
-D:\vsProject\PEShell\PEUnshell\ExportFunTable.cpp(41,27): warning C4018: “>=”: 有符号/无符号不匹配
-  FileHelper.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-  ImportFunTable.cpp
-  LoadPE.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(214,25): warning C4244: “+=”: 从“ULONGLONG”转换到“DWORD”，可能丢失数据
-D:\vsProject\PEShell\PEUnshell\LoadPE.cpp(364,7): warning C4101: “szout”: 未引用的局部变量
+D:\vsProject\PEShell\PEUnshell\Crypto.cpp(138,7): warning C4101: “szinfo”: 未引用的局部变量
   main.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-  PeLoader.cpp
-D:\vsProject\PEShell\PEUnshell\PEloader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
-D:\vsProject\PEShell\PEUnshell\PeLoader.cpp : message : 参见“_CRT_SECURE_NO_WARNINGS”的前一个定义
-  PEParser.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-  Public.cpp
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\Public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-  RegHelper.cpp
-D:\vsProject\PEShell\PEUnshell\public.h(33,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-D:\vsProject\PEShell\PEUnshell\public.h(33,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-D:\vsProject\PEShell\PEUnshell\RegHelper.cpp(19,7): warning C4101: “szout”: 未引用的局部变量
-D:\vsProject\PEShell\PEUnshell\RegHelper.cpp(63,7): warning C4101: “szout”: 未引用的局部变量
-  Reloc.cpp
-  Section.cpp
-D:\vsProject\PEShell\PEUnshell\Section.cpp(20,7): warning C4101: “szinfo”: 未引用的局部变量
-  utils.cpp
+D:\vsProject\PEShell\PEUnshell\Public.h(26,1): warning C4005: “offsetof”: 宏重定义
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stddef.h(52): message : 参见“offsetof”的前一个定义
+D:\vsProject\PEShell\PEUnshell\Public.h(35,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\vsProject\PEShell\PEUnshell\Public.h(35,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
   vm.cpp
-  md5.c
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/LTCG”规范)
 LIBCMTD.lib(initializers.obj) : warning LNK4098: 默认库“libcmt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
   正在生成代码

@@ -3,10 +3,12 @@
 #ifdef _DEBUG
 #define VM_EVASION_DELAY 3
 #else
-#define VM_EVASION_DELAY 600
+#define VM_EVASION_DELAY 3
 #endif
 
 char* cpuBrand(char* strCpuBrand);
+
+
 
 class VM {
 

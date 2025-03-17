@@ -68,9 +68,10 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	string outpath = "";
 
-	for (int i = 1; i < argc; )
+	for (int i = 1; i < argc; i++)
 	{
-		if (lstrcmpiA(argv[i], "-b") == 0 )
+		char* str = argv[i];
+		if (lstrcmpiA(str, "-b") == 0 )
 		{
 			type = BIND_RELEASE_EXE;
 
@@ -80,49 +81,49 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 				paramscnt++;
 			}
 
-			i += 3;
+			i += 2;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-re") == 0)
+		else if (lstrcmpiA(str, "-re") == 0)
 		{
 			printf("argv[%i]:%s\r\n", i, argv[i + 1]);
 
 			type = MEM_RUN_EXE;
 			lstrcpyA(filelist[paramscnt], argv[i + 1]);
 			paramscnt++;
-			i += 2;
+			i += 1;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-rd") == 0)
+		else if (lstrcmpiA(str, "-rd") == 0)
 		{
 			type = MEM_RUN_DLL;
 			lstrcpyA(filelist[paramscnt], argv[i + 1]);
 			paramscnt++;
-			i += 2;
+			i += 1;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-o") == 0)
+		else if (lstrcmpiA(str, "-o") == 0)
 		{
 			lstrcpyA(szoutFn, argv[i + 1]);
-			i += 2;
+			i += 1;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-f") == 0)
+		else if (lstrcmpiA(str, "-f") == 0)
 		{
 			outpath = argv[i + 1];
-			i += 2;
+			i += 1;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-c") == 0)
+		else if (lstrcmpiA(str, "-c") == 0)
 		{
 			Public::prepareCfg(argv[i + 1], CONFIG_FILENAME);
 			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
 			paramscnt++;
 
-			i += 2;
+			i += 1;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-p") == 0)
+		else if (lstrcmpiA(str, "-p") == 0)
 		{
 			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
 			paramscnt++;
@@ -133,16 +134,15 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			}
 			Public::prepareParams(argv[i + 1], argv[i + 2], CONFIG_FILENAME);
 
-			i += 3;
+			i += 2;
 			continue;
 		}
-		else if (lstrcmpiA(argv[i], "-rename") == 0)
+		else if (lstrcmpiA(str, "-rename") == 0)
 		{
 			bRename = TRUE;
-			i++;
 			continue;
 		}
-		i++;
+		
 	}
 
 	if (szoutFn[0] == 0)

@@ -13,6 +13,9 @@
 #include <DbgHelp.h>
 #include "utils.h"
 #include "api.h"
+#include <dbghelp.h>
+
+#pragma comment(lib,"Dbghelp.lib")
 
 #pragma comment(lib,"userenv.lib")
 
@@ -412,4 +415,22 @@ int runShell(const char* cmd) {
 		lpCloseHandle(ht);
 	}
 	return 0;
+}
+
+
+int GetPathFromFullName(char* strFullName, char* strDst)
+{
+	int srclen = lstrlenA(strFullName);
+	lstrcpyA(strDst, strFullName);
+	for ( int i = srclen - 1; i >= 0; i--)
+	{
+		if (strDst[i] == '\\')
+		{
+			*(strDst + i + 1) = 0;
+			return i + 1;
+		}
+	}
+
+	strDst[0] = 0;
+	return FALSE;
 }

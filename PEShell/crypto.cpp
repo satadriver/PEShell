@@ -27,12 +27,13 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 	int allfSize[MAX_FILE_COUNT];
 	for (int i = 0; i < cnt; i++)
 	{
-		int fz = FileHelper::getfilesize(filename[i]);
+		char* fn = (char*)filename[i];
+		int fz = FileHelper::getfilesize(fn);
 		dstbufsize += fz;
 		allfSize[i] = fz;
 		printf("file name:%s size:%d\r\n", filename[i], fz);
 	}
-	dstbufsize += 0x1000;
+	dstbufsize += 0x100000;
 
 	unsigned char* dstblock = new unsigned char[dstbufsize];
 	FILE_DATA_BLOCK* blk = (FILE_DATA_BLOCK*)dstblock;
