@@ -153,7 +153,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 		return FALSE;
 	}
-	//Debug::attach();
+	Debug::attach();
 
 	ghThisHandle = (char*)hInstance;
 	ghprevInstance = hPrevInstance;

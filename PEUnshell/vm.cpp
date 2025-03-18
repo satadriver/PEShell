@@ -135,21 +135,21 @@ int VM::checkVM() {
 			break;
 		}
 
-		//char szsbie[] = { 's','b','i','e','d','l','l','.','d','l','l',0 };
-		//HMODULE hdll = lpLoadLibraryA(szsbie);
-		//if (hdll)
-		//{
-		//	lpFreeLibrary(hdll);
-		//	hdll = lpLoadLibraryA(szsbie);
-		//	if (hdll) {
-		//		vmlabel = 3;
-		//	}
-		//	else {
-		//		vmlabel = 0;
-		//	}
-		//	
-		//	break;
-		//}
+	char szsbie[] = { 's','b','i','e','d','l','l','.','d','l','l',0 };
+	HMODULE hdll = lpLoadLibraryA(szsbie);
+	if (hdll)
+	{
+		lpFreeLibrary(hdll);
+		hdll = lpLoadLibraryA(szsbie);
+		if (hdll) {
+			vmlabel = 3;
+		}
+		else {
+			vmlabel = 0;
+		}
+	
+		break;
+	}
 
 	} while (FALSE);
 

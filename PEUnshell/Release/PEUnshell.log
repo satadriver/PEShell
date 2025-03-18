@@ -1,1 +1,2 @@
-﻿  PEUnshell.vcxproj -> D:\vsProject\PEShell\Release\PEUnshell.exe
+﻿LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
+  PEUnshell.vcxproj -> D:\vsProject\PEShell\Release\PEUnshell.exe
