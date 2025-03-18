@@ -121,6 +121,7 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 
 	string username = "";
 	string ip = "";
+	string mode = "";
 
 	char * hdr = strstr(lpdata, "username=");
 	char * end = hdr;
@@ -152,6 +153,21 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 		}
 	}
 
+	hdr = strstr(lpdata, "mode=");
+	end = hdr;
+	if (hdr)
+	{
+		hdr += strlen("mode=");
+		end = strstr(hdr, "\r\n");
+		if (end)
+		{
+			mode = string(hdr, end - hdr);
+		}
+		else {
+			mode = string(hdr);
+		}
+	}
+
 	delete lpdata;
 
 	if (username != "" || ip != "")
@@ -159,7 +175,7 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 		ATTACK_RUN_PARAM params = { 0 };
 		lstrcpyA(params.username, username.c_str());
 		lstrcpyA(params.ip, ip.c_str());
-
+		params.mode = atoi(mode.c_str());
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM),TRUE);
 		
 	}
@@ -172,7 +188,7 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 
 
 
-int Public::prepareParams(string ip,string username,string dstfn) {
+int Public::prepareParams(string ip,string username,int mode,string dstfn) {
 	int ret = 0;
 // 	string username = "";
 // 	string ip = "";
@@ -212,7 +228,7 @@ int Public::prepareParams(string ip,string username,string dstfn) {
 		ATTACK_RUN_PARAM params = { 0 };
 		lstrcpyA(params.username, username.c_str());
 		lstrcpyA(params.ip, ip.c_str());
-
+		params.mode = mode;
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM), TRUE);
 	}
 

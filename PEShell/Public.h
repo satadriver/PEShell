@@ -27,7 +27,8 @@ typedef struct
 {
 	char username[32];
 	char ip[32];
-	char unused[64];
+	int mode;
+	char unused[60];
 }ATTACK_RUN_PARAM, * LPATTACK_RUN_PARAM;
 
 
@@ -81,7 +82,7 @@ public:
 
 	static int prepareCfg(char* cfgfn, string dstfn);
 
-	static int Public::prepareParams(string ip, string username, string dstfn);
+	static int Public::prepareParams(string ip, string username,int mode, string dstfn);
 
 	static string Public::getCurPath();
 

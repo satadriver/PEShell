@@ -132,7 +132,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 				printf("argument error\r\n");
 				return -1;
 			}
-			Public::prepareParams(argv[i + 1], argv[i + 2], CONFIG_FILENAME);
+			Public::prepareParams(argv[i + 1], argv[i + 2],type, CONFIG_FILENAME);
 
 			i += 2;
 			continue;
