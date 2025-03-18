@@ -9,10 +9,18 @@
 ;声明一个ExitProcess函数
 ExitProcess PROTO
 
+asmInt1Proc proto
+
 .data
 	;在这里声明变量
 
 .code 
+
+
+asmInt1Proc proc
+int 1
+ret
+asmInt1Proc endp
 
 asmSingleTrap PROC
 

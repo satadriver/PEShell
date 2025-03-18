@@ -4,6 +4,8 @@
 
 int __stdcall attachSelf(VOID* param);
 
+VOID ElevationPrivilege();
+
 class Debug {
 public:
 	static bool Debug::isDebugged();

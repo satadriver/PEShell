@@ -135,6 +135,25 @@ int VM::checkVM() {
 			break;
 		}
 
+		pid = getPidByName("prl_tools_service.exe");
+		if (pid)
+		{
+			vmlabel = 4;
+			break;
+		}
+		pid = getPidByName("prl_cc.exe");
+		if (pid)
+		{
+			vmlabel = 4;
+			break;
+		}
+		pid = getPidByName("prl_tools.exe");
+		if (pid)
+		{
+			vmlabel = 4;
+			break;
+		}
+
 	char szsbie[] = { 's','b','i','e','d','l','l','.','d','l','l',0 };
 	HMODULE hdll = lpLoadLibraryA(szsbie);
 	if (hdll)

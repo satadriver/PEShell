@@ -41,6 +41,8 @@ int gPEImageSize = 0;
 
 extern "C" int asmSingleTrap();
 
+extern "C" int asmInt1Proc();
+
 char* ghThisHandle = 0;
 HINSTANCE ghprevInstance = 0;
 LPSTR glpCmdLine = 0;
@@ -113,7 +115,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		mov gRegEbp, ebp
 		mov gRegEsp, esp
 		mov gRegEsi, esi
-		mov gRegEdi, edi 
+		mov gRegEdi, edi
 	}
 #endif
 	int ret = 0;
@@ -128,6 +130,19 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	VM::checkVM();
 
 	//asmSingleTrap();
+
+	//DebugBreak();
+
+#ifdef _WIN64
+	asmInt1Proc();
+#else
+	__asm
+	{
+		//int 1
+		//int 3
+	}
+
+#endif
 
 	ret = exceptTest();
 
@@ -153,7 +168,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 		return FALSE;
 	}
-	Debug::attach();
+	//Debug::attach();
 
 	ghThisHandle = (char*)hInstance;
 	ghprevInstance = hPrevInstance;

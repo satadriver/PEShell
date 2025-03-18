@@ -200,9 +200,12 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 		//MessageBoxA(0, filename, filename, MB_OK);
 
 		unsigned char* uncompbuf = new unsigned char[fd->fsize + 0x1000];
+		if (uncompbuf == 0) {
+			break;
+		}
 		unsigned long uncompbufsize = fd->fsize;
 
-		runLog("uncompressdata address:%x,size:%x,unsize:%x\r\n", fd->filedata, fd->compSize,uncompbufsize);
+		runLog("uncompressdata address:%p,size:%x,unsize:%x\r\n", fd->filedata, fd->compSize,uncompbufsize);
 
 		ret = Compress::uncompressdata((unsigned char*)&(fd->filedata), fd->compSize, uncompbuf, &uncompbufsize);
 		if (ret == 0)
@@ -240,9 +243,11 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 		string base64 = base64_encode((char*)key, CRYPT_KEY_SIZE);
 
-		char szparam[] = { '-','f',0 };
+		char szparam[] = { '-','f',' ',0 };
 		string params = string(szparam) + base64;
 		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), params.c_str());
+
+		runLog("cmd:%s\r\n", szcmd);
 
 		//MessageBoxA(0, szcmd, szcmd, MB_OK);
 
