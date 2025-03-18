@@ -11,11 +11,11 @@ using namespace std;
 
 
 string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][MAX_PATH], 
-	int srcfilescnt,string path, char* outname) {
+	int srcfilescnt,string path, char* outname,unsigned char* key ) {
 	int ret = 0;
 
 	int blocksize = 0;
-	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt,path.c_str(), blocksize);
+	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt,path.c_str(),key, blocksize);
 	if (block <= 0)
 	{
 		printf("makeDataBlock error\r\n");

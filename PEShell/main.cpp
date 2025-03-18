@@ -17,6 +17,7 @@
 #include "test.h"
 #include "PEParser.h"
 #include "Resource.h"
+#include "crypto.h"
 
 #define CONFIG_FILENAME					"config.dat"
 
@@ -51,6 +52,8 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		return -1;
 	}
 
+	unsigned char key[16] = { 0 };
+	Crypto::getkey(key);
 	string curpath = Public::getCurPath();
 	ret = SetCurrentDirectoryA(curpath.c_str());
 
@@ -132,7 +135,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 				printf("argument error\r\n");
 				return -1;
 			}
-			Public::prepareParams(argv[i + 1], argv[i + 2],type, CONFIG_FILENAME);
+			Public::prepareParams(argv[i + 1], argv[i + 2],type, key,CONFIG_FILENAME);
 
 			i += 2;
 			continue;
@@ -161,7 +164,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	}
 	char secname[] = { '.','r','c','d','a','t','a',0 };
 
-	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn);
+	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn,key);
 	if (resultfn == "")
 	{
 		printf("something error happened!\r\n");

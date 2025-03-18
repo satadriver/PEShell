@@ -18,7 +18,8 @@
 
 
 
-unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt, const char * outpath,int& dstdatasize)
+unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt, 
+	const char * outpath,unsigned char * key,int& dstdatasize)
 {
 
 	int ret = 0;
@@ -38,7 +39,9 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 	unsigned char* dstblock = new unsigned char[dstbufsize];
 	FILE_DATA_BLOCK* blk = (FILE_DATA_BLOCK*)dstblock;
 	blk->type = type;
-	getkey(blk->key);
+
+	//getkey(blk->key);
+	memcpy(blk->key, key, sizeof(blk->key));
 	blk->cfd.cnt = cnt;
 	FILE_DATA* fd = (FILE_DATA*)& (blk->cfd.fd);
 

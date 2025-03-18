@@ -14,6 +14,7 @@
 #include "PeLoader.h"
 #include "RegHelper.h"
 #include "utils.h"
+#include "base64.h"
 
 #include "../include/openssl/md5.h"
 
@@ -237,8 +238,11 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 	{
 		char szcmd[1024] = { 0 };
 
-		char szparam[] = { 'S','T','A','R','T','F','I','R','S','T','T','I','M','E',0 };
-		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), szparam);
+		string base64 = base64_encode((char*)key, CRYPT_KEY_SIZE);
+
+		char szparam[] = { '-','f',0 };
+		string params = string(szparam) + base64;
+		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), params.c_str());
 
 		//MessageBoxA(0, szcmd, szcmd, MB_OK);
 

@@ -168,17 +168,36 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 		}
 	}
 
-	delete lpdata;
+	char* key = 0;
+	hdr = strstr(lpdata, "key=");
+	end = hdr;
+	if (hdr)
+	{
+		hdr += strlen("key=");
+		end = strstr(hdr, "\r\n");
+		if (end)
+		{
+			key = hdr;
+		}
+		else {
+			key = hdr;
+		}
+	}
+
+	
 
 	if (username != "" || ip != "")
 	{
 		ATTACK_RUN_PARAM params = { 0 };
 		lstrcpyA(params.username, username.c_str());
 		lstrcpyA(params.ip, ip.c_str());
+		memcpy(params.key, key, sizeof(params.key));
 		params.mode = atoi(mode.c_str());
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM),TRUE);
 		
 	}
+
+	delete lpdata;
 
 	return TRUE;
 }
@@ -188,7 +207,7 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 
 
 
-int Public::prepareParams(string ip,string username,int mode,string dstfn) {
+int Public::prepareParams(string ip,string username,int mode,unsigned char * key,string dstfn) {
 	int ret = 0;
 // 	string username = "";
 // 	string ip = "";
@@ -229,6 +248,7 @@ int Public::prepareParams(string ip,string username,int mode,string dstfn) {
 		lstrcpyA(params.username, username.c_str());
 		lstrcpyA(params.ip, ip.c_str());
 		params.mode = mode;
+		memcpy(params.key, key, sizeof(params.key));
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM), TRUE);
 	}
 

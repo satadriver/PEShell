@@ -78,6 +78,9 @@
     <ClCompile Include="RegHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compress.h">
@@ -144,6 +147,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
