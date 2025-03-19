@@ -21,6 +21,8 @@ using namespace std;
 #define SYSTEM_VERSION_WIN10	7
 #define SYSTEM_VERSION_UNKNOW	8
 
+//char* gMyCryptKey = "PuppyBearKittenBunny";
+
 #pragma  pack(1)
 
 typedef struct

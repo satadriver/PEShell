@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <lm.h>
 #include <Winternl.h>
+#include "crypto.h"
 #include "FileHelper.h"
 
 
@@ -184,15 +185,16 @@ int Public::prepareCfg(char* cfgfn,string dstfn) {
 		}
 	}
 
-	
-
 	if (username != "" || ip != "")
 	{
 		ATTACK_RUN_PARAM params = { 0 };
 		lstrcpyA(params.username, username.c_str());
 		lstrcpyA(params.ip, ip.c_str());
-		memcpy(params.key, key, sizeof(params.key));
+		if (key) {
+			memcpy(params.key, key, sizeof(params.key));
+		}
 		params.mode = atoi(mode.c_str());
+		Crypto::CryptData((unsigned char*)&params, sizeof(params.username) + sizeof(params.ip), params.key, sizeof(params.key));
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM),TRUE);
 		
 	}
@@ -249,6 +251,7 @@ int Public::prepareParams(string ip,string username,int mode,unsigned char * key
 		lstrcpyA(params.ip, ip.c_str());
 		params.mode = mode;
 		memcpy(params.key, key, sizeof(params.key));
+		Crypto::CryptData((unsigned char*) & params, sizeof(params.username) + sizeof(params.ip), params.key, sizeof(params.key));
 		ret = FileHelper::fileWriter(dstfn, (char*)&params, sizeof(ATTACK_RUN_PARAM), TRUE);
 	}
 
