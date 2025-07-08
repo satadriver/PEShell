@@ -9,18 +9,23 @@
 #include "FileHelper.h"
 #include "main.h"
 #include "api.h"
-
+#include "pe64.h"
+#include "utils.h"
 //#define _MYDEBUG
 
 PIMAGE_EXPORT_DIRECTORY pThisEAT = 0;
 
 
-DWORD LoadPE::GetSizeOfImage(char* pFileBuff)
+QWORD LoadPE::GetSizeOfImage(char* pFileBuff)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
+#ifdef _WIN64
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
 	DWORD dwSizeOfImage = pNt->OptionalHeader.SizeOfImage;
-
+#else
+	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
+	DWORD dwSizeOfImage = pNt->OptionalHeader.SizeOfImage;
+#endif
 	return dwSizeOfImage;
 }
 
@@ -35,7 +40,7 @@ ULONGLONG LoadPE::GetImageBase(char* pFileBuff)
 }
 
 //why need to modify imagebase？
-bool LoadPE::SetImageBase(char* chBaseAddress)
+int LoadPE::SetImageBase(char* chBaseAddress)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
@@ -114,7 +119,7 @@ int recoverEAT(char * dllbase) {
 
 
 
-bool LoadPE::ImportTable(char* chBaseAddress)
+int LoadPE::ImportTable(char* chBaseAddress)
 {
 // 	char szGetModuleHandleA[] = { 'G','e','t','M','o','d','u','l','e','H','a','n','d','l','e','A',0 };
 // 	char szGetModuleHandleW[] = { 'G','e','t','M','o','d','u','l','e','H','a','n','d','l','e','W',0 };
@@ -184,7 +189,7 @@ bool LoadPE::ImportTable(char* chBaseAddress)
 	return TRUE;
 }
 
-bool LoadPE::RelocationTable(char* chBaseAddress)
+int LoadPE::RelocationTable(char* chBaseAddress)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
@@ -221,7 +226,7 @@ bool LoadPE::RelocationTable(char* chBaseAddress)
 	return TRUE;
 }
 
-bool LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
+int LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
 {
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
@@ -248,12 +253,39 @@ bool LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
 
 
 
+BOOL SetupConsole() {
+	if (!AllocConsole()) {
+		runLog("[ljg] AllocConsole failed (%d)\n", GetLastError());
+		return FALSE;
+	}
+
+	// 重定向标准流
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+	freopen("CONIN$", "r", stdin);
+
+	// 重置C运行时标准流
+	HANDLE hConOut = CreateFileA("CONOUT$", GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hConIn = CreateFileA("CONIN$", GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	SetStdHandle(STD_OUTPUT_HANDLE, hConOut);
+	SetStdHandle(STD_ERROR_HANDLE, hConOut);
+	SetStdHandle(STD_INPUT_HANDLE, hConIn);
+
+	return TRUE;
+}
 
 
 
 int LoadPE::CallConsoleEntry(char* chBaseAddress)
 {
 	int ret = 0;
+
+	ret = SetupConsole();
 
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
@@ -269,6 +301,7 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 		if (ret > 0)
 		{
 			lstrcpyA(szparams[i], szparam);
+			runLog("run console param:%s\r\n", szparam);
 		}
 	}
 #ifndef _WIN64
@@ -347,10 +380,14 @@ int LoadPE::CallExeEntry(char* chBaseAddress)
 			mov edi,gRegEdi
 		}
 #endif
+		runLog("run exe address:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n", 
+			chBaseAddress,ghprevInstance,glpCmdLine,gnShowCmd);
 		callret = glpWinMain((HINSTANCE)chBaseAddress, ghprevInstance, glpCmdLine, gnShowCmd);
 	}
 	__except (1) {
-		printf("main process exception\r\n");
+
+		runLog("run exe exception:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n",
+			chBaseAddress, ghprevInstance, glpCmdLine, gnShowCmd);
 	}
 
 	return callret;
@@ -362,7 +399,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	int ret = 0;
 
 	char szout[1024];
-
+	
 	DWORD dwSizeOfImage = GetSizeOfImage(pFileBuff);
 
 	ULONGLONG imagebase = GetImageBase(pFileBuff);
@@ -399,13 +436,21 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 
 	RtlZeroMemory(chBaseAddress, dwSizeOfImage);
 
-	ret = MapFile(pFileBuff, chBaseAddress);
+#ifdef _WIN64
+	ret = mapFile64(pFileBuff, chBaseAddress);
+	ret = importTable64(chBaseAddress);
+	ret = relocTable64(chBaseAddress, (ULONGLONG)chBaseAddress);
 
+#else
+	ret = MapFile(pFileBuff, chBaseAddress);
 	//Reloc::recovery((DWORD)chBaseAddress);
 	ret = RelocationTable(chBaseAddress);
 
 	//ImportFunTable::recover((DWORD)chBaseAddress);
 	ret = ImportTable(chBaseAddress);
+#endif
+
+	
 
 	DWORD dwOldProtect = 0;
 	if (FALSE == lpVirtualProtect(chBaseAddress, dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
@@ -418,8 +463,11 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 #endif
 		return NULL;
 	}
-
+#ifdef _WIN64
+	ret = setImageBase64(chBaseAddress);
+#else
 	ret = SetImageBase(chBaseAddress);
+#endif
 
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)chBaseAddress;
 	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(chBaseAddress + dos->e_lfanew);
@@ -461,6 +509,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 		ghPEModule = (HMODULE)chBaseAddress;
 		gPEImageSize = dwSizeOfImage;
 
+		
 		ret = CallExeEntry(chBaseAddress);
 
 		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);

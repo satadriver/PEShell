@@ -28,27 +28,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -180,7 +180,7 @@
     <ClCompile Include="compress.cpp" />
     <ClCompile Include="crypto.cpp" />
     <ClCompile Include="ExportFunTable.cpp" />
-    <ClCompile Include="FakeFilename.cpp" />
+    <ClCompile Include="ForgeFilename.cpp" />
     <ClCompile Include="FileHelper.cpp" />
     <ClCompile Include="ImportFunTable.cpp" />
     <ClCompile Include="main.cpp" />
@@ -197,7 +197,7 @@
     <ClInclude Include="compress.h" />
     <ClInclude Include="crypto.h" />
     <ClInclude Include="ExportFunTable.h" />
-    <ClInclude Include="FakeFilename.h" />
+    <ClInclude Include="ForgeFilename.h" />
     <ClInclude Include="FileHelper.h" />
     <ClInclude Include="ImportFunTable.h" />
     <ClInclude Include="md5.h" />

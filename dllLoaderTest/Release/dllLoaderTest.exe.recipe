@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\ljg\PEShell\Release\dllLoaderTest.exe</FullPath>
+      <FullPath>D:\Project\PEShell\Release\dllLoaderTest.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

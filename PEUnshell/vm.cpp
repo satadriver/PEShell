@@ -17,7 +17,7 @@
 
 
 
-int VM::checkVM() {
+int VM::checkSandbox() {
 
 	int ret = 0;
 
@@ -222,7 +222,7 @@ int VM::delay(int seconds) {
 				suicide();
 			}	
 		}
-	} while (t2 - t1 < seconds*1000);
+	} while (t2 - t1 < (ULONGLONG)seconds*1000);
 
 	return 0;
 }

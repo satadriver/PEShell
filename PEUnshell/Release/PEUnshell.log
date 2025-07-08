@@ -1,12 +1,2 @@
-﻿cl : 命令行  warning D9025: 正在重写“/sdl”(用“/GS-”)
-  Crypto.cpp
-C:\Users\ljg\PEShell\PEUnshell\Public.h(26,1): warning C4005: “offsetof”: 宏重定义
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt\stddef.h(52,1): message : 参见“offsetof”的前一个定义
-C:\Users\ljg\PEShell\PEUnshell\Public.h(35,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
-C:\Users\ljg\PEShell\PEUnshell\Public.h(35,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.h(5,1): warning C4005: “_CRT_SECURE_NO_WARNINGS”: 宏重定义
-C:\Users\ljg\PEShell\PEUnshell\PeLoader.h(5,1): message : 之前在命令行上声明的“_CRT_SECURE_NO_WARNINGS”
-C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(34,7): warning C4101: “szinfo”: 未引用的局部变量
-C:\Users\ljg\PEShell\PEUnshell\Crypto.cpp(139,7): warning C4101: “szinfo”: 未引用的局部变量
-LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
-  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\Release\PEUnshell.exe
+﻿LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
+  PEUnshell.vcxproj -> D:\Project\PEShell\Release\PEUnshell.exe

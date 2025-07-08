@@ -51,7 +51,7 @@
     <ClCompile Include="Public.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="FakeFilename.cpp">
+    <ClCompile Include="ForgeFilename.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SetIcon.cpp">
@@ -98,7 +98,7 @@
     <ClInclude Include="Public.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="FakeFilename.h">
+    <ClInclude Include="ForgeFilename.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SetIcon.h">

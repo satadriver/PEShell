@@ -9,7 +9,7 @@
 #include "utils.h"
 
 
-DWORD getKeyValue(HKEY hMainKey, char* szSubKey, char* szKeyName, unsigned char* szKeyValue, int* buflen)
+DWORD getKeyValue(HKEY hMainKey, char* szSubKey, char* szKeyName, unsigned char* szKeyValue, int* valueLen)
 {
 	if (hMainKey == 0)
 	{
@@ -46,7 +46,7 @@ DWORD getKeyValue(HKEY hMainKey, char* szSubKey, char* szKeyName, unsigned char*
 	//if value is 234 ,it means out buffer is limit
 
 	unsigned long subkeyType = REG_BINARY | REG_DWORD | REG_EXPAND_SZ | REG_MULTI_SZ | REG_NONE | REG_SZ;
-	iRes = lpRegQueryValueExA(hKey, szKeyName, 0, &subkeyType, szKeyValue, (LPDWORD)buflen);
+	iRes = lpRegQueryValueExA(hKey, szKeyName, 0, &subkeyType, szKeyValue, (LPDWORD)valueLen);
 	lpRegCloseKey(hKey);
 	if (iRes == ERROR_SUCCESS)
 	{
@@ -58,7 +58,7 @@ DWORD getKeyValue(HKEY hMainKey, char* szSubKey, char* szKeyName, unsigned char*
 
 
 
-DWORD setKeyValueChar(HKEY hMainKey, char* szSubKey, char* szKeyName, char* szKeyValue)
+DWORD setKeyValueStr(HKEY hMainKey, char* szSubKey, char* szKeyName, char* szKeyValue)
 {
 	char szout[1024];
 

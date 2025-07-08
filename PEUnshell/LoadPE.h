@@ -3,6 +3,8 @@
 
 #include <windows.h>
 
+#define QWORD unsigned long long
+
 #define EXE_MODULE_ALIGNBLOCK		0x10000
 
 #define DEFAULT_PE_BASE_ADDRESS		0x400000
@@ -17,17 +19,17 @@ public:
 
 	static int LoadPE::CallConsoleEntry(char* chBaseAddress);
 
-	static bool LoadPE::SetImageBase(char* chBaseAddress);
+	static int LoadPE::SetImageBase(char* chBaseAddress);
 
-	static bool LoadPE::ImportTable(char* chBaseAddress);
+	static int LoadPE::ImportTable(char* chBaseAddress);
 
-	static bool LoadPE::RelocationTable(char* chBaseAddress);
+	static int LoadPE::RelocationTable(char* chBaseAddress);
 
-	static DWORD LoadPE::GetSizeOfImage(char* pFileBuff);
+	static QWORD LoadPE::GetSizeOfImage(char* pFileBuff);
 
 	static ULONGLONG LoadPE::GetImageBase(char* pFileBuff);
 
-	static bool LoadPE::MapFile(char* pFileBuff, char* chBaseAddress);
+	static int LoadPE::MapFile(char* pFileBuff, char* chBaseAddress);
 
 	static int LoadPE::RunPE(char* pFileBuff, DWORD dwSize);
 };

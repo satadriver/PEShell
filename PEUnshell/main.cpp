@@ -127,14 +127,14 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 	//VM::checkTickCount();
 
-	VM::checkVM();
+	//VM::checkSandbox();
 
 	//asmSingleTrap();
 
 	//DebugBreak();
 
 #ifdef _WIN64
-	asmInt1Proc();
+	//asmInt1Proc();
 #else
 	__asm
 	{

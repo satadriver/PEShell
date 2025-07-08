@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "Section.h"
 #include "Resource.h"
-#include "FakeFilename.h"
+#include "ForgeFilename.h"
 #include "SetIcon.h"
 #include <stdlib.h>
 #include "Public.h"
@@ -128,8 +128,6 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		}
 		else if (lstrcmpiA(str, "-p") == 0)
 		{
-			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
-			paramscnt++;
 
 			if (i + 2 > argc) {
 				printf("argument error\r\n");
@@ -138,6 +136,9 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			Public::prepareParams(argv[i + 1], argv[i + 2],type, key,CONFIG_FILENAME);
 
 			i += 2;
+
+			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
+			paramscnt++;		
 			continue;
 		}
 		else if (lstrcmpiA(str, "-rename") == 0)

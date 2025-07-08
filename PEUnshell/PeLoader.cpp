@@ -1,5 +1,5 @@
 
-
+/*
 
 #include "PEloader.h"
 #include "api.h"
@@ -325,3 +325,4 @@ BOOL MemRunPE(void* lpFileData, int nDataLength)
 	g_bIsLoadOk = TRUE;
 	return TRUE;
 }
+*/

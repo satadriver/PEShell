@@ -1,5 +1,8 @@
-﻿  api.cpp
-C:\Users\ljg\PEShell\PEUnshell\api.cpp(101,7): warning C4101: “info”: 未引用的局部变量
+﻿  main.cpp
+D:\Project\PEShell\PEUnshell\Public.h(26,1): warning C4005: “offsetof”: 宏重定义
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\stddef.h(52): message : 参见“offsetof”的前一个定义
+D:\Project\PEShell\PEUnshell\Public.h(35,16): warning C4200: 使用了非标准扩展: 结构/联合中的零大小数组
+D:\Project\PEShell\PEUnshell\Public.h(35,16): message : 默认构造函数或 copy/move 赋值运算符将忽略此成员
   vm.cpp
   正在生成代码...
-  PEUnshell.vcxproj -> C:\Users\ljg\PEShell\x64\Debug\PEUnshell.exe
+  PEUnshell.vcxproj -> D:\Project\PEShell\x64\Debug\PEUnshell.exe

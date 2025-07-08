@@ -3,7 +3,8 @@
 #include <stdio.h>
 
 
-int CircleParser(DWORD module,DWORD resbase, PIMAGE_RESOURCE_DIRECTORY dir,int level,DWORD id,DWORD & offset,DWORD &size) {
+int ResourceParser(DWORD module,DWORD resbase, PIMAGE_RESOURCE_DIRECTORY dir,int level,DWORD id,DWORD & offset,DWORD &size) 
+{
 	int ret = 0;
 
 	while (1)
@@ -35,7 +36,7 @@ int CircleParser(DWORD module,DWORD resbase, PIMAGE_RESOURCE_DIRECTORY dir,int l
 
 				addr = addr & 0x7fffffff;
 				PIMAGE_RESOURCE_DIRECTORY next = (PIMAGE_RESOURCE_DIRECTORY)(resbase + addr);
-				ret = CircleParser(module, resbase, next, level++,id,offset,size);
+				ret = ResourceParser(module, resbase, next, level++,id,offset,size);
 				entry++;
 			}
 			else {
@@ -74,7 +75,7 @@ int Resource::getResource(DWORD module,int id) {
 
 	DWORD offset = 0;
 	DWORD size = 0;
-	CircleParser(module,(DWORD)res, res, 1,id,offset,size);
+	ResourceParser(module,(DWORD)res, res, 1,id,offset,size);
 
 	return 0;
 }
@@ -91,7 +92,7 @@ int Resource::getResource(DWORD module, const char *name) {
 
 	DWORD offset = 0;
 	DWORD size = 0;
-	CircleParser(module, (DWORD)res, res, 1,(DWORD)name,offset,size);
+	ResourceParser(module, (DWORD)res, res, 1,(DWORD)name,offset,size);
 
 	return 0;
 }
