@@ -55,7 +55,10 @@ int FakeFilename::fakefn(string srcfn,string surfixname,string dstmainfn) {
 	char * lpbuf = new char[oldfilesize + 1024];
 	DWORD dwcnt = 0;
 	ret = ReadFile(hof, lpbuf, oldfilesize, &dwcnt, 0);
-	ret = WriteFile(hnf, lpbuf, oldfilesize, &dwcnt, 0);
+	if (ret) {
+		ret = WriteFile(hnf, lpbuf, oldfilesize, &dwcnt, 0);
+	}
+	
 	CloseHandle(hnf);
 	CloseHandle(hof);
 

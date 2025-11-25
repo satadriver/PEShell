@@ -49,8 +49,6 @@ int Compress::compressdata(unsigned char* src, unsigned long srcsize, unsigned c
 	// 		RtlCompressBuffer_Fn fcmp = (RtlCompressBuffer_Fn)GetProcAddress(hntdll, "RtlCompressBuffer");
 	// 		RtlDecompressBuffer_Fn fdcp = (RtlDecompressBuffer_Fn)GetProcAddress(hntdll, "RtlDecompressBuffer");
 	// 		RtlGetCompressionWorkSpaceSize_Fn fgcw = (RtlGetCompressionWorkSpaceSize_Fn)GetProcAddress(hntdll, "RtlGetCompressionWorkSpaceSize");
-	// 
-	// 
 	// 		if (fcmp && fdcp && fgcw)
 	// 		{
 	// 			DWORD resultSize = 0;
@@ -69,3 +67,7 @@ int Compress::compressdata(unsigned char* src, unsigned long srcsize, unsigned c
 
 	return ret;
 }
+
+
+
+

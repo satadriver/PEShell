@@ -202,17 +202,17 @@ int VM::checkSandbox() {
 
 int VM::delay(int seconds) {
 
-	ULONGLONG t1 = lpGetTickCount64() ;
+	ULONGLONG t1 = GetTickCount64() ;
 	ULONGLONG t2 = t1;
 	do
 	{
-		t2 = lpGetTickCount64() ;
+		t2 = GetTickCount64() ;
 
 		ULONGLONG tm1 = time(0);
 
-		lpSleep( 1000);
+		Sleep( 1000);
 
-		ULONGLONG t3 = lpGetTickCount64() ;
+		ULONGLONG t3 = GetTickCount64() ;
 
 		ULONGLONG tm2 = time(0);
 

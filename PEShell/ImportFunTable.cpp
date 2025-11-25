@@ -59,11 +59,11 @@ DWORD ImportFunTable::recover(DWORD module) {
 				break;
 			}
 
-			DWORD addr = 0;
+			unsigned long long addr = 0;
 			if (org->u1.Ordinal & 0x80000000)
 			{
 				int ord = org->u1.Ordinal & 0xffff;
-				addr = ExportFunTable::getAddrFromOrd((DWORD)dll, ord);
+				addr = ExportFunTable::getAddrFromOrd((char*)dll, ord);
 			}
 			else {
 
@@ -79,7 +79,7 @@ DWORD ImportFunTable::recover(DWORD module) {
 					addr = (DWORD)GetProcAddress(dll, (LPCSTR)impname->Name);
 				}
 				else {
-					addr = ExportFunTable::getAddrFromName((DWORD)dll, (char*)impname->Name);
+					addr = ExportFunTable::getAddrFromName((char*)dll, (char*)impname->Name);
 				}
 			}
 

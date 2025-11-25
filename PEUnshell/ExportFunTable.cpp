@@ -14,7 +14,7 @@ char* ExportFunTable::getAddrFromName(char* module, const char * funname) {
 	WORD * ords = (WORD*)(exp->AddressOfNameOrdinals + module);
 
 	const char ** funs = (const char **)(exp->AddressOfNames + module);
-	for (int i = 0 ; i < exp->NumberOfNames; i ++)
+	for (unsigned int i = 0 ; i < exp->NumberOfNames; i ++)
 	{
 		const char * functionname = (funs[i] + (ULONGLONG)module);
 		if (lstrcmpiA(funname, functionname)== 0)
@@ -37,7 +37,7 @@ char* ExportFunTable::getAddrFromOrd(char* module, DWORD ord) {
 
 	PIMAGE_EXPORT_DIRECTORY exp = (PIMAGE_EXPORT_DIRECTORY)(rva + module);
 
-	int funidx = ord - exp->Base;
+	unsigned int funidx = ord - exp->Base;
 	if (funidx < 0 || funidx >= exp->NumberOfFunctions)
 	{
 		return 0;

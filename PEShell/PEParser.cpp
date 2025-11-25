@@ -23,6 +23,7 @@ int PEParser::getPEArch(const char * pedata) {
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pedata;
 	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pedata + dos->e_lfanew);
 	PIMAGE_FILE_HEADER fh = &nt->FileHeader;
+
 	return fh->Machine;
 }
 

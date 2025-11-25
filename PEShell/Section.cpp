@@ -34,47 +34,44 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	}
 
 	string srcfilename = szcurdir;
-	if (type == 1)
+	if (type == MEM_RUN_EXE)
 	{
-		if (cpu_arch == 0x014c)
+		if (cpu_arch == 32)
 		{
-			srcfilename += "PeUnshell.exe";
+			srcfilename += PESHELL_EXE_32;
 		}
 		else {
-			srcfilename += "PeUnshell.exe";
+			srcfilename += PESHELL_EXE_64;
 		}
 	}
-	else if (type == 2)
+	else if (type == MEM_RUN_DLL)
 	{
-		//srcfilename += "PeUnshell.dll";
-		if (cpu_arch == 0x014c)
+		if (cpu_arch == 32)
 		{
-			srcfilename += "PeUnshell.dll";
+			srcfilename += PESHELL_DLL_32;
 		}
 		else {
-			srcfilename += "PeUnshell.dll";
+			srcfilename += PESHELL_DLL_64;
 		}
 	}
-	else if (type == 3)
+	else if (type == BIND_RELEASE_EXE)
 	{
-		//srcfilename += "PeUnshell.exe";
-		if (cpu_arch == 0x014c)
+		if (cpu_arch == 32)
 		{
-			srcfilename += "PeUnshell.exe";
+			srcfilename += PESHELL_EXE_32;
 		}
 		else {
-			srcfilename += "PeUnshell.exe";
+			srcfilename += PESHELL_EXE_64;
 		}
 	}
-	else if (type == 4)
+	else if (type == BIND_RELEASE_DLL)
 	{
-		//srcfilename += "PeUnshell.dll";
-		if (cpu_arch == 0x014c)
+		if (cpu_arch == 32)
 		{
-			srcfilename += "PeUnshell.dll";
+			srcfilename += PESHELL_DLL_32;
 		}
 		else {
-			srcfilename += "PeUnshell.dll";
+			srcfilename += PESHELL_DLL_64;
 		}
 	}
 	else {

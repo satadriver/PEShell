@@ -63,9 +63,6 @@
     <ClCompile Include="md5.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PeLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

@@ -1,10 +1,10 @@
 #pragma once
-
+#pragma warning(disable : 4200)
 #include <Windows.h>
 #include <iostream>
 
 using namespace std;
-
+#pragma warning(disable : 4200)
 #define LOG_FILE_NAME "log.log"
 
 #define ONLY_ONE_EXE		1
@@ -70,7 +70,7 @@ typedef struct
 
 #pragma pack()
 
-#define offsetof(s, m) ((size_t)&((*s)0)->m)
+//#define offsetof(s, m) ((size_t)&((*s)0)->m)
 
 int GetPathFromFullName(const char* strFullName, char* strDst);
 

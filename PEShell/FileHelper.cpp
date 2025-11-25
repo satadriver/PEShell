@@ -47,7 +47,7 @@ int FileHelper::CheckPathExist(string path) {
 	}
 }
 
-int FileHelper::getfilesize(string filename) {
+int FileHelper::GetFileSize(string filename) {
 	int ret = 0;
 
 	FILE* fp = fopen(filename.c_str(), "rb");
@@ -78,7 +78,7 @@ int FileHelper::fileReader(string filename, char** lpbuf, int* bufsize) {
 
 	ret = fseek(fp, 0, FILE_END);
 
-	int filesize = ftell(fp);
+	unsigned long filesize = ftell(fp);
 
 	ret = fseek(fp, 0, FILE_BEGIN);
 

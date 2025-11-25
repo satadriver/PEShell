@@ -214,7 +214,7 @@ int LoadPE::RelocationTable(char* chBaseAddress)
 			if ((pLocData[i] & 0xF000) == 0x3000 || (pLocData[i] & 0xF000) == 0xA000)
 			//if ((DWORD)(pLocData[i] & 0x0000F000) == 0x00003000)
 			{
-				DWORD* pAddress = (DWORD *)((PBYTE)pDos + pLoc->VirtualAddress + (pLocData[i] & 0x0FFF));
+				ULONGLONG* pAddress = (ULONGLONG*)((PBYTE)pDos + pLoc->VirtualAddress + (pLocData[i] & 0x0FFF));
 				
 				*pAddress += dwDelta;
 			}
@@ -254,15 +254,16 @@ int LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
 
 
 BOOL SetupConsole() {
+	INT ret = 0;
 	if (!AllocConsole()) {
 		runLog("[ljg] AllocConsole failed (%d)\n", GetLastError());
 		return FALSE;
 	}
 
 	// 重定向标准流
-	freopen("CONOUT$", "w", stdout);
-	freopen("CONOUT$", "w", stderr);
-	freopen("CONIN$", "r", stdin);
+	FILE * f= freopen("CONOUT$", "w", stdout);
+	f = freopen("CONOUT$", "w", stderr);
+	f = freopen("CONIN$", "r", stdin);
 
 	// 重置C运行时标准流
 	HANDLE hConOut = CreateFileA("CONOUT$", GENERIC_READ | GENERIC_WRITE,
@@ -400,7 +401,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 
 	char szout[1024];
 	
-	DWORD dwSizeOfImage = GetSizeOfImage(pFileBuff);
+	unsigned __int64 dwSizeOfImage = GetSizeOfImage(pFileBuff);
 
 	ULONGLONG imagebase = GetImageBase(pFileBuff);
 	if (imagebase <= 0)
@@ -416,14 +417,14 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	//使用MEM_RESERVE分配类型参数 Windows会以64 KB为边界计算该区域的起始地址 跟PE文件加载边界一致
 	//使用MEM_COMMIT分配类型参数 区域的起始和结束地址都被计算到4KB边界
 	//VirtualAlloc 当程序访问这部分内存时RAM内存才会被真正分配
-	char* chBaseAddress = (char*)lpVirtualAlloc((char*)imagebase, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	char* chBaseAddress = (char*)lpVirtualAlloc((char*)imagebase, (DWORD)dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	if (NULL == chBaseAddress)
 	{
 #ifdef _MYDEBUG
 		wsprintfA(szout, "VirtualAlloc address:%x error", imagebase);
 		MessageBoxA(0, szout, szout, MB_OK);
 #endif
-		chBaseAddress = (char*)lpVirtualAlloc(0, dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		chBaseAddress = (char*)lpVirtualAlloc(0, (DWORD)dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 		if (NULL == chBaseAddress)
 		{
 #ifdef _MYDEBUG
@@ -434,7 +435,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 		}
 	}
 
-	RtlZeroMemory(chBaseAddress, dwSizeOfImage);
+	RtlZeroMemory(chBaseAddress, (DWORD)dwSizeOfImage);
 
 #ifdef _WIN64
 	ret = mapFile64(pFileBuff, chBaseAddress);
@@ -453,9 +454,9 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	
 
 	DWORD dwOldProtect = 0;
-	if (FALSE == lpVirtualProtect(chBaseAddress, dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
+	if (FALSE == lpVirtualProtect(chBaseAddress, (DWORD)dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
 	{
-		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT|MEM_RELEASE);
+		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT|MEM_RELEASE);
 		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 #ifdef _MYDEBUG
 		wsprintfA(szout, "VirtualProtect address:%x error", imagebase);
@@ -485,11 +486,11 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	{
 		gType = 3;
 		ghPEModule = (HMODULE)chBaseAddress;
-		gPEImageSize = dwSizeOfImage;
+		gPEImageSize = (DWORD)dwSizeOfImage;
 
 		ret = CallConsoleEntry(chBaseAddress);
 
-		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
+		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT);
 		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 		return ret;
 	}
@@ -497,7 +498,7 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	if (nt->FileHeader.Characteristics & 0x2000)
 	{
 		gType = 2;
-		gPEImageSize = dwSizeOfImage;
+		gPEImageSize = (DWORD)dwSizeOfImage;
 		ghPEModule = (HMODULE)chBaseAddress;
 
 		ret = recoverEAT(chBaseAddress);
@@ -507,12 +508,12 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 	else {
 		gType = 1;
 		ghPEModule = (HMODULE)chBaseAddress;
-		gPEImageSize = dwSizeOfImage;
+		gPEImageSize = (DWORD)dwSizeOfImage;
 
 		
 		ret = CallExeEntry(chBaseAddress);
 
-		lpVirtualFree(chBaseAddress, dwSizeOfImage, MEM_DECOMMIT);
+		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT);
 		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
 		return ret;
 	}

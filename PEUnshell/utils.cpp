@@ -171,9 +171,9 @@ HANDLE  bRunning(BOOL* exist)
 
 
 int suicide() {
-	lpExitProcess(0);
-	DWORD hp = lpGetCurrentProcessId();
-	lpTerminateProcess((HANDLE)hp, 0);
+	ExitProcess(0);
+	DWORD hp = GetCurrentProcessId();
+	TerminateProcess((HANDLE)hp, 0);
 	exit(0);
 	abort();
 	atexit(0);
@@ -284,7 +284,8 @@ int createProcessWithToken(LPSTR lpTokenProcessName, LPSTR szProcessName, LPSTR 
 	PROCESS_INFORMATION pi = { 0 };
 	STARTUPINFOA si = { 0 };
 	si.cb = sizeof(STARTUPINFO);
-	lstrcpyA(si.lpDesktop, "winsta0\\default");
+	//lstrcpyA(si.lpDesktop, "winsta0\\default");
+	si.lpDesktop = "winsta0\\default";
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_HIDE;
 

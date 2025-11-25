@@ -15,5 +15,5 @@ public:
 	static int FileHelper::fileWriter(string filename, const char* lpdata, int datasize);
 	static int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, int cover);
 
-	static int getfilesize(string filename);
+	static int GetFileSize(string filename);
 };

