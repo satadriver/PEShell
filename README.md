@@ -5,7 +5,7 @@
 只能支持windows程序和console程序加壳，有限支持dll加壳（需结合源码手动实现函数导出）。
 
 原理：
-将被加壳程序压缩、加密，当作一个新segment("lpdata")插入到peunshell.exe，peunshell.exe运行时定位"lpdata"段，并解密、解压缩该段，将文件释放出来、并内存加载、执行。
+将被加壳程序压缩、加密，当作一个新segment("lpdata")插入到peunshell.exe，peunshell.exe运行时定位"lpdata"段，并解密、解压缩该段，将文件释放后运行，或者只在内存中实现pe文件的加载、执行。
 
 内存加载的主要步骤：将程序segment读入到内存中，完成文件地址和内存地址的映射；导入表函数填充；重定位；跳转入口点执行。
 
