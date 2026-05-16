@@ -308,7 +308,7 @@ int __cdecl log(const WCHAR* format, ...)
 	SYSTEMTIME st;
 	GetLocalTime(&st);
 
-	int offset = wsprintfW(info, L"[%s %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAME, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+	int offset = wsprintfW(info, L"[%ws %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAMEW, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
 	offset += vswprintf_s(info + offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
 
