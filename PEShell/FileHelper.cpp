@@ -53,7 +53,7 @@ int FileHelper::GetFileSize(string filename) {
 	FILE* fp = fopen(filename.c_str(), "rb");
 	if (fp <= 0)
 	{
-		printf("getfilesize fopen file:%s error\r\n", filename.c_str());
+		log("%s %d fopen file:%s error\r\n", __FUNCTION__, __LINE__, filename.c_str());
 		return FALSE;
 	}
 
@@ -72,7 +72,7 @@ int FileHelper::fileReader(string filename, char** lpbuf, int* bufsize) {
 	FILE* fp = fopen(filename.c_str(), "rb");
 	if (fp <= 0)
 	{
-		printf("fileReader fopen file:%s error\r\n", filename.c_str());
+		log("%s %d fopen file:%s error\r\n", __FUNCTION__, __LINE__, filename.c_str());
 		return FALSE;
 	}
 
@@ -119,7 +119,7 @@ int fileWriter_old(string filename, const char* lpdata, int datasize, int cover)
 
 	if (fp <= 0)
 	{
-		printf("fileWriter fopen file:%s error\r\n", filename.c_str());
+		log("fileWriter fopen file:%s error\r\n", filename.c_str());
 		return FALSE;
 	}
 
@@ -157,7 +157,7 @@ int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, in
 
 	if (fp == INVALID_HANDLE_VALUE)
 	{
-		printf("fileWriter fopen file:%s error\r\n", filename.c_str());
+		log("%s %d fopen file:%s error\r\n", __FUNCTION__, __LINE__, filename.c_str());
 		return FALSE;
 	}
 

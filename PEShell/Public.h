@@ -4,7 +4,8 @@
 #include <iostream>
 
 using namespace std;
-#pragma warning(disable : 4200)
+
+
 #define LOG_FILE_NAME "log.log"
 
 #define ONLY_ONE_EXE		1
@@ -74,7 +75,9 @@ typedef struct
 
 int GetPathFromFullName(const char* strFullName, char* strDst);
 
+int __cdecl log(const CHAR* format, ...);
 
+int __cdecl log(const WCHAR* format, ...);
 
 class Public {
 public:

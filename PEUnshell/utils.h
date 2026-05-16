@@ -6,13 +6,10 @@
 using namespace std;
 
 
-#define CMD_RESULT_FILENAME		"cmdResult.txt"
+#define CMD_RESULT_FILENAME			"CmdResult.txt"
 
 #define MY_MUTEX_NAME				"Global\\MY_MUTEX_SHELLPE_NAME"
 
-#define OPERATION_LOG_FILENAME		"operation.log"
-
-#define RUNNING_LOG_FILENAME		"running.log"
 
 
 int __stdcall shell(const char* cmd);

@@ -11,8 +11,8 @@ int PEParser::isPE(const char * data) {
 	{
 		PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)data;
 		PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(data + dos->e_lfanew);
-		unsigned char szpehdr[] = { 'P','E',0,0 };
-		if (memcmp((char*)&nt->Signature, szpehdr,4) == 0)
+		unsigned char petag[] = { 'P','E',0,0 };
+		if (memcmp((char*)&nt->Signature, petag,4) == 0)
 		{
 			return TRUE;
 		}

@@ -4,12 +4,13 @@
 #include <stdio.h>
 
 
-#define __strcmp strcmp
 
 // 重定位类型定义（64位PE主要使用 IMAGE_REL_BASED_DIR64）
 #define IMAGE_REL_BASED_ABSOLUTE      0  // 无操作
 #define IMAGE_REL_BASED_HIGHLOW       3  // 32位PE使用
 #define IMAGE_REL_BASED_DIR64         10 // 64位PE使用
+
+
 
 char* getAddrFromName64(char* module, const char* funname) {
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
@@ -23,7 +24,7 @@ char* getAddrFromName64(char* module, const char* funname) {
 	for (unsigned int i = 0; i < exptable->NumberOfNames; i++)
 	{
 		char* functionname = ((char*)funnames[i] + (QWORD)module);
-		if (__strcmp((char*)funname, (char*)functionname) == 0)
+		if (strcmp((char*)funname, (char*)functionname) == 0)
 		{
 			WORD* ords = (WORD*)(exptable->AddressOfNameOrdinals + module);
 			int idx = ords[i];
@@ -125,14 +126,14 @@ bool relocTable64(char* pImageBase, ULONGLONG newBase) {
 
 
 
-bool mapFileAttr64(char* pFileBuff, char* chBaseAddress, DWORD* cr3)
+bool mapFileAttr64(char* pFileBuff, char* base, DWORD* cr3)
 {
 
 	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
 	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(pFileBuff + pDos->e_lfanew);
 
 	int dwSizeOfHeaders = pNt->OptionalHeader.SizeOfHeaders;
-	memcpy(chBaseAddress, pFileBuff, dwSizeOfHeaders);
+	memcpy(base, pFileBuff, dwSizeOfHeaders);
 
 	//PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION(pNt);
 	PIMAGE_SECTION_HEADER pSection = (PIMAGE_SECTION_HEADER)((char*)pNt + sizeof(IMAGE_NT_HEADERS64));
@@ -145,7 +146,7 @@ bool mapFileAttr64(char* pFileBuff, char* chBaseAddress, DWORD* cr3)
 			continue;
 		}
 
-		char* chDestMem = (char*)((QWORD)chBaseAddress + pSection->VirtualAddress);
+		char* chDestMem = (char*)((QWORD)base + pSection->VirtualAddress);
 		char* chSrcMem = (char*)((QWORD)pFileBuff + pSection->PointerToRawData);
 		int dwSizeOfRawData = pSection->SizeOfRawData;
 		memcpy(chDestMem, chSrcMem, dwSizeOfRawData);
@@ -154,13 +155,13 @@ bool mapFileAttr64(char* pFileBuff, char* chBaseAddress, DWORD* cr3)
 	return TRUE;
 }
 
-bool mapFile64(char* pFileBuff, char* chBaseAddress)
+bool mapFile64(char* file, char* base)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(pFileBuff + pDos->e_lfanew);
+	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)file;
+	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(file + pDos->e_lfanew);
 
 	DWORD dwSizeOfHeaders = pNt->OptionalHeader.SizeOfHeaders;
-	memcpy(chBaseAddress, pFileBuff, dwSizeOfHeaders);
+	memcpy(base, file, dwSizeOfHeaders);
 
 	//PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION(pNt);
 	PIMAGE_SECTION_HEADER pSection = (PIMAGE_SECTION_HEADER)((char*)pNt + sizeof(IMAGE_NT_HEADERS64));
@@ -173,8 +174,8 @@ bool mapFile64(char* pFileBuff, char* chBaseAddress)
 			continue;
 		}
 
-		char* chDestMem = (char*)((QWORD)chBaseAddress + pSection->VirtualAddress);
-		char* chSrcMem = (char*)((QWORD)pFileBuff + pSection->PointerToRawData);
+		char* chDestMem = (char*)((QWORD)base + pSection->VirtualAddress);
+		char* chSrcMem = (char*)((QWORD)file + pSection->PointerToRawData);
 		int dwSizeOfRawData = pSection->SizeOfRawData;
 		memcpy(chDestMem, chSrcMem, dwSizeOfRawData);
 	}
@@ -183,10 +184,10 @@ bool mapFile64(char* pFileBuff, char* chBaseAddress)
 }
 
 
-QWORD getSizeOfImage64(char* pFileBuff)
+QWORD getSizeOfImage64(char* file)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(pFileBuff + pDos->e_lfanew);
+	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)file;
+	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(file + pDos->e_lfanew);
 	QWORD dwSizeOfImage = pNt->OptionalHeader.SizeOfImage;
 
 	return dwSizeOfImage;
@@ -204,21 +205,21 @@ QWORD getEntry64(char* pe) {
 
 
 
-QWORD getImageBase64(char* pFileBuff)
+QWORD getImageBase64(char* file)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(pFileBuff + pDos->e_lfanew);
+	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)file;
+	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(file + pDos->e_lfanew);
 	QWORD imagebase = pNt->OptionalHeader.ImageBase;
 
 	return imagebase;
 }
 
 //why need to modify imagebase？
-int setImageBase64(char* chBaseAddress)
+int setImageBase64(char* base)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(chBaseAddress + pDos->e_lfanew);
-	pNt->OptionalHeader.ImageBase = (QWORD)chBaseAddress;
+	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)base;
+	PIMAGE_NT_HEADERS64 pNt = (PIMAGE_NT_HEADERS64)(base + pDos->e_lfanew);
+	pNt->OptionalHeader.ImageBase = (QWORD)base;
 
 	return TRUE;
 }

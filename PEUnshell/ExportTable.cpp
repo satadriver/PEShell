@@ -1,4 +1,4 @@
-#include "ExportFunTable.h"
+#include "ExportTable.h"
 
 
 char* ExportFunTable::getAddrFromName(char* module, const char * funname) {

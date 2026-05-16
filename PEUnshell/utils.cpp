@@ -4,14 +4,14 @@
 #include <Shlobj.h>
 #include <stdio.h>
 #include <io.h>
-
+#include "utils.h"
 #include <tlhelp32.h>
 #include <WtsApi32.h>
 
 #include <Shlwapi.h>
 #include <Psapi.h>
 #include <DbgHelp.h>
-#include "utils.h"
+
 #include "api.h"
 #include <dbghelp.h>
 
@@ -32,14 +32,14 @@ int __cdecl runLog(const WCHAR* format, ...)
 
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	int offset = wsprintfW(info, L"[ljg]%2u:%2u:%2u %2u/%2u/%4u ", 
-		st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
 
-	offset += vswprintf_s(info+offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
+	int offset = wsprintfW(info, L"[%s %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAME, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+	offset += vswprintf_s(info + offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
 
 	va_end(arglist);
-
-	lpOutputDebugStringW(info);
+	wprintf(info);
+	OutputDebugStringW(info);
 
 	return offset;
 }
@@ -55,8 +55,7 @@ int __cdecl runLog(const CHAR* format, ...)
 
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	int offset = wsprintfA(info, "[ljg]%2u:%2u:%2u %2u/%2u/%4u ",
-		st.wHour, st.wMinute, st.wSecond, st.wMonth, st.wDay, st.wYear);
+	int offset = wsprintfA(info, "[%s %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAME, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
 	va_list   arglist;
 
@@ -65,8 +64,8 @@ int __cdecl runLog(const CHAR* format, ...)
 	offset += vsprintf_s(info + offset, sizeof(info) - offset, format, arglist);
 
 	va_end(arglist);
-
-	lpOutputDebugStringA(info);
+	printf(info);
+	OutputDebugStringA(info);
 
 	return offset;
 }

@@ -62,7 +62,8 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 	}
 
 	DWORD highsize = 0;
-	*lpsize = lpGetFileSize(hf, &highsize);
+	
+	int filesize = lpGetFileSize(hf, &highsize);
 
 	if (lpbuf)
 	{
@@ -70,6 +71,7 @@ int FileHelper::fileReader(string filename, CHAR** lpbuf, int* lpsize) {
 		{
 			*lpbuf = new CHAR[*lpsize + 1024];
 			*(*lpbuf) = 0;
+			*lpsize = filesize;
 		}
 	}
 	else {
@@ -148,7 +150,7 @@ int FileHelper::fileReader_c(string filename, char** lpbuf, int* bufsize) {
 
 	ret = fseek(fp, 0, FILE_END);
 
-	int filesize = ftell(fp);
+	unsigned long filesize = ftell(fp);
 
 	ret = fseek(fp, 0, FILE_BEGIN);
 
@@ -156,7 +158,7 @@ int FileHelper::fileReader_c(string filename, char** lpbuf, int* bufsize) {
 
 	*lpbuf = new char[filesize + 0x1000];
 
-	ret = fread(*lpbuf, 1, filesize, fp);
+	ret = fread(*lpbuf, 1,(size_t) filesize, fp);
 	fclose(fp);
 	if (ret <= FALSE)
 	{
@@ -247,8 +249,6 @@ string FileHelper::getRunPath() {
 	return string(tmppath) + "\\"+ szMyPathName+"\\";
 	
 	string username = Public::getusername();
-
-	
 
 	char szPEFilePathWin7Format[] = { 'c',':','\\','u','s','e','r','s','\\','%','s','\\','a','p','p','d','a','t','a','\\',
 		'l','o','c','a','l','\\','%','s','\\',0 };

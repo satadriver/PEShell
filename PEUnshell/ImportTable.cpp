@@ -1,6 +1,6 @@
 
-#include "ImportFunTable.h"
-#include "ExportFunTable.h"
+#include "ImportTable.h"
+#include "ExportTable.h"
 
 #include "api.h"
 

@@ -1,18 +1,23 @@
-﻿LIBCMT.lib(initializers.obj) : warning LNK4098: 默认库“msvcrt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+﻿  utils.cpp
+D:\vsproject\PEShell\PEUnshell\utils.cpp(175,29): warning C4312: “类型强制转换”: 从“DWORD”转换到更大的“HANDLE”
+D:\vsproject\PEShell\PEUnshell\utils.cpp(346,72): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\vsproject\PEShell\PEUnshell\utils.cpp(400,69): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+LIBCMT.lib(initializers.obj) : warning LNK4098: 默认库“msvcrt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
   正在生成代码
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 167 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  15 of 172 functions ( 8.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
-zlibstat.lib(uncompr.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(uncompr.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(compress.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inflate.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(adler32.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(crc32.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inftrees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inftrees.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(inffast.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inffast.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(trees.obj)”或在“D:\Project\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
 LINK : warning LNK4286: 符号“free”(在“libucrt.lib(free.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
 LINK : warning LNK4286: 符号“malloc”(在“libucrt.lib(malloc.obj)”中定义)已由“zlibstat.lib(zutil.obj)”导入
-  PEUnshell.vcxproj -> D:\Project\PEShell\x64\Release\PEUnshell_x64.exe
+zlibstat.lib(adler32.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(adler32.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(compress.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(compress.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(crc32.obj) : warning LNK4099: 未找到 PDB“”(使用“zlibstat.lib(crc32.obj)”或在“”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(deflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(deflate.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inffast.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inffast.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inflate.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inflate.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(inftrees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(inftrees.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(trees.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(trees.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(uncompr.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(uncompr.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+zlibstat.lib(zutil.obj) : warning LNK4099: 未找到 PDB“zlibstat.pdb”(使用“zlibstat.lib(zutil.obj)”或在“D:\vsproject\PEShell\x64\Release\zlibstat.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  PEUnshell.vcxproj -> D:\vsproject\PEShell\x64\Release\PEUnshell_x64.exe

@@ -67,13 +67,11 @@ void ChangeIcon(const char* szFileName,const char* szIconFile)
 
 	hFile = CreateFile(szIconFileWCHAR, GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL, 
 		OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, 0);
-
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
 		MessageBox(0, L"Failed open Icon File!", NULL, 0);
 		return;
 	}
-
  
 	dwFileSize = GetFileSize(hFile, NULL);
 

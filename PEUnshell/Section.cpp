@@ -3,7 +3,7 @@
 #include "FileHelper.h"
 #include "compress.h"
 #include "crypto.h"
-
+#include "LoadPE.h"
 #include <iostream>
 
 using namespace std;
@@ -14,15 +14,28 @@ using namespace std;
 int Section::unshellSection(char* module, const char* secname) {
 	int ret = 0;
 
-	char szinfo[1024];
+	int seccnt = 0;
+	PIMAGE_SECTION_HEADER sections = 0;
+	int bits = GetPeBits(module);
+	if (bits == 32) {
+		PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
+		PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
+		int segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
+		sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
+		seccnt = nt->FileHeader.NumberOfSections;
+	}
+	else if (bits == 64) {
+		PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
+		PIMAGE_NT_HEADERS64 nt = (PIMAGE_NT_HEADERS64)((char*)dos + dos->e_lfanew);
+		int segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
+		sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
+		seccnt = nt->FileHeader.NumberOfSections;
+	}
+	else {
+		return 0;
+	}
 
-	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
-	int segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
-	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
-	int secscnt = nt->FileHeader.NumberOfSections;
-
-	for (int i = secscnt; i >= 0; i--)
+	for (int i = seccnt; i >= 0; i--)
 	{
 		if (lstrcmpiA((char*)sections[i].Name, secname) == 0)
 		{

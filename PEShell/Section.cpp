@@ -5,35 +5,36 @@
 #include "crypto.h"
 #include "PEParser.h"
 #include <iostream>
+#include "Public.h"
 
 
 using namespace std;
 
 
-string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfiles[MAX_FILE_COUNT][MAX_PATH], 
-	int srcfilescnt,string path, char* outname,unsigned char* key ) {
+string Section::insertSection(int type, int cpu_arch, const char* secname, const char srcfile[MAX_FILE_COUNT][MAX_PATH], 
+	int filecnt,string path, char* outname,unsigned char* key ) {
 	int ret = 0;
 
 	int blocksize = 0;
-	unsigned char* block = Crypto::makeDataBlock(type, srcfiles, srcfilescnt,path.c_str(),key, blocksize);
+	unsigned char* block = Crypto::makeDataBlock(type, srcfile, filecnt,path.c_str(),key, blocksize);
 	if (block <= 0)
 	{
-		printf("makeDataBlock error\r\n");
+		log("%s %d makeDataBlock error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 
 	string newfilename = outname;
 	//DeleteFileA(newfilename.c_str());
 
-	char szcurdir[MAX_PATH] = { 0 };
-	ret = GetModuleFileNameA(0, szcurdir, MAX_PATH);
-	char* pos = strrchr((char*)szcurdir, '\\');
+	char mfn[MAX_PATH] = { 0 };
+	ret = GetModuleFileNameA(0, mfn, MAX_PATH);
+	char* pos = strrchr((char*)mfn, '\\');
 	if (pos > 0)
 	{
 		*(pos + 1) = 0;
 	}
 
-	string srcfilename = szcurdir;
+	string srcfilename = mfn;
 	if (type == MEM_RUN_EXE)
 	{
 		if (cpu_arch == 32)
@@ -78,7 +79,6 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 		return "";
 	}
 
-
 	// 	ret = CopyFileA(srcfilename.c_str(), newfilename.c_str(), 0);
 	// 	if (ret <= 0)
 	// 	{
@@ -91,14 +91,14 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	ret = FileHelper::fileReader(srcfilename.c_str(), &lpdata, &filesize);
 	if (ret <= 0)
 	{
-		printf("fileReader file:%s error:%u\r\n", srcfilename.c_str(), GetLastError());
+		log("%s %d fileReader file:%s error:%u\r\n", __FUNCTION__, __LINE__, srcfilename.c_str(), GetLastError());
 		return "";
 	}
 
 	ret = PEParser::isPE(lpdata);
 	if (ret <= 0)
 	{
-		printf("file:%s is not pe format\r\n", srcfilename.c_str());
+		log("%s %d file:%s not excutable file format\r\n", __FUNCTION__, __LINE__,srcfilename.c_str());
 		return "";
 	}
 
@@ -119,7 +119,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	while (lastsec->SizeOfRawData == 0 || lastsec->Misc.VirtualSize == 0 || lastsec->VirtualAddress == 0 || lastsec->PointerToRawData == 0)
 	{
 		lastsec--;
-		printf("the last section is not correct,please check it\r\n");
+		printf("%s %d last section format error\r\n", __FUNCTION__, __LINE__);
 
 		if (lastsec <= sechdr)
 		{
@@ -129,7 +129,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 
 	if (memcmp(sections->Name, "\x00\x00\x00\x00\x00\x00\x00\x00", 8))
 	{
-		printf("the last section is not correct,please check it\r\n");
+		printf("%s %d last section format error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 

@@ -26,31 +26,22 @@ using namespace std;
 //1 linker->cmdline /DYNAMICBASE /FIXED
 //2  #pragma comment(linker,"/BASE:0X400000")
 
-DWORD gRegEax = 0;
-DWORD gRegEcx = 0;
-DWORD gRegEdx = 0;
-DWORD gRegEbx = 0;
-DWORD gRegEsp = 0;
-DWORD gRegEbp = 0;
-DWORD gRegEsi = 0;
-DWORD gRegEdi = 0;
 
-int gType = 0;
-HMODULE ghPEModule = 0;
-int gPEImageSize = 0;
+
+
 
 extern "C" int asmSingleTrap();
 
 extern "C" int asmInt1Proc();
 
+
+
 char* ghThisHandle = 0;
-HINSTANCE ghprevInstance = 0;
+HINSTANCE ghPrevInstance = 0;
 LPSTR glpCmdLine = 0;
 int gnShowCmd = 0;
 
-ptrmain glpmain = 0;
-ptrDllMainEntry glpDllMainEntry = 0;
-ptrWinMain glpWinMain = 0;
+
 
 HANDLE g_mutex_handle = 0;
 
@@ -59,18 +50,6 @@ HANDLE g_mutex_handle = 0;
 #ifdef _WINDLL
 int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOID lpvReserved) {
 
-#ifndef _WIN64
-	__asm {
-		mov gRegEax, eax
-		mov gRegEcx, ecx
-		mov gRegEdx, edx
-		mov gRegEbx, ebx
-		mov gRegEbp, ebp
-		mov gRegEsp, esp
-		mov gRegEsi, esi
-		mov gRegEdi, edi
-	}
-#endif
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
 		int ret = 0;
@@ -106,18 +85,7 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 }
 #else
 int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
-#ifndef _WIN64
-	__asm {
-		mov gRegEax, eax
-		mov gRegEcx, ecx
-		mov gRegEdx, edx
-		mov gRegEbx, ebx
-		mov gRegEbp, ebp
-		mov gRegEsp, esp
-		mov gRegEsi, esi
-		mov gRegEdi, edi
-	}
-#endif
+
 	int ret = 0;
 
 	ret = VM::delay(VM_EVASION_DELAY);
@@ -172,7 +140,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	//Debug::attach();
 
 	ghThisHandle = (char*)hInstance;
-	ghprevInstance = hPrevInstance;
+	ghPrevInstance = hPrevInstance;
 	glpCmdLine = lpCmdLine;
 	gnShowCmd = nShowCmd;
 

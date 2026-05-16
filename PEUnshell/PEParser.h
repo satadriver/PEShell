@@ -60,10 +60,7 @@ public:
 #define IMAGE_FILE_BYTES_REVERSED_HI         0x8000  // Bytes of machine word are reversed.
 */
 
-//DllCharacteristics; // DllMain()函数何时被调用，默认为 0
-//MajorOperatingSystemVersion; // 要求操作系统最低版本号的主版本号
-//MajorImageVersion; // 可运行于操作系统的主版本号
-//SizeOfImage 内存中整个PE映像体的尺寸。它是所有头和节经过节对齐处理后的大小。
+
 
 /*
 #define IMAGE_SUBSYSTEM_WINDOWS_GUI          2   // Image runs in the Windows GUI subsystem.

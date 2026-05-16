@@ -20,7 +20,6 @@ extern "C" __declspec(dllexport) void *__stdcall SetCommandLine(void *Src);
 
 extern "C" __declspec(dllexport) int __stdcall ShowMessage(int a1);
 
-
 //http://www.dependencywalker.com/ dependencyœ¬‘ÿµÿ÷∑
 #ifdef DLLHIJACK_LIBCURL
 extern "C" __declspec(dllexport) int __cdecl curl_easy_cleanup(int a1);

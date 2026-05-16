@@ -19,6 +19,7 @@ public:
 	static int getDataMd5(char * lpdata, int size, char * szmd5, int lowercase);
 
 	static void Crypto::revertkey(unsigned char * key);
+
 	static void Crypto::getkey(unsigned char * key);
 
 	static int Crypto::releaseFiles(const char * data, int size);

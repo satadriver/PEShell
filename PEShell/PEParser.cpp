@@ -18,6 +18,20 @@ int PEParser::isPE(const char * data) {
 }
 
 
+int GetPeBits(char* data) {
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)data;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(data + dos->e_lfanew);
+	WORD magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b) {
+		return 32;
+	}
+	else if (magic == 0x20b) {
+		return 64;
+	}
+	return 0;
+}
+
+
 
 int PEParser::getPEArch(const char * pedata) {
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pedata;
@@ -226,22 +240,22 @@ DWORD PEParser::checksumPE(unsigned char * data, int datasize) {
 		clc
 		cal_checksum :
 		adc ax, word ptr[esi]
-			inc esi
-			inc esi
-			loop cal_checksum
-			adc ax, 0
+		inc esi
+		inc esi
+		loop cal_checksum
+		adc ax, 0
 
-			pop ecx
-			test ecx, 1
-			jz __end
-			xor edi, edi
-			movzx di, byte ptr[esi]
-			clc
-			add ax, di
-			__end :
+		pop ecx
+		test ecx, 1
+		jz __end
+		xor edi, edi
+		movzx di, byte ptr[esi]
+		clc
+		add ax, di
+		__end :
 		add eax, ebx;
 		mov checksum, eax
-			popad
+		popad
 	}
 #endif
 	return checksum;

@@ -18,10 +18,9 @@
 
 
 
-unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt, 
-	const char * outpath,unsigned char * key,int& dstdatasize)
+unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUNT][MAX_PATH], int cnt, const char * outpath,
+	unsigned char * key,int& dstsize)
 {
-
 	int ret = 0;
 
 	int dstbufsize = 0;
@@ -32,7 +31,7 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 		int fz = FileHelper::GetFileSize(fn);
 		dstbufsize += fz;
 		allfSize[i] = fz;
-		printf("file name:%s size:%d\r\n", filename[i], fz);
+		log("%s %s %d file name:%s size:%d\r\n",__FILE__,__FUNCTION__,__LINE__, filename[i], fz);
 	}
 	dstbufsize += 0x100000;
 
@@ -67,7 +66,7 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 			if (ret != 0)
 			{
 				delete []dstblock;
-				printf("compress file:%s error:%u\r\n", filename[i], GetLastError());
+				log("%s %d compress file:%s error:%u\r\n", __FUNCTION__, __LINE__, filename[i], ret);
 				return 0;
 			}
 			fd->compSize = compsize;
@@ -77,14 +76,14 @@ unsigned char* Crypto::makeDataBlock(int type, const char filename[MAX_FILE_COUN
 		}
 		else {
 			delete[] dstblock;
-			printf("%s read file:%s error\r\n",__FUNCTION__, filename[i]);
+			log("%s read file:%s error\r\n",__FUNCTION__, filename[i]);
 			return 0;
 		}
 	}
 
-	dstdatasize = (unsigned char*)fd - dstblock;
+	dstsize = (unsigned char*)fd - dstblock;
 
-	CryptData(dstblock + 4 + CRYPT_KEY_SIZE, dstdatasize - 4 - CRYPT_KEY_SIZE, blk->key, CRYPT_KEY_SIZE);
+	CryptData(dstblock + 4 + CRYPT_KEY_SIZE, dstsize - 4 - CRYPT_KEY_SIZE, blk->key, CRYPT_KEY_SIZE);
 
 	//revertkey(key);
 

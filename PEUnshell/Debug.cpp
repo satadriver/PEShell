@@ -70,6 +70,8 @@ int __stdcall attachSelf(VOID *param) {
 	return 0;
 }
 
+
+
 int __stdcall Debug::attach() {
 	HANDLE ht = lpCreateThread(0, 0, (LPTHREAD_START_ROUTINE)attachSelf, 0, 0, 0);
 	if (ht)
@@ -82,11 +84,6 @@ int __stdcall Debug::attach() {
 
 
 
-
-
-
-
-//请求获取特权
 BOOL SetPrivilege(LPCTSTR lpszPrivilege, BOOL bEnable = TRUE)
 {
 
@@ -134,7 +131,7 @@ __EXIT:
     }
     return bRet;
 }
-//设置所有的特权，用户权限下大部分都是获取不到的
+
 VOID ElevationPrivilege()
 {
 

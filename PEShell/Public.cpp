@@ -295,3 +295,52 @@ int GetPathFromFullName(const char* strFullName, char* strDst)
 }
 
 
+int __cdecl log(const WCHAR* format, ...)
+{
+	int result = 0;
+
+	WCHAR info[2048];
+
+	va_list   arglist;
+
+	va_start(arglist, format);
+
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+
+	int offset = wsprintfW(info, L"[%s %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAME, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+	offset += vswprintf_s(info + offset, sizeof(info) / sizeof(WCHAR) - offset, format, arglist);
+
+	va_end(arglist);
+	wprintf(info);
+	OutputDebugStringW(info);
+
+	return offset;
+}
+
+
+
+
+int __cdecl log(const CHAR* format, ...)
+{
+	int result = 0;
+
+	CHAR info[2048];
+
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	int offset = wsprintfA(info, "[%s %4u/%2u/%2u %2u:%2u:%2u] ", PROJECT_NAME, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+	va_list   arglist;
+
+	va_start(arglist, format);
+
+	offset += vsprintf_s(info + offset, sizeof(info) - offset, format, arglist);
+
+	va_end(arglist);
+	printf(info);
+	OutputDebugStringA(info);
+
+	return offset;
+}

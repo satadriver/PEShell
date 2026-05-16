@@ -9,6 +9,12 @@
 
 #define DEFAULT_PE_BASE_ADDRESS		0x400000
 
+
+int GetPeBits(char* data);
+int GetPeType(const char* pedata);
+
+unsigned long long GetImageEntry(char* module);
+
 class LoadPE {
 public:
 	static int __stdcall LoadPE::load(const char *szFileName);

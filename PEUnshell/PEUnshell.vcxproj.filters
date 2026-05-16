@@ -36,10 +36,10 @@
     <ClCompile Include="LoadPE.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ExportFunTable.cpp">
+    <ClCompile Include="ExportTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImportFunTable.cpp">
+    <ClCompile Include="ImportTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PEParser.cpp">
@@ -101,10 +101,10 @@
     <ClInclude Include="LoadPE.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ExportFunTable.h">
+    <ClInclude Include="ExportTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ImportFunTable.h">
+    <ClInclude Include="ImportTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PEParser.h">

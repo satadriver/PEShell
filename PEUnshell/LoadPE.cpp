@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include "LoadPE.h"
 #include "PEParser.h"
-#include "ExportFunTable.h"
-#include "ImportFunTable.h"
+#include "ExportTable.h"
+#include "ImportTable.h"
 #include "Reloc.h"
 #include "Public.h"
 #include "FileHelper.h"
@@ -11,40 +11,106 @@
 #include "api.h"
 #include "pe64.h"
 #include "utils.h"
-//#define _MYDEBUG
+
 
 PIMAGE_EXPORT_DIRECTORY pThisEAT = 0;
 
 
-QWORD LoadPE::GetSizeOfImage(char* pFileBuff)
-{
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-#ifdef _WIN64
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
-	DWORD dwSizeOfImage = pNt->OptionalHeader.SizeOfImage;
-#else
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
-	DWORD dwSizeOfImage = pNt->OptionalHeader.SizeOfImage;
-#endif
-	return dwSizeOfImage;
+int GetPeBits(char* data) {
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)data;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(data + dos->e_lfanew);
+	WORD magic = nt->OptionalHeader.Magic;
+	if(magic == 0x10b){
+		return 32;
+	}
+	else if (magic == 0x20b) {
+		return 64;
+	}
+	return 0;
 }
 
 
-ULONGLONG LoadPE::GetImageBase(char* pFileBuff)
-{
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
-	ULONGLONG imagebase = pNt->OptionalHeader.ImageBase;
-
-	return imagebase;
+int GetPeType(const char* pedata) {
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pedata;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pedata + dos->e_lfanew);
+	int c = nt->FileHeader.Characteristics;
+	if (c & 0x2000) {
+		return 2;
+	}
+	else if (c & 2) {
+		return 1;
+	}
+	
+	return 0;
 }
 
-//why need to modify imagebase？
-int LoadPE::SetImageBase(char* chBaseAddress)
+unsigned long long GetImageEntry(char* module) {
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)module;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(module + dos->e_lfanew);
+	int magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b) {
+		return (unsigned long long)(module + nt->OptionalHeader.AddressOfEntryPoint);
+	}
+	else if (magic == 0x20b) {
+		PIMAGE_NT_HEADERS64 nt64 = (PIMAGE_NT_HEADERS64)(module + dos->e_lfanew);
+		return (unsigned long long)(module + nt64->OptionalHeader.AddressOfEntryPoint);
+	}
+	return 0;
+}
+
+QWORD LoadPE::GetSizeOfImage(char* pe)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	pNt->OptionalHeader.ImageBase = (ULONGLONG)chBaseAddress;
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pe;
+
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pe + dos->e_lfanew);
+	int magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b)
+	{
+		return  nt->OptionalHeader.SizeOfImage;
+	}
+	else if (magic == 0x20b) {
+		PIMAGE_NT_HEADERS64 nt64 = (PIMAGE_NT_HEADERS64)(pe + dos->e_lfanew);
+		return nt64->OptionalHeader.SizeOfImage;
+	}
+	return 0;
+}
+
+
+ULONGLONG LoadPE::GetImageBase(char* pe)
+{
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pe;
+
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pe + dos->e_lfanew);
+	int magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b)
+	{
+		return  nt->OptionalHeader.ImageBase;
+	}
+	else if (magic == 0x20b) {
+		PIMAGE_NT_HEADERS64 nt64 = (PIMAGE_NT_HEADERS64)(pe + dos->e_lfanew);
+		return nt64->OptionalHeader.ImageBase;
+	}
+
+	return 0;
+}
+
+
+
+
+int LoadPE::SetImageBase(char* pe)
+{
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pe;
+
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pe + dos->e_lfanew);
+	int magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b)
+	{
+		nt->OptionalHeader.ImageBase =(DWORD) pe;
+	}
+	else if (magic == 0x20b) {
+		PIMAGE_NT_HEADERS64 nt64 = (PIMAGE_NT_HEADERS64)(pe + dos->e_lfanew);
+		nt64->OptionalHeader.ImageBase = (QWORD)pe;
+	}
 
 	return TRUE;
 }
@@ -226,29 +292,47 @@ int LoadPE::RelocationTable(char* chBaseAddress)
 	return TRUE;
 }
 
-int LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
+
+
+
+
+int LoadPE::MapFile(char* pefile, char* buf)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)pFileBuff;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(pFileBuff + pDos->e_lfanew);
+	PIMAGE_SECTION_HEADER sections = 0;
+	int seccnt = 0;
 
-	memcpy(chBaseAddress, pFileBuff, pNt->OptionalHeader.SizeOfHeaders);
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)pefile;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(pefile + dos->e_lfanew);
+	int magic = nt->OptionalHeader.Magic;
+	if (magic == 0x10b) {
+		sections = IMAGE_FIRST_SECTION(nt);
+		memcpy(buf, pefile, nt->OptionalHeader.SizeOfHeaders);
+		seccnt = nt->FileHeader.NumberOfSections;
+	}
+	else if (magic == 0x20b) {
+		PIMAGE_NT_HEADERS64 nt64 = (PIMAGE_NT_HEADERS64)(pefile + dos->e_lfanew);
+		sections = IMAGE_FIRST_SECTION(nt64);
+		memcpy(buf, pefile, nt64->OptionalHeader.SizeOfHeaders);
+		seccnt = nt64->FileHeader.NumberOfSections;
+	}
+	else {
+		return 0;
+	}
 
-	PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION(pNt);
-	int nNumerOfSections = pNt->FileHeader.NumberOfSections;
-	for (int i = 0; i < nNumerOfSections; i++, pSection++)
+	for (int i = 0; i < seccnt; i++, sections++)
 	{
-		if ((0 == pSection->VirtualAddress) ||(0 == pSection->SizeOfRawData))
+		if ((0 == sections->VirtualAddress) ||(0 == sections->SizeOfRawData))
 		{
 			continue;
 		}
 
-		char* chDestMem = (char*)(chBaseAddress + pSection->VirtualAddress);
-		char* chSrcMem = (char*)(pFileBuff + pSection->PointerToRawData);
+		char* dst = (char*)(buf + sections->VirtualAddress);
+		char* src = (char*)(pefile + sections->PointerToRawData);
 
-		memcpy(chDestMem, chSrcMem, pSection->SizeOfRawData);
+		memcpy(dst, src, sections->SizeOfRawData);
 	}
 
-	return TRUE;
+	return seccnt;
 }
 
 
@@ -256,7 +340,7 @@ int LoadPE::MapFile(char* pFileBuff, char* chBaseAddress)
 BOOL SetupConsole() {
 	INT ret = 0;
 	if (!AllocConsole()) {
-		runLog("[ljg] AllocConsole failed (%d)\n", GetLastError());
+		runLog("AllocConsole failed (%d)\n", GetLastError());
 		return FALSE;
 	}
 
@@ -282,15 +366,13 @@ BOOL SetupConsole() {
 
 
 
-int LoadPE::CallConsoleEntry(char* chBaseAddress)
+int LoadPE::CallConsoleEntry(char* module)
 {
 	int ret = 0;
 
 	ret = SetupConsole();
 
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	glpmain = (ptrmain)(chBaseAddress + pNt->OptionalHeader.AddressOfEntryPoint);
+	ptrmain lpmain = (ptrmain)GetImageEntry(module);
 
 	char szparams[16][256] = { 0 };	//not [1024][16]
 	int iArgc = 0;
@@ -305,42 +387,18 @@ int LoadPE::CallConsoleEntry(char* chBaseAddress)
 			runLog("run console param:%s\r\n", szparam);
 		}
 	}
-#ifndef _WIN64
-	__asm {
-		mov eax, gRegEax
-		mov ecx, gRegEcx
-		mov edx, gRegEdx
-		mov ebx, gRegEbx
-		//mov ebp, gRegEbp
-		//mov esp, gRegEsp
-		mov esi, gRegEsi
-		mov edi, gRegEdi
-	}
-#endif
-	ret = glpmain(iArgc, (char**)szparams);
+
+	ret = lpmain(iArgc, (char**)szparams);
 
 	return ret;
 }
 
 
-int LoadPE::CallDllEntry(char* chBaseAddress)
+int LoadPE::CallDllEntry(char* module)
 {
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	glpDllMainEntry = (ptrDllMainEntry)(chBaseAddress + pNt->OptionalHeader.AddressOfEntryPoint);
-#ifndef _WIN64
-	__asm {
-		mov eax, gRegEax
-		mov ecx, gRegEcx
-		mov edx, gRegEdx
-		mov ebx, gRegEbx
-		//mov ebp, gRegEbp
-		//mov esp, gRegEsp
-		mov esi, gRegEsi
-		mov edi, gRegEdi
-	}
-#endif
-	int ret = glpDllMainEntry((char*)chBaseAddress, DLL_PROCESS_ATTACH, 0);
+	ptrDllMainEntry dllmain = (ptrDllMainEntry) GetImageEntry(module);
+
+	int ret = dllmain((char*)module, DLL_PROCESS_ATTACH, 0);
 
 	return ret;
 }
@@ -350,171 +408,102 @@ int LoadPE::CallDllEntry(char* chBaseAddress)
 //MajorLinkerVersion和MinorLinkerVersion是链接器版本的高位和低位 14.0 = vs2015
 //MajorSubsystemVersion、MinorSubsystemVersion 5.01 = xp
 //Subsystem IMAGE_SUBSYSTEM_WINDOWS_CUI=3  IMAGE_SUBSYSTEM_WINDOWS_GUI =2
-int LoadPE::CallExeEntry(char* chBaseAddress)
+int LoadPE::CallExeEntry(char* module)
 {
 	int callret = 0;
-	PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS pNt = (PIMAGE_NT_HEADERS)(chBaseAddress + pDos->e_lfanew);
-	glpWinMain = (ptrWinMain)(chBaseAddress + pNt->OptionalHeader.AddressOfEntryPoint);
-// 	__asm
-// 	{
-// 		mov eax, glpWinMain
-// 		jmp eax
-// 		mov callret,eax
-// 	}
-#ifdef _MYDEBUG
-	char szout[1024];
-	wsprintfA(szout, "base:%x,entry:%x", chBaseAddress, glpWinMain);
-	MessageBoxA(0, szout, szout, MB_OK);
-#endif
+
+	ptrWinMain lpWinMain = (ptrWinMain)GetImageEntry(module);
 
 	__try {
-#ifndef _WIN64
-		__asm {
-			mov eax,gRegEax
-			mov ecx,gRegEcx
-			mov edx,gRegEdx
-			mov ebx,gRegEbx
-			//mov ebp,gRegEbp
-			//mov esp,gRegEsp
-			mov esi,gRegEsi
-			mov edi,gRegEdi
-		}
-#endif
-		runLog("run exe address:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n", 
-			chBaseAddress,ghprevInstance,glpCmdLine,gnShowCmd);
-		callret = glpWinMain((HINSTANCE)chBaseAddress, ghprevInstance, glpCmdLine, gnShowCmd);
+		runLog("run exe address:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n", module,ghPrevInstance,glpCmdLine,gnShowCmd);
+
+		callret = lpWinMain((HINSTANCE)module, ghPrevInstance, glpCmdLine, gnShowCmd);
 	}
 	__except (1) {
-
-		runLog("run exe exception:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n",
-			chBaseAddress, ghprevInstance, glpCmdLine, gnShowCmd);
+		runLog("run exe exception:%p,hinstance:%x,cmdline:%p,showmode:%d\r\n", module, ghPrevInstance, glpCmdLine, gnShowCmd);
 	}
 
 	return callret;
 }
 
 
-int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
+int LoadPE::RunPE(char* fbuf, DWORD fs)
 {
 	int ret = 0;
 
-	char szout[1024];
-	
-	unsigned __int64 dwSizeOfImage = GetSizeOfImage(pFileBuff);
+	int bits = GetPeBits(fbuf);
 
-	ULONGLONG imagebase = GetImageBase(pFileBuff);
+	unsigned __int64 imagesize = GetSizeOfImage(fbuf);
+
+	ULONGLONG imagebase = GetImageBase(fbuf);
 	if (imagebase <= 0)
 	{
 		imagebase = DEFAULT_PE_BASE_ADDRESS;
 	}
 
-#ifdef _MYDEBUG
-	wsprintfA(szout, "image base:%x,size:%x", imagebase, dwSizeOfImage);
-	MessageBoxA(0, szout, szout, MB_OK);
-#endif
-
-	//使用MEM_RESERVE分配类型参数 Windows会以64 KB为边界计算该区域的起始地址 跟PE文件加载边界一致
-	//使用MEM_COMMIT分配类型参数 区域的起始和结束地址都被计算到4KB边界
-	//VirtualAlloc 当程序访问这部分内存时RAM内存才会被真正分配
-	char* chBaseAddress = (char*)lpVirtualAlloc((char*)imagebase, (DWORD)dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-	if (NULL == chBaseAddress)
+	char* base = (char*)lpVirtualAlloc((char*)imagebase, (DWORD)imagesize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	if (NULL == base)
 	{
-#ifdef _MYDEBUG
-		wsprintfA(szout, "VirtualAlloc address:%x error", imagebase);
-		MessageBoxA(0, szout, szout, MB_OK);
-#endif
-		chBaseAddress = (char*)lpVirtualAlloc(0, (DWORD)dwSizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		if (NULL == chBaseAddress)
+		base = (char*)lpVirtualAlloc(0, (DWORD)imagesize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		if (NULL == base)
 		{
-#ifdef _MYDEBUG
-			wsprintfA(szout, "VirtualAlloc address:%x error", imagebase);
-			MessageBoxA(0, szout, szout, MB_OK);
-#endif
+			runLog("VirtualAlloc address:%x error", imagebase);
 			return NULL;
 		}
 	}
 
-	RtlZeroMemory(chBaseAddress, (DWORD)dwSizeOfImage);
+	RtlZeroMemory(base, (DWORD)imagesize);
 
-#ifdef _WIN64
-	ret = mapFile64(pFileBuff, chBaseAddress);
-	ret = importTable64(chBaseAddress);
-	ret = relocTable64(chBaseAddress, (ULONGLONG)chBaseAddress);
+	if (bits == 64) {
+		ret = mapFile64(fbuf, base);
+		ret = importTable64(base);
+		ret = relocTable64(base, (ULONGLONG)base);
+	}
+	else if (bits == 32) {
+		ret = MapFile(fbuf, base);
+		//Reloc::recovery((DWORD)base);
+		ret = RelocationTable(base);
 
-#else
-	ret = MapFile(pFileBuff, chBaseAddress);
-	//Reloc::recovery((DWORD)chBaseAddress);
-	ret = RelocationTable(chBaseAddress);
-
-	//ImportFunTable::recover((DWORD)chBaseAddress);
-	ret = ImportTable(chBaseAddress);
-#endif
-
-	
+		//ImportTable::recover((DWORD)base);
+		ret = ImportTable(base);
+	}
 
 	DWORD dwOldProtect = 0;
-	if (FALSE == lpVirtualProtect(chBaseAddress, (DWORD)dwSizeOfImage, PAGE_EXECUTE_READWRITE, &dwOldProtect))
+	if (FALSE == lpVirtualProtect(base, (DWORD)imagesize, PAGE_EXECUTE_READWRITE, &dwOldProtect))
 	{
-		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT|MEM_RELEASE);
-		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
-#ifdef _MYDEBUG
-		wsprintfA(szout, "VirtualProtect address:%x error", imagebase);
-		MessageBoxA(0, szout, szout, MB_OK);
-#endif
+		lpVirtualFree(base, (DWORD)imagesize, MEM_DECOMMIT|MEM_RELEASE);
+		lpVirtualFree(base, 0, MEM_RELEASE);
+		runLog( "VirtualProtect address:%x error", imagebase);
 		return NULL;
 	}
-#ifdef _WIN64
-	ret = setImageBase64(chBaseAddress);
-#else
-	ret = SetImageBase(chBaseAddress);
-#endif
 
-	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)chBaseAddress;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(chBaseAddress + dos->e_lfanew);
+	ret = SetImageBase(base);
 
-#ifdef _MYDEBUG
-	wsprintfA(szout, "pe type:%x", nt->FileHeader.Characteristics);
-	MessageBoxA(0, szout, szout, MB_OK);
-#endif
-
+	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)base;
+	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(base + dos->e_lfanew);
 	if (nt->OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_GUI)
 	{
 
 	}
 	else if (nt->OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI)
 	{
-		gType = 3;
-		ghPEModule = (HMODULE)chBaseAddress;
-		gPEImageSize = (DWORD)dwSizeOfImage;
-
-		ret = CallConsoleEntry(chBaseAddress);
-
-		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT);
-		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
+		ret = CallConsoleEntry(base);
+		lpVirtualFree(base, (DWORD)imagesize, MEM_DECOMMIT);
+		lpVirtualFree(base, 0, MEM_RELEASE);
 		return ret;
 	}
 
 	if (nt->FileHeader.Characteristics & 0x2000)
 	{
-		gType = 2;
-		gPEImageSize = (DWORD)dwSizeOfImage;
-		ghPEModule = (HMODULE)chBaseAddress;
-
-		ret = recoverEAT(chBaseAddress);
-		ret = CallDllEntry(chBaseAddress);
+		ret = recoverEAT(base);
+		ret = CallDllEntry(base);
 		return ret;
 	}
 	else {
-		gType = 1;
-		ghPEModule = (HMODULE)chBaseAddress;
-		gPEImageSize = (DWORD)dwSizeOfImage;
 
-		
-		ret = CallExeEntry(chBaseAddress);
-
-		lpVirtualFree(chBaseAddress, (DWORD)dwSizeOfImage, MEM_DECOMMIT);
-		lpVirtualFree(chBaseAddress, 0, MEM_RELEASE);
+		ret = CallExeEntry(base);
+		lpVirtualFree(base, (DWORD)imagesize, MEM_DECOMMIT);
+		lpVirtualFree(base, 0, MEM_RELEASE);
 		return ret;
 	}
 
@@ -522,22 +511,22 @@ int LoadPE::RunPE(char* pFileBuff, DWORD dwSize)
 }
 
 
-int LoadPE::load(const char *szFileName)
+int LoadPE::load(const char *fn)
 {
 	int ret = 0;
-	char * pData = 0;
-	int dwFileSize = 0;
-	ret = FileHelper::fileReader(szFileName, &pData, &dwFileSize);
+	char * file = 0;
+	int fs = 0;
+	ret = FileHelper::fileReader(fn, &file, &fs);
 	if (ret <= 0)
 	{
 		return FALSE;
 	}
 
-	if (PEParser::isPE(pData))
+	if (PEParser::isPE(file))
 	{
-		ret = RunPE(pData, dwFileSize);
+		ret = RunPE(file, fs);
 	}
 
-	delete[] pData;
+	delete[] file;
 	return 0;
 }
