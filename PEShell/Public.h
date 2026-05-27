@@ -73,6 +73,8 @@ typedef struct
 
 //#define offsetof(s, m) ((size_t)&((*s)0)->m)
 
+char* SearchBinary(char* data, int size, char* hdr, int hdrlen);
+
 int GetPathFromFullName(const char* strFullName, char* strDst);
 
 int __cdecl log(const CHAR* format, ...);

@@ -344,3 +344,15 @@ int __cdecl log(const CHAR* format, ...)
 
 	return offset;
 }
+
+
+
+char* SearchBinary(char* data, int size, char* hdr, int hdrlen) {
+	int pos = size - hdrlen;
+	for (int i = 0; i <= pos; i++) {
+		if (memcmp(data + i, hdr, hdrlen) == 0) {
+			return data + i;
+		}
+	}
+	return 0;
+}

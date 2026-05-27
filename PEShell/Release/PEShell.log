@@ -1,6 +1,4 @@
 ﻿  Public.cpp
-  Section.cpp
-  crypto.cpp
   main.cpp
   正在生成代码...
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)

@@ -1,6 +1,7 @@
 #include "FileHelper.h"
 #include "public.h"
 #include <dbghelp.h>
+#include "Public.h"
 
 #pragma comment(lib,"Dbghelp.lib")
 
@@ -170,4 +171,26 @@ int FileHelper::fileWriter(string filename, const char* lpdata, int datasize, in
 	}
 
 	return datasize;
+}
+
+
+int FileHelper::FileSearchSet(string fn, char* tag, int taglen, char* data, int size) {
+
+	char* file = 0;
+	int fs = 0;
+	int ret = 0;
+	int result = 0;
+	ret = fileReader(fn, &file, &fs);
+	if (ret == 0) {
+		return 0;
+	}
+
+	char* ptr = SearchBinary(file, fs, tag, taglen);
+	if (ptr) {
+		memcpy(ptr, data, size);
+		ret = fileWriter(fn, file, fs, 1);
+		result = TRUE;
+	}
+	delete file;
+	return result;
 }

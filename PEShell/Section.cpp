@@ -77,7 +77,8 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 				srcfilename += PESHELL_DLL_64;
 			}
 		}
-		return "";
+		else
+			return "";
 	}
 	else {
 		return "";
