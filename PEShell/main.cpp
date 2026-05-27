@@ -189,11 +189,11 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		int fnlen = strlen(fn);
 		if (lstrcmpA(fn + fnlen - 4, ".exe") == 0 || lstrcmpA(fn + fnlen - 4, ".dll") == 0) {
 			char* iptag = "this is ip address";
-			ret = FileHelper::FileSearchSet(fn, iptag, strlen(iptag), serverip, strlen(serverip)+1);
+			ret = FileHelper::FileSearchSet(fn, iptag, strlen(iptag)+1, serverip, strlen(serverip)+1);
 			if (ret)
 				log("%s %d write ip:%s in file:%s\r\n",__FUNCTION__,__LINE__, serverip,fn);
 			char* usertag = "this is user name";
-			ret = FileHelper::FileSearchSet(fn, usertag, strlen(usertag), username, strlen(username)+1);
+			ret = FileHelper::FileSearchSet(fn, usertag, strlen(usertag)+1, username, strlen(username)+1);
 			if (ret)
 				log("%s %d write username:%s in file:%s\r\n", __FUNCTION__, __LINE__, username, fn);
 		}

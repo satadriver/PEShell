@@ -1,5 +1,3 @@
-﻿  Public.cpp
-  main.cpp
-  正在生成代码...
+﻿  main.cpp
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
   PEShell.vcxproj -> D:\vsproject\PEShell\Release\PEShell.exe
