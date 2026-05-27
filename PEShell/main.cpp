@@ -79,7 +79,7 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		char* str = argv[seq];
 		if (lstrcmpiA(str, "-b") == 0 )
 		{
-			type = BIND_RELEASE_EXE;
+			type = BIND_RELEASE_PE;
 			cpu_arch = GetPeArch(argv[seq +1]);
 
 			int cpu_arch2 = GetPeArch(argv[seq + 2]);

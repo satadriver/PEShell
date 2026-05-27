@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetExt>.exe</TargetExt>
+    <TargetExt>$(TargetExt)</TargetExt>
     <IncludePath>../include;D:\vsproject\PEShell\PEShell\Include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformShortName)</TargetName>
   </PropertyGroup>
@@ -80,16 +80,17 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>../include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformShortName)</TargetName>
+    <TargetExt>$(TargetExt)</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetExt>.exe</TargetExt>
+    <TargetExt>$(TargetExt)</TargetExt>
     <IncludePath>../include;D:\vsproject\PEShell\PEShell\Include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetExt>.exe</TargetExt>
+    <TargetExt>$(TargetExt)</TargetExt>
     <IncludePath>../include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformShortName)</TargetName>
   </PropertyGroup>
@@ -179,7 +180,6 @@
     <ClCompile Include="Compress.cpp" />
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="DllExport.cpp" />
     <ClCompile Include="escape.cpp" />
     <ClCompile Include="ExportTable.cpp" />
     <ClCompile Include="FileHelper.cpp" />

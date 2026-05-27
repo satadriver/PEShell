@@ -57,9 +57,6 @@
     <ClCompile Include="escape.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DllExport.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="md5.c">
       <Filter>源文件</Filter>
     </ClCompile>

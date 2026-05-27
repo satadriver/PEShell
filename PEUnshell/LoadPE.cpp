@@ -500,7 +500,6 @@ int LoadPE::RunPE(char* fbuf, DWORD fs)
 		return ret;
 	}
 	else {
-
 		ret = CallExeEntry(base);
 		lpVirtualFree(base, (DWORD)imagesize, MEM_DECOMMIT);
 		lpVirtualFree(base, 0, MEM_RELEASE);

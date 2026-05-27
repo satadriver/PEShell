@@ -6,6 +6,7 @@
 #include "PEParser.h"
 #include <iostream>
 #include "Public.h"
+#include <string.h>
 
 
 using namespace std;
@@ -55,25 +56,28 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 			srcfilename += PESHELL_DLL_64;
 		}
 	}
-	else if (type == BIND_RELEASE_EXE)
+	else if (type == BIND_RELEASE_PE)
 	{
-		if (cpu_arch == 32)
-		{
-			srcfilename += PESHELL_EXE_32;
+		int nl = strlen(outname);
+		if (memcmp(outname + nl - 4, ".exe", 4) == 0) {
+			if (cpu_arch == 32)
+			{
+				srcfilename += PESHELL_EXE_32;
+			}
+			else {
+				srcfilename += PESHELL_EXE_64;
+			}
 		}
-		else {
-			srcfilename += PESHELL_EXE_64;
+		else if (memcmp(outname + nl - 4, ".dll", 4) == 0) {
+			if (cpu_arch == 32)
+			{
+				srcfilename += PESHELL_DLL_32;
+			}
+			else {
+				srcfilename += PESHELL_DLL_64;
+			}
 		}
-	}
-	else if (type == BIND_RELEASE_DLL)
-	{
-		if (cpu_arch == 32)
-		{
-			srcfilename += PESHELL_DLL_32;
-		}
-		else {
-			srcfilename += PESHELL_DLL_64;
-		}
+		return "";
 	}
 	else {
 		return "";
