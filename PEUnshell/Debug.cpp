@@ -3,8 +3,8 @@
 #include <windows.h>
 #include "utils.h"
 #include "api.h"
-
-
+#include <intrin.h>
+#include <stdio.h>
 
 
 bool Debug::isDebugged()
@@ -15,19 +15,19 @@ bool Debug::isDebugged()
 #endif
 
 #ifndef _WIN64
-		
-		__asm
-		{
-			mov eax, fs: [30h]
-			// 控制堆操作函数的工作方式的标志位
-			mov eax, [eax + 68h]
-			// 操作系统会加上这些标志位:FLG_HEAP_ENABLE_TAIL_CHECK, FLG_HEAP_ENABLE_FREE_CHECK and FLG_HEAP_VALIDATE_PARAMETERS
-			// 并集是x70
-			and eax, 0x70
-			mov result, eax
-		}
+		//return IsDebuggerPresent();
 
-		return result != 0;
+		char* pPeb = (char*)__readfsdword(0x30); // 获取PEB地址
+		// 检查 Heap Flags 和 ForceFlags
+		// 典型调试标志组合: (FLG_HEAP_ENABLE_TAIL_CHECK | FLG_HEAP_ENABLE_FREE_CHECK | FLG_HEAP_VALIDATE_PARAMETERS) = 0x70
+		// ForceFlags 正常为 0, 被调试时常为 0x40000060
+		if (*(PDWORD)((PBYTE)pPeb + 0x68) & 0x70) { // 检查 Heap->Flags
+			return TRUE;
+		}
+		if (*(PDWORD)((PBYTE)pPeb + 0x6C) & 0x70) { // 检查 Heap->ForceFlags
+			return TRUE;
+		}
+		return FALSE;
 #else
 		BOOL isDebuggeExist = false;
 		result = lpCheckRemoteDebuggerPresent(lpGetCurrentProcess(), &isDebuggeExist);
@@ -172,4 +172,89 @@ VOID ElevationPrivilege()
     SetPrivilege(SE_TIME_ZONE_NAME);
     SetPrivilege(SE_CREATE_SYMBOLIC_LINK_NAME);
     */
+}
+
+
+EXCEPTION_DISPOSITION NTAPI my_EXCEPTION_ROUTINE(EXCEPTION_RECORD* er, PVOID ef, CONTEXT* c, PVOID dc) {
+
+	MY_EXCEPTION_STRUCT* exp = (MY_EXCEPTION_STRUCT*)__readfsdword(0);
+
+	DWORD regebp = exp->ebp;
+	DWORD regesp = exp->esp;
+	DWORD regebx = exp->ebx;
+	DWORD regesi = exp->esi;
+	DWORD regedi = exp->edi;
+
+	c->Eip = (DWORD)exp->retaddr;
+	c->Esi = exp->esi;
+	c->Edi = exp->edi;
+	c->Esp = exp->esp;
+	c->Ebp = exp->ebp;
+	c->Ebx = exp->ebx;
+
+	__writefsdword(0, (DWORD)exp->exp.Next);
+
+	delete exp;
+
+	char buf[1024];
+	sprintf(buf, "exception tag:%s,address:%p,code:%x\r\n", exp->tag, er->ExceptionAddress, er->ExceptionCode);
+	//MessageBoxA(0, buf, buf, 0);
+	runLog(buf);
+
+	/*
+	__asm {
+		mov eax,[regebp]
+		mov ebp,eax
+		mov eax,[regesp]
+		mov esp,eax
+
+		mov esi,[regesi]
+		mov edi, [regedi]
+		mov ebx, [regebx]
+
+		mov esp,ebp
+		pop ebp
+		ret
+	}
+	*/
+
+	return ExceptionContinueExecution;
+}
+
+
+
+int Try(char* tag, char* retaddr) {
+	MY_EXCEPTION_STRUCT* exp = new MY_EXCEPTION_STRUCT;
+	exp->exp.Next = (_EXCEPTION_REGISTRATION_RECORD*)__readfsdword(0);
+	exp->exp.Handler = my_EXCEPTION_ROUTINE;
+
+	DWORD regesp = 0;
+	DWORD regebp = 0;
+	DWORD regebx = 0;
+	DWORD regesi = 0;
+	DWORD regedi = 0;
+
+	__asm {
+		mov eax, [ebp]
+		mov[regebp], eax
+
+		mov eax, ebp
+		add eax, 16
+		mov[regesp], eax
+
+		mov[regebx], ebx
+		mov[regesi], esi
+		mov[regedi], edi
+	}
+
+	exp->ebp = regebp;
+	exp->esp = regesp;
+	exp->ebx = regebx;
+	exp->esi = regesi;
+	exp->edi = regedi;
+	exp->retaddr = retaddr;
+
+	__writefsdword(0, (DWORD)exp);
+
+	return 0;
 }

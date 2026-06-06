@@ -14,8 +14,8 @@ public:
 };
 
 
-
+int ExceptionDetect();
 
 LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo);
 
-int exceptTest();
+int DivideZero();

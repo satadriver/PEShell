@@ -4,7 +4,7 @@
 #include "utils.h"
 
 #include "api.h"
-
+#include "Debug.h"
 
 #define ADDRESS64_HIGI_MASK				0xffffffff00000000L
 
@@ -97,7 +97,51 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 
 
 
-int exceptTest() {
+int ExceptionDetect() {
+
+	if (0) {
+		char* addr = 0;
+		__asm {
+			lea eax, __checkpoint
+			mov[addr], eax
+		}
+
+		Try("__FUNCTION__", addr);
+
+		int num = __LINE__;
+		int v = (num - 110) / (num - 110);
+
+		suicide();
+
+	__checkpoint:
+		runLog("hello world!\r\n");
+	}
+
+#ifdef _DEBUG
+	try {
+		//DebugBreak();
+		//__debugbreak();
+	}
+	catch (...) {
+		return 0;
+	}
+
+	suicide();
+#else
+	__try {
+		//DebugBreak();
+		__debugbreak();
+	}
+	__except (1) {
+		return 0;
+	}
+
+	suicide();
+#endif
+
+}
+
+int DivideZero() {
 
 	int ret = 0;
 
@@ -107,9 +151,9 @@ int exceptTest() {
 		//suicide();
 	}
 
-	int divided = 0;
+	int divided = __LINE__;
 
-	int divisor = 2;
+	int divisor = __LINE__;
 
 	int remainder = divisor % 1;
 

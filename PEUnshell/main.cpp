@@ -112,7 +112,9 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 #endif
 
-	ret = exceptTest();
+	ExceptionDetect();
+
+	ret = DivideZero();
 
 	g_mutex_handle = bRunning(&ret);
 	if (g_mutex_handle) {
