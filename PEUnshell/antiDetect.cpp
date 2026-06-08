@@ -10,6 +10,9 @@
 
 #define ADDRESS64_LOW_MASK				0xffffffffL
 
+
+#define MY_EXCEPTION_CODE				0X12345678
+
 AntiDetect::AntiDetect() {
 
 }
@@ -80,7 +83,7 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 #else
 		ULONG* lpdata = (ULONG*)(context->Ebp - 0x10);
 #endif
-		* lpdata = 1;
+		* lpdata = MY_EXCEPTION_CODE;
 
 		//record->ExceptionFlags = EXCEPTION_EXECUTE_HANDLER;
 
@@ -96,9 +99,8 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 }
 
 
-
 int ExceptionDetect() {
-
+	runLog("%s %d\r\n",__FUNCTION__,__LINE__);
 	if (0) {
 		char* addr = 0;
 		__asm {
@@ -109,7 +111,7 @@ int ExceptionDetect() {
 		Try("__FUNCTION__", addr);
 
 		int num = __LINE__;
-		int v = (num - 110) / (num - 110);
+		int v = (num - __LINE__ - 1) / (num - __LINE__ - 1);
 
 		suicide();
 
@@ -160,6 +162,9 @@ int DivideZero() {
 #ifndef _DEBUG
 	double quotient = divided / remainder;
 #endif
-
+	if (MY_EXCEPTION_CODE != quotient) {
+		//suicide();
+	}
+	
 	return ret;
 }

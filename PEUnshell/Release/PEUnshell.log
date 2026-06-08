@@ -1,6 +1,6 @@
 ﻿cl : 命令行 warning D9025: 正在重写“/sdl”(用“/GS-”)
   antiDetect.cpp
-D:\vsproject\PEShell\PEUnshell\antiDetect.cpp(68,7): warning C4101: “info”: 未引用的局部变量
-D:\vsproject\PEShell\PEUnshell\antiDetect.cpp(142): warning C4715: “ExceptionDetect”: 不是所有的控件路径都返回值
+D:\vsproject\PEShell\PEUnshell\antiDetect.cpp(71,7): warning C4101: “info”: 未引用的局部变量
+D:\vsproject\PEShell\PEUnshell\antiDetect.cpp(144): warning C4715: “ExceptionDetect”: 不是所有的控件路径都返回值
 LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/OPT:ICF”规范)
   PEUnshell.vcxproj -> D:\vsproject\PEShell\Release\PEUnshell_x86.exe

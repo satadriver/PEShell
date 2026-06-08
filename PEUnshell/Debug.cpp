@@ -176,7 +176,7 @@ VOID ElevationPrivilege()
 
 
 EXCEPTION_DISPOSITION NTAPI my_EXCEPTION_ROUTINE(EXCEPTION_RECORD* er, PVOID ef, CONTEXT* c, PVOID dc) {
-
+	runLog("%s %d\r\n", __FUNCTION__, __LINE__);
 	MY_EXCEPTION_STRUCT* exp = (MY_EXCEPTION_STRUCT*)__readfsdword(0);
 
 	DWORD regebp = exp->ebp;
@@ -255,6 +255,6 @@ int Try(char* tag, char* retaddr) {
 	exp->retaddr = retaddr;
 
 	__writefsdword(0, (DWORD)exp);
-
+	runLog("%s %d\r\n", __FUNCTION__, __LINE__);
 	return 0;
 }
