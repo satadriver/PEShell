@@ -11,7 +11,9 @@
 #define ADDRESS64_LOW_MASK				0xffffffffL
 
 
-#define MY_EXCEPTION_CODE				0X12345678
+#define MY_EXCEPTION_CODE				(0X12345678)
+
+ extern "C" void asmJunkCode();
 
 AntiDetect::AntiDetect() {
 
@@ -60,7 +62,8 @@ int  AntiDetect::checkHook() {
 	return 0;
 }
 
-
+int g_opcode_len = 2;
+char* g_exp_pc = 0;
 
 LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 {
@@ -74,24 +77,45 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 
 	if (record->ExceptionCode == STATUS_INTEGER_DIVIDE_BY_ZERO)
 	{
-		//wsprintfA(info, "error code:%x", record->ExceptionCode);
-		//MessageBoxA(0, info, info, MB_OK);
-
-		//context->Rip += 8;
+		
 #ifdef _WIN64
-		ULONG* lpdata = (ULONG*)(context->Rsp + 0x24);
+		unsigned char opcode = *(unsigned char*)context->Rip;
+		if (opcode == 0xf7 || opcode == 0xf6) {
+			if (g_exp_pc == 0)
+				g_exp_pc = (char*)context->Rip;
+			context->Rip = (DWORD64)g_exp_pc + g_opcode_len;
+		}
+		
+		ULONG* lpdata = (ULONG*)(context->Rsp + 0x24);		
+		//*lpdata = MY_EXCEPTION_CODE;
 #else
 		ULONG* lpdata = (ULONG*)(context->Ebp - 0x10);
+		//*lpdata = MY_EXCEPTION_CODE;
+		unsigned char opcode = *(unsigned char*)context->Eip;
+		if (opcode == 0xf7 || opcode == 0xf6) 
+		{
+			if(g_exp_pc == 0)
+				g_exp_pc = (char*) context->Eip;
+			context->Eip = (DWORD)g_exp_pc + g_opcode_len;
+		}
 #endif
-		* lpdata = MY_EXCEPTION_CODE;
-
 		//record->ExceptionFlags = EXCEPTION_EXECUTE_HANDLER;
 
 		//SetErrorMode(SEM_NOGPFAULTERRORBOX);
 
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
-	else {	
+	else if (record->ExceptionCode == STATUS_ILLEGAL_INSTRUCTION) {
+#ifdef _WIN64
+		unsigned char opcode = *(unsigned char*)context->Rip;
+		context->Rip++;
+#else
+		unsigned char opcode = *(unsigned char*)context->Eip;
+		context->Eip++;
+#endif
+		return EXCEPTION_CONTINUE_EXECUTION;
+	}
+	else {
 		suicide();
 	}
 
@@ -101,6 +125,8 @@ LONG __stdcall expHandler(_EXCEPTION_POINTERS* ExceptionInfo)
 
 int ExceptionDetect() {
 	runLog("%s %d\r\n",__FUNCTION__,__LINE__);
+
+#ifndef _WIN64
 	if (0) {
 		char* addr = 0;
 		__asm {
@@ -108,16 +134,19 @@ int ExceptionDetect() {
 			mov[addr], eax
 		}
 
-		Try("__FUNCTION__", addr);
+		Try(__FUNCTION__, (char*)addr);
 
 		int num = __LINE__;
-		int v = (num - __LINE__ - 1) / (num - __LINE__ - 1);
+		int v = (num + 1 - __LINE__ ) / (num + 1 - __LINE__ );
+		char* data = 0;
+		//int v = *(DWORD*)data;
 
 		suicide();
 
 	__checkpoint:
 		runLog("hello world!\r\n");
 	}
+#endif
 
 #ifdef _DEBUG
 	try {
@@ -153,18 +182,99 @@ int DivideZero() {
 		//suicide();
 	}
 
-	int divided = __LINE__;
+	int divided = MY_EXCEPTION_CODE;
 
-	int divisor = __LINE__;
+	//int divisor = __LINE__;
 
-	int remainder = divisor % 1;
+	int remainder = divided % 1;
 
 #ifndef _DEBUG
-	double quotient = divided / remainder;
+	int quotient = divided / remainder;
 #endif
-	if (MY_EXCEPTION_CODE != quotient) {
+	if ( (MY_EXCEPTION_CODE/ MY_EXCEPTION_CODE) != quotient) {
+		runLog("%s %d quotient:%x,expectation:%x\r\n", __FUNCTION__, __LINE__, quotient,1);
 		//suicide();
 	}
 	
 	return ret;
+}
+
+#ifndef _WIN64
+void asmJunkCode() {
+	__asm {
+		jz     _label_0; 条件永远为假，不会跳转
+		jnz    _label_0; 条件永远为真，一定会跳转
+		_emit      0xE8; 垃圾字节('call' 的操作码)
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+
+		_label_0:
+		jnz _label_1
+		jz _label_1
+		_emit      0xe9
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+		_label_1:
+		jnz _label_2
+		jz _label_2
+		_emit      0xeb
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+		_label_2:
+		jnz _label_3
+		jz _label_3
+		_emit      0x9a
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+			_emit      0
+		_label_3:
+		jnz _label_exit
+		jz _label_exit
+		_emit      0xea
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+		_emit      0
+
+		jmp _label_0
+
+		_label_exit:
+	}
+}
+
+
+
+
+#endif
+
+
+void JunkCode() {
+	asmJunkCode();
 }

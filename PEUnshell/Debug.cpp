@@ -176,6 +176,9 @@ VOID ElevationPrivilege()
 
 
 EXCEPTION_DISPOSITION NTAPI my_EXCEPTION_ROUTINE(EXCEPTION_RECORD* er, PVOID ef, CONTEXT* c, PVOID dc) {
+
+#ifndef _WIN64
+	//__debugbreak();
 	runLog("%s %d\r\n", __FUNCTION__, __LINE__);
 	MY_EXCEPTION_STRUCT* exp = (MY_EXCEPTION_STRUCT*)__readfsdword(0);
 
@@ -200,23 +203,7 @@ EXCEPTION_DISPOSITION NTAPI my_EXCEPTION_ROUTINE(EXCEPTION_RECORD* er, PVOID ef,
 	sprintf(buf, "exception tag:%s,address:%p,code:%x\r\n", exp->tag, er->ExceptionAddress, er->ExceptionCode);
 	//MessageBoxA(0, buf, buf, 0);
 	runLog(buf);
-
-	/*
-	__asm {
-		mov eax,[regebp]
-		mov ebp,eax
-		mov eax,[regesp]
-		mov esp,eax
-
-		mov esi,[regesi]
-		mov edi, [regedi]
-		mov ebx, [regebx]
-
-		mov esp,ebp
-		pop ebp
-		ret
-	}
-	*/
+#endif
 
 	return ExceptionContinueExecution;
 }
@@ -224,6 +211,7 @@ EXCEPTION_DISPOSITION NTAPI my_EXCEPTION_ROUTINE(EXCEPTION_RECORD* er, PVOID ef,
 
 
 int Try(char* tag, char* retaddr) {
+#ifndef _WIN64
 	MY_EXCEPTION_STRUCT* exp = new MY_EXCEPTION_STRUCT;
 	exp->exp.Next = (_EXCEPTION_REGISTRATION_RECORD*)__readfsdword(0);
 	exp->exp.Handler = my_EXCEPTION_ROUTINE;
@@ -255,6 +243,10 @@ int Try(char* tag, char* retaddr) {
 	exp->retaddr = retaddr;
 
 	__writefsdword(0, (DWORD)exp);
-	runLog("%s %d\r\n", __FUNCTION__, __LINE__);
+
+	MY_EXCEPTION_STRUCT* nv = (MY_EXCEPTION_STRUCT*)__readfsdword(0);
+	HANDLE h = GetModuleHandleA(0);
+	runLog("%s %d new handler:%x,old handler:%x,base:%x\r\n", __FUNCTION__, __LINE__, nv->exp.Handler,exp->exp.Next->Handler,h);
+#endif
 	return 0;
 }

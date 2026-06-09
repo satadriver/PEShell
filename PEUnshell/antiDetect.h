@@ -13,6 +13,7 @@ public:
 
 };
 
+void JunkCode();
 
 int ExceptionDetect();
 

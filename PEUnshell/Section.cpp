@@ -5,6 +5,7 @@
 #include "crypto.h"
 #include "LoadPE.h"
 #include <iostream>
+#include "antiDetect.h"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ using namespace std;
 
 int Section::unshellSection(char* module, const char* secname) {
 	int ret = 0;
+
+	JunkCode();
 
 	int seccnt = 0;
 	PIMAGE_SECTION_HEADER sections = 0;
