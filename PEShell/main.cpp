@@ -93,7 +93,10 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 
 			for (int j = seq + 1; j < seq +3; j++)
 			{
-				lstrcpyA(filelist[filecnt++], argv[j]);
+				string fn = argv[j];
+				fn.erase(std::remove(fn.begin(), fn.end(), '\"'), fn.end());
+
+				lstrcpyA(filelist[filecnt++], fn.c_str());
 			}
 
 			seq += 2;
@@ -101,21 +104,27 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		}
 		else if (lstrcmpiA(str, "-re") == 0)
 		{
-			printf("argv[%i]:%s\r\n", seq, argv[seq + 1]);
+			string fn = argv[seq + 1];
+			fn.erase(std::remove(fn.begin(), fn.end(), '\"'), fn.end());
+
+			printf("old filename:%s,new filename:%s\r\n", argv[seq + 1],fn.c_str());
 
 			cpu_arch = GetPeArch(argv[seq + 1]);
 
 			type = MEM_RUN_EXE;
-			lstrcpyA(filelist[filecnt++], argv[seq + 1]);
+			lstrcpyA(filelist[filecnt++], fn.c_str());
 
 			seq += 1;
 			continue;
 		}
 		else if (lstrcmpiA(str, "-rd") == 0)
 		{
+			string fn = argv[seq + 1];
+			fn.erase(std::remove(fn.begin(), fn.end(), '\"'), fn.end());
+			printf("old filename:%s,new filename:%s\r\n", argv[seq + 1], fn.c_str());
 			type = MEM_RUN_DLL;
 			cpu_arch = GetPeArch(argv[seq + 1]);
-			lstrcpyA(filelist[filecnt++], argv[seq + 1]);
+			lstrcpyA(filelist[filecnt++], fn.c_str());
 			seq += 1;
 			continue;
 		}
@@ -269,6 +278,6 @@ int GetPeArch(char * fn) {
 
 
 void test() {
-	Resource::getResource((DWORD)GetModuleHandle(0), "");
+	//Resource::getResource((DWORD)GetModuleHandle(0), "");
 	return;
 }

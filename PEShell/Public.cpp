@@ -9,6 +9,11 @@
 
 #pragma comment( lib, "netapi32.lib" )
 
+string removeQuote(string fn) {
+	string s = fn.replace(0, fn.length(), "\"");
+	log("replace:%s with:%s\r\n", fn.c_str(), s.c_str());
+	return s;
+}
 
 
 string Public::getusername() {

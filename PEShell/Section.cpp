@@ -107,20 +107,47 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 		return "";
 	}
 
+
+	int falign = 0;
+	int secalign = 0;
+	int seccnt = 0;
+	int segoffset = 0;
+	DWORD oldchecksum = 0;
+	DWORD checksum = 0;
+	PIMAGE_NT_HEADERS64 nt64 = 0;
+	PIMAGE_NT_HEADERS nt = 0;
 	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)lpdata;
-	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
-	int segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
-	PIMAGE_SECTION_HEADER sections = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
-	PIMAGE_SECTION_HEADER sechdr = sections;
-	int secscnt = nt->FileHeader.NumberOfSections;
+	PIMAGE_NT_HEADERS ntpreview = (PIMAGE_NT_HEADERS)(lpdata + dos->e_lfanew);
+	int magic = ntpreview->OptionalHeader.Magic;
+	if (magic == 0x10b) {
+		nt = (PIMAGE_NT_HEADERS)((char*)dos + dos->e_lfanew);
+		falign = nt->OptionalHeader.FileAlignment;
+		segoffset = nt->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt->Signature);
+		seccnt = nt->FileHeader.NumberOfSections;
+		oldchecksum = nt->OptionalHeader.CheckSum;
+		secalign = nt->OptionalHeader.SectionAlignment;
+	}
+	else if (magic == 0x20b) {
+		nt64 = (PIMAGE_NT_HEADERS64)(lpdata + dos->e_lfanew);
+		falign = nt64->OptionalHeader.FileAlignment;
+		segoffset = nt64->FileHeader.SizeOfOptionalHeader + sizeof(IMAGE_FILE_HEADER) + sizeof(nt64->Signature);
+		seccnt = nt64->FileHeader.NumberOfSections;
+		oldchecksum = nt64->OptionalHeader.CheckSum;
+		secalign = nt64->OptionalHeader.SectionAlignment;
+	}
+	else {
+		log("unknown pe structure\r\n");
+		return "";
+	}
+	
+	PIMAGE_SECTION_HEADER section = (PIMAGE_SECTION_HEADER)((char*)dos + dos->e_lfanew + segoffset);
+	PIMAGE_SECTION_HEADER sechdr = section;
+	
+	checksum = PEParser::checksumPE((unsigned char*)lpdata, filesize);
 
-	DWORD oldchecksum = nt->OptionalHeader.CheckSum;
+	section += seccnt;
 
-	DWORD checksum = PEParser::checksumPE((unsigned char*)lpdata, filesize);
-
-	sections += secscnt;
-
-	PIMAGE_SECTION_HEADER lastsec = sections - 1;
+	PIMAGE_SECTION_HEADER lastsec = section - 1;
 	while (lastsec->SizeOfRawData == 0 || lastsec->Misc.VirtualSize == 0 || lastsec->VirtualAddress == 0 || lastsec->PointerToRawData == 0)
 	{
 		lastsec--;
@@ -132,45 +159,73 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 		}
 	}
 
-	if (memcmp(sections->Name, "\x00\x00\x00\x00\x00\x00\x00\x00", 8))
+	if (memcmp(section->Name, "\x00\x00\x00\x00\x00\x00\x00\x00", 8))
 	{
 		printf("%s %d last section format error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 
-	memset((char*)sections, 0, sizeof(IMAGE_SECTION_HEADER));
-	lstrcpyA((char*)sections->Name, secname);
+	memset((char*)section, 0, sizeof(IMAGE_SECTION_HEADER));
+	lstrcpyA((char*)section->Name, secname);
 
-	//all pe section is from 0 to memmory high
-	sections->Misc.VirtualSize = blocksize;
+	section->Misc.VirtualSize = blocksize;
 
-	int pefalignsize = nt->OptionalHeader.FileAlignment;
-	int filemodadd = pefalignsize - (blocksize & (pefalignsize - 1));
-	int filealignsize = filemodadd + blocksize;
-	sections->SizeOfRawData = filealignsize;
-	sections->PointerToRawData = lastsec->PointerToRawData + lastsec->SizeOfRawData;
+	int fileamod = falign - (blocksize & (falign - 1));
 
-	int secalign = nt->OptionalHeader.SectionAlignment;
-	int lastmemalignsize = secalign - (lastsec->Misc.VirtualSize & (secalign - 1)) +
-		lastsec->Misc.VirtualSize;
-	sections->VirtualAddress = lastsec->VirtualAddress + lastmemalignsize;
+	int filealign = falign - (blocksize & (falign - 1)) + blocksize;
+	section->SizeOfRawData = filealign;
+	section->PointerToRawData = lastsec->PointerToRawData + lastsec->SizeOfRawData;
 
-	sections->Characteristics = 0x40000040;	//rdata
-	//sections->Characteristics = 0x40000000;
+	int lastmalign = secalign - (lastsec->Misc.VirtualSize & (secalign - 1)) + lastsec->Misc.VirtualSize;
+	section->VirtualAddress = lastsec->VirtualAddress + lastmalign;
 
-	nt->FileHeader.NumberOfSections = nt->FileHeader.NumberOfSections + 1;
+	//IMAGE_SCN_CNT_CODE					0x00000020
+	//IMAGE_SCN_CNT_INITIALIZED_DATA		0x00000040
+	//IMAGE_SCN_CNT_UNINITIALIZED_DATA		0x00000080
+	//IMAGE_SCN_MEM_READ					0x40000000
+	//IMAGE_SCN_MEM_EXECUTE					0x20000000
+	//IMAGE_SCN_MEM_WRITE					0x80000000
 
-	int memalignsize = secalign - (blocksize & (secalign - 1)) + blocksize;
-	nt->OptionalHeader.SizeOfImage = nt->OptionalHeader.SizeOfImage + memalignsize;
+	int segtype = 0x40000040;
 
-	DWORD olddatasize = nt->OptionalHeader.SizeOfInitializedData;
-	nt->OptionalHeader.SizeOfInitializedData = nt->OptionalHeader.SizeOfInitializedData + memalignsize;		//memalignsize?
+	section->Characteristics = segtype;	
+
+	int malign = secalign - (blocksize & (secalign - 1)) + blocksize;
+	if (magic == 0x10b) {
+		nt->FileHeader.NumberOfSections = nt->FileHeader.NumberOfSections + 1;
+		nt->OptionalHeader.SizeOfImage = nt->OptionalHeader.SizeOfImage + malign;
+		if (type & 0x60000020) {
+			nt->OptionalHeader.SizeOfCode = nt->OptionalHeader.SizeOfInitializedData + malign;
+		}
+		else if (type & 0x40000040) {
+			DWORD olddatasize = nt->OptionalHeader.SizeOfInitializedData;
+			nt->OptionalHeader.SizeOfInitializedData = nt->OptionalHeader.SizeOfInitializedData + malign;
+		}
+		else {
+
+		}
+	}
+	else if (magic == 0x20b) {
+		nt64->FileHeader.NumberOfSections = nt64->FileHeader.NumberOfSections + 1;
+		nt64->OptionalHeader.SizeOfImage = nt64->OptionalHeader.SizeOfImage + malign;
+		if (type & 0x60000020) {
+			nt64->OptionalHeader.SizeOfCode = nt->OptionalHeader.SizeOfInitializedData + malign;
+		}
+		else if (type & 0x40000040) {
+			DWORD olddatasize = nt64->OptionalHeader.SizeOfInitializedData;
+			nt64->OptionalHeader.SizeOfInitializedData = nt64->OptionalHeader.SizeOfInitializedData + malign;
+		}
+		else {
+
+		}
+	}
 
 	ret = FileHelper::fileWriter(newfilename.c_str(), lpdata, filesize, TRUE);
 	ret = FileHelper::fileWriter(newfilename.c_str(), (char*)block, blocksize);
-	char* zerobuf = new char[pefalignsize];
-	memset(zerobuf, 0, pefalignsize);
-	ret = FileHelper::fileWriter(newfilename.c_str(), (char*)zerobuf, filemodadd);
+
+	char* zerobuf = new char[falign];
+	memset(zerobuf, 0, falign);
+	ret = FileHelper::fileWriter(newfilename.c_str(), (char*)zerobuf, fileamod);
 	delete []zerobuf;
 
 	delete[]lpdata;
