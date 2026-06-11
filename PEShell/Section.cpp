@@ -20,7 +20,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	unsigned char* block = Crypto::makeDataBlock(type, srcfile, filecnt,path.c_str(),key, blocksize);
 	if (block <= 0)
 	{
-		log("%s %d makeDataBlock error\r\n", __FUNCTION__, __LINE__);
+		log("%s %d error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 
@@ -96,14 +96,14 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	ret = FileHelper::fileReader(srcfilename.c_str(), &lpdata, &filesize);
 	if (ret <= 0)
 	{
-		log("%s %d fileReader file:%s error:%u\r\n", __FUNCTION__, __LINE__, srcfilename.c_str(), GetLastError());
+		log("%s %d error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 
 	ret = PEParser::isPE(lpdata);
 	if (ret <= 0)
 	{
-		log("%s %d file:%s not excutable file format\r\n", __FUNCTION__, __LINE__,srcfilename.c_str());
+		log("%s %d file:%s is not excutable file\r\n", __FUNCTION__, __LINE__,srcfilename.c_str());
 		return "";
 	}
 
@@ -136,7 +136,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 		secalign = nt64->OptionalHeader.SectionAlignment;
 	}
 	else {
-		log("unknown pe structure\r\n");
+		log("%s %d pe structure error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 	
@@ -151,7 +151,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	while (lastsec->SizeOfRawData == 0 || lastsec->Misc.VirtualSize == 0 || lastsec->VirtualAddress == 0 || lastsec->PointerToRawData == 0)
 	{
 		lastsec--;
-		printf("%s %d last section format error\r\n", __FUNCTION__, __LINE__);
+		printf("%s %d the last section format error\r\n", __FUNCTION__, __LINE__);
 
 		if (lastsec <= sechdr)
 		{
@@ -161,7 +161,7 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 
 	if (memcmp(section->Name, "\x00\x00\x00\x00\x00\x00\x00\x00", 8))
 	{
-		printf("%s %d last section format error\r\n", __FUNCTION__, __LINE__);
+		printf("%s %d the last section format error\r\n", __FUNCTION__, __LINE__);
 		return "";
 	}
 
@@ -175,6 +175,11 @@ string Section::insertSection(int type, int cpu_arch, const char* secname, const
 	int filealign = falign - (blocksize & (falign - 1)) + blocksize;
 	section->SizeOfRawData = filealign;
 	section->PointerToRawData = lastsec->PointerToRawData + lastsec->SizeOfRawData;
+	int filepos = lastsec->PointerToRawData + lastsec->SizeOfRawData;
+	if (filepos != filesize) {
+		printf("%s %d new section offset:%x not equal to file size:%x\r\n", __FUNCTION__, __LINE__,filepos,filesize);
+		return "";
+	}
 
 	int lastmalign = secalign - (lastsec->Misc.VirtualSize & (secalign - 1)) + lastsec->Misc.VirtualSize;
 	section->VirtualAddress = lastsec->VirtualAddress + lastmalign;

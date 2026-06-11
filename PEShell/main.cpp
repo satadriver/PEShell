@@ -184,11 +184,11 @@ int main(_In_ int argc, _In_reads_(argc) _Pre_z_ char** argv, _In_z_ char** envp
 		return -1;
 	}
 
-	printf("TYPE:%d,CPU:%d\r\n",type,cpu_arch);
+	printf("bind type:%d,cpu arch:%d\r\n",type,cpu_arch);
 
 	if(cpu_arch!= 32 && cpu_arch !=64)
 	{
-		log("cannot get cpu architecture of file:%s\r\n", filelist[0]);
+		log("pe file cpu architecture:%s error\r\n", filelist[0]);
 		ret = getchar();
 		return -1;
 	}

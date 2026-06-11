@@ -9,7 +9,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments> -re "Sector Editor.exe" -p 47.116.51.29 test20190401 -o test.exe</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments> -re "notepad.exe" -p 47.116.51.29 test20190401 -o test.exe</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
